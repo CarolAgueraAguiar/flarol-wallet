@@ -1,0 +1,45 @@
+export const theme = {
+  dark: true,
+  colors: {
+    primary: "#2B6A9D",
+    background: "#2C383F",
+    card: "#DEEBE8",
+    text: "rgb(28, 28, 30)",
+    border: "rgb(216, 216, 216)",
+    notification: "rgb(255, 59, 48)",
+  },
+  colorsSecondary: {
+    green: {
+      50: "#ebeded",
+      100: "#E6FFFA",
+      200: "#DEEBE8",
+      300: "#42887C",
+      400: "#2D6A4F",
+      500: "#37474F",
+      700: "#2C383F",
+    },
+    blue: {
+      200: "#A0E9FD",
+      300: "#7EDEFC",
+      400: "#3D7199",
+      500: "#2B6A9D",
+      600: "#81B2CA",
+    },
+    gray: {
+      700: "#121214",
+      600: "#202024",
+      500: "#29292E",
+      400: "#323238",
+      300: "#7C7C8A",
+      200: "#C4C4CC",
+      100: "#E1E1E6",
+    },
+  },
+  lineHeight: 160,
+  fontSize: {
+    small: "14px",
+    medium: "16px",
+    large: "18px",
+    xlarge: "24px",
+  },
+};
