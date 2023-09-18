@@ -1,9 +1,12 @@
 import { StyleSheet, View, Text, TextInput } from "react-native";
 import { theme } from "../../../styles/theme";
+import { Control, Controller, FieldValues, useForm } from "react-hook-form";
 
 export interface TextFieldProps {
   status: TextFieldStatus;
   placeholder?: string;
+  control: Control<FieldValues, any>;
+  name: string;
 }
 
 export enum TextFieldStatus {
@@ -33,11 +36,21 @@ export const TextField = (props: TextFieldProps) => {
 
   return (
     <View style={classes.root}>
-      <TextInput
-        style={classes.text}
-        placeholder={props.placeholder}
-        placeholderTextColor={theme.colorsSecondary.gray[300]}
-        autoCapitalize="none"
+      <Controller
+        control={props.control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={classes.text}
+            placeholder={props.placeholder}
+            placeholderTextColor={theme.colorsSecondary.gray[300]}
+            autoCapitalize="none"
+            onChangeText={(text) => onChange(text)}
+            onBlur={onBlur}
+            value={value}
+          />
+        )}
+        name={props.name}
+        rules={{ required: "Campo obrigatório" }}
       />
     </View>
   );

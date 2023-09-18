@@ -1,4 +1,3 @@
-import { theme } from "./styles/theme";
 import {
   useFonts,
   Roboto_100Thin,
@@ -15,13 +14,8 @@ import {
   Roboto_900Black_Italic,
 } from "@expo-google-fonts/roboto";
 import AppLoading from "expo-app-loading";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { Login } from "./src/templates/Login/Login";
-import { SignUp } from "./src/templates/SignUp/SignUp";
-import HomeScreen from "./src/templates/Home/Home";
-
-const Stack = createStackNavigator();
+import UserContextProvider from "./src/context/UserContext";
+import { Main } from "./src/Routes/routes";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -43,13 +37,9 @@ export default function App() {
     return <AppLoading />;
   } else {
     return (
-      <NavigationContainer theme={theme}>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Cadastrar" component={SignUp} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <UserContextProvider>
+        <Main />
+      </UserContextProvider>
     );
   }
 }

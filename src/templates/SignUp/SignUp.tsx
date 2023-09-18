@@ -1,15 +1,20 @@
-//Nome, email e senha (com confirmação)
-//Nome da carteira e montante inicial
-
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import {
   TextField,
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { theme } from "../../../styles/theme";
 import { Logo } from "../../components/Logo/Logo";
+import { useForm } from "react-hook-form";
+import { storeUsers } from "../../services/users/users";
 
 export const SignUp = () => {
+  const { handleSubmit, control } = useForm();
+
+  const onSubmit = (data: any) => {
+    storeUsers(data);
+  };
+
   return (
     <View style={styles.container}>
       <Logo />
@@ -17,43 +22,33 @@ export const SignUp = () => {
         <TextField
           status={TextFieldStatus.Active}
           placeholder="Digite seu nome"
+          control={control}
+          name="name"
         />
         <TextField
           status={TextFieldStatus.Active}
           placeholder="Digite sua E-mail"
+          control={control}
+          name="email"
         />
         <TextField
           status={TextFieldStatus.Active}
           placeholder="Digite sua Senha"
+          control={control}
+          name="password"
         />
         <TextField
           status={TextFieldStatus.Active}
           placeholder="Digite sua Senha novamente"
+          control={control}
+          name="confirmPassword"
         />
       </View>
       <Button
-        onPress={() =>
-          Alert.alert(
-            "Mensagem:",
-            "Deu um erro ao fazer login (ERROR - 404)",
-            [
-              {
-                text: "Cancelar",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              {
-                text: "OK",
-                onPress: () => console.log("OK Pressed"),
-                style: "default",
-              },
-            ],
-            { cancelable: true, userInterfaceStyle: "dark" }
-          )
-        }
-        title="Entrar"
+        onPress={handleSubmit(onSubmit)}
+        title="Cadastrar"
         color={theme.colorsSecondary.green[100]}
-        accessibilityLabel="Entrar"
+        accessibilityLabel="Cadastrar"
       />
     </View>
   );

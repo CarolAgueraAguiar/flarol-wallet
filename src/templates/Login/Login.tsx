@@ -1,30 +1,47 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import { theme } from "../../../styles/theme";
 import {
   TextField,
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { Logo } from "../../components/Logo/Logo";
-import StyledButton from "../../components/StyledButton/StyledButton";
+import { useForm } from "react-hook-form";
+import { login } from "../../services/users/users";
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 
 export const Login = ({ navigation }: any) => {
+  const { control, handleSubmit } = useForm();
+
+  const context = useContext(UserContext);
+
+  const onSubmit = async (data: any) => {
+    const loginResponseData = await login(data);
+    context?.setUser(loginResponseData);
+    navigation.navigate("Inicio");
+  };
+
   return (
     <View style={styles.containerLogin}>
       <Logo />
       <View style={styles.containerTwo}>
         <TextField
+          control={control}
+          name="email"
           status={TextFieldStatus.Active}
           placeholder="Digite seu E-mail"
         />
         <TextField
+          control={control}
+          name="password"
           status={TextFieldStatus.Active}
           placeholder="Digite sua Senha"
         />
       </View>
-      <StyledButton
+      <Button
         title="Entrar"
-        isPrimary
-        onPress={() => navigation.navigate("Cadastrar")}
+        onPress={handleSubmit(onSubmit)}
+        color={theme.colorsSecondary.green[400]}
         accessibilityLabel="Entrar"
       />
     </View>
