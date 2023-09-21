@@ -1,4 +1,3 @@
-import { useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { theme } from "../../styles/theme";
@@ -15,22 +14,21 @@ export const Main = ({ isAuthenticated }: any) => {
     <NavigationContainer theme={theme}>
       <Stack.Navigator
         screenOptions={{ headerShown: true }}
-        initialRouteName="Home"
+        initialRouteName={isAuthenticated ? "Home" : "Welcome"}
       >
         <Stack.Group>
-          {/* {isAuthenticated ? (
+          {isAuthenticated ? (
             <>
               <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Wallet" component={Wallet} />
             </>
           ) : (
-          <> */}
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Cadastrar" component={SignUp} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Wallet" component={Wallet} />
-          {/* </>
-          )} */}
+            <>
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="Cadastrar" component={SignUp} />
+              <Stack.Screen name="Login" component={Login} />
+            </>
+          )}
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

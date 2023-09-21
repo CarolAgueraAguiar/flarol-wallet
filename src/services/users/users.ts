@@ -26,7 +26,7 @@ export const login = async ({
 }: LoginProps): Promise<LoginResponse> => {
   try {
     const { data } = await axios.post<LoginResponse>(
-      "http://192.168.3.41:3000/users/login",
+      "http://localhost:3000/users/login",
       {
         email,
         password,
@@ -45,7 +45,7 @@ export const storeUsers = async ({
   confirmPassword,
 }: StoreUsersProps) => {
   try {
-    const { data } = await axios.post("http://192.168.3.41:3000/users", {
+    const { data } = await axios.post("http://localhost:3000/users", {
       name,
       email,
       password,
@@ -61,7 +61,7 @@ export const storeUsers = async ({
 
 export const getUsers = async () => {
   try {
-    const { data } = await axios.get("http://192.168.3.41:3000/users");
+    const { data } = await axios.get("http://localhost:3000/users");
     return data;
   } catch (e: any) {
     return e;
