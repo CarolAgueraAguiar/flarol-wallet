@@ -4,8 +4,11 @@ import { Wallet } from "../../../assets/svg/Wallet";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 import { theme } from "../../../styles/theme";
+import { ButtonCategory } from "../../components/ButtonCategory/ButtonCategory";
+import { WalletIcon } from "../../../assets/svg/WalletIcon";
+import { BankIcon } from "../../../assets/svg/Bank";
 
-function Home() {
+function Home({ navigation }: any) {
   const context = useContext(UserContext);
 
   return (
@@ -62,6 +65,34 @@ function Home() {
       <View style={styles.myBudget}>
         <View>
           <Text style={styles.text}>Minha Carteira</Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            padding: 24,
+            width: "100%",
+          }}
+        >
+          <ButtonCategory
+            onClick={() => navigation.navigate("Wallet")}
+            categoryName="Carteiras"
+            icon={<WalletIcon />}
+            color="#730fc3"
+          />
+          <ButtonCategory
+            onClick={() => navigation.navigate("Wallet")}
+            categoryName="Receita"
+            icon={<BankIcon />}
+            color={theme.colorsSecondary.green[400]}
+          />
+          <ButtonCategory
+            onClick={() => navigation.navigate("Wallet")}
+            categoryName="Despesa"
+            icon={<BankIcon />}
+            color="#d3465c"
+          />
         </View>
       </View>
     </View>
@@ -134,7 +165,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     padding: 24,
-    margin: 12,
   },
 });
 export default Home;

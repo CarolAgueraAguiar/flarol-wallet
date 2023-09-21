@@ -3,7 +3,7 @@ import Svg, { Path } from "react-native-svg";
 
 export const Plants = () => {
   return (
-    <Svg width={148} height={185} fill="none">
+    <Svg width={120} height={185} fill="none">
       <Path fill="#FFC727" d="M81 82c6-12 24-2 17 9-6 12-23 3-17-9z" />
       <Path
         fill="#000"

@@ -9,8 +9,9 @@ import { useForm } from "react-hook-form";
 import { login } from "../../services/users/users";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
+import { saveSessionToken } from "../../utils/token";
 
-export const Login = ({ navigation }: any) => {
+export const Login = ({ navigation: { navigate } }: any) => {
   const { control, handleSubmit } = useForm();
 
   const context = useContext(UserContext);
@@ -18,7 +19,8 @@ export const Login = ({ navigation }: any) => {
   const onSubmit = async (data: any) => {
     const loginResponseData = await login(data);
     context?.setUser(loginResponseData);
-    navigation.navigate("Inicio");
+    saveSessionToken(loginResponseData.token);
+    navigate("Home");
   };
 
   return (
