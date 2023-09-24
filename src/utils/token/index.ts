@@ -3,9 +3,8 @@ import * as SecureStore from "expo-secure-store";
 export const saveSessionToken = async (token: string) => {
   try {
     await SecureStore.setItemAsync("sessionToken", token);
-    // console.log("Token de sessão salvo com sucesso.");
   } catch (error) {
-    // console.error("Erro ao salvar o token de sessão:", error);
+    return error;
   }
 };
 

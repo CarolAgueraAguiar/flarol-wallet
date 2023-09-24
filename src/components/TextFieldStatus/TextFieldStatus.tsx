@@ -1,4 +1,10 @@
-import { StyleSheet, View, Text, TextInput } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  InputModeOptions,
+} from "react-native";
 import { theme } from "../../../styles/theme";
 import { Control, Controller, FieldValues, useForm } from "react-hook-form";
 
@@ -7,6 +13,8 @@ export interface TextFieldProps {
   placeholder?: string;
   control: Control<FieldValues, any>;
   name: string;
+  inputMode?: InputModeOptions;
+  defaltValue?: string;
 }
 
 export enum TextFieldStatus {
@@ -38,6 +46,7 @@ export const TextField = (props: TextFieldProps) => {
     <View style={classes.root}>
       <Controller
         control={props.control}
+        defaultValue={props.defaltValue}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             style={classes.text}
@@ -47,6 +56,9 @@ export const TextField = (props: TextFieldProps) => {
             onChangeText={(text) => onChange(text)}
             onBlur={onBlur}
             value={value}
+            editable={props.status !== TextFieldStatus.Disabled}
+            inputMode={props.inputMode}
+            secureTextEntry={props.name === "password"}
           />
         )}
         name={props.name}
@@ -87,7 +99,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 0,
     flexBasis: 0,
-    color: theme.colorsSecondary.gray[200],
+    color: theme.colorsSecondary.gray[700],
     fontFamily: "Roboto_300Light",
     fontSize: 16,
   },

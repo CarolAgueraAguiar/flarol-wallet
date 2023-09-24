@@ -76,7 +76,7 @@ function Home({ navigation }: any) {
           }}
         >
           <ButtonCategory
-            onClick={() => navigation.navigate("Wallet")}
+            onClick={() => navigation.navigate("Carteira")}
             categoryName="Carteiras"
             icon={<WalletIcon />}
             color="#730fc3"

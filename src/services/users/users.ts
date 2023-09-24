@@ -15,6 +15,7 @@ export type LoginProps = {
 };
 
 export type LoginResponse = {
+  id: number;
   email: string;
   name: string;
   token: string;

@@ -5,32 +5,45 @@ import Home from "../templates/Home/Home";
 import WelcomeScreen from "../templates/Welcome/Welcome";
 import { SignUp } from "../templates/SignUp/SignUp";
 import { Login } from "../templates/Login/Login";
-import { Wallet } from "../templates/Wallet/Wallet";
+import { ListWallet } from "../templates/Wallet/ListWallet";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../context/UserContext";
+import * as SplashScreen from "expo-splash-screen";
+import { AddWallet } from "../templates/Wallet/AddWallet";
 
-const Stack = createStackNavigator();
+const { Navigator, Screen } = createStackNavigator();
 
-export const Main = ({ isAuthenticated }: any) => {
+export const Routes = () => {
+  const { isAuthenticated } = useContext(UserContext);
+
+  useEffect(() => {
+    let timeoutId = setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [isAuthenticated]);
+
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator
-        screenOptions={{ headerShown: true }}
-        initialRouteName={isAuthenticated ? "Home" : "Welcome"}
-      >
-        <Stack.Group>
-          {isAuthenticated ? (
-            <>
-              <Stack.Screen name="Home" component={Home} />
-              <Stack.Screen name="Wallet" component={Wallet} />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen name="Cadastrar" component={SignUp} />
-              <Stack.Screen name="Login" component={Login} />
-            </>
-          )}
-        </Stack.Group>
-      </Stack.Navigator>
+      {isAuthenticated ? (
+        <Navigator
+          screenOptions={{ headerShown: true }}
+          initialRouteName="Carteira"
+        >
+          <Screen name="Home" component={Home} />
+          <Screen name="Carteira" component={ListWallet} />
+          <Screen name="AdicionarCarteira" component={AddWallet} />
+        </Navigator>
+      ) : (
+        <Navigator
+          screenOptions={{ headerShown: true }}
+          initialRouteName="Welcome"
+        >
+          <Screen name="Welcome" component={WelcomeScreen} />
+          <Screen name="Cadastrar" component={SignUp} />
+          <Screen name="Login" component={Login} />
+        </Navigator>
+      )}
     </NavigationContainer>
   );
 };
