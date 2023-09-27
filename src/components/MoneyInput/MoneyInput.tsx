@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useForm, Controller, Control, FieldValues } from "react-hook-form";
 import { TextInputMask } from "react-native-masked-text";
 import { theme } from "../../../styles/theme";
+import { cleanNumber, formatNumber } from "../../utils/mask";
 
 export interface MoneyInputProps {
   control: Control<FieldValues, any>;
@@ -11,13 +12,11 @@ export interface MoneyInputProps {
 
 export default function MoneyInput({ control, name }: MoneyInputProps) {
   const { setValue } = useForm();
-
   return (
     <View style={styles.root}>
       <Controller
         name={name}
         control={control}
-        defaultValue=""
         render={({ field: { onChange, value } }) => (
           <TextInputMask
             style={styles.text}

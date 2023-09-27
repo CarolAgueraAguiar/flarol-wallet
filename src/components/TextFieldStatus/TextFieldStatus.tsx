@@ -6,7 +6,7 @@ import {
   InputModeOptions,
 } from "react-native";
 import { theme } from "../../../styles/theme";
-import { Control, Controller, FieldValues, useForm } from "react-hook-form";
+import { Control, Controller, FieldValues } from "react-hook-form";
 
 export interface TextFieldProps {
   status: TextFieldStatus;
@@ -14,7 +14,7 @@ export interface TextFieldProps {
   control: Control<FieldValues, any>;
   name: string;
   inputMode?: InputModeOptions;
-  defaltValue?: string;
+  style?: any;
 }
 
 export enum TextFieldStatus {
@@ -46,7 +46,6 @@ export const TextField = (props: TextFieldProps) => {
     <View style={classes.root}>
       <Controller
         control={props.control}
-        defaultValue={props.defaltValue}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             style={classes.text}

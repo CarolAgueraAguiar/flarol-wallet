@@ -1,10 +1,11 @@
 export const formatNumber = (value: string) => {
   if (!value) return "";
 
-  const numericValue = parseFloat(value.replace(/[^0-9]/g, ""));
+  const numericValue = parseFloat(value.replace(",", "."));
 
   const formattedValue = `R$ ${numericValue.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   })}`;
 
   return formattedValue;

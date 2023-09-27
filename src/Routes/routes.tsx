@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import * as SplashScreen from "expo-splash-screen";
 import { AddWallet } from "../templates/Wallet/AddWallet";
+import { UpdateWallet } from "../templates/Wallet/UpdateWallet";
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -33,6 +34,7 @@ export const Routes = () => {
           <Screen name="Home" component={Home} />
           <Screen name="Carteira" component={ListWallet} />
           <Screen name="AdicionarCarteira" component={AddWallet} />
+          <Screen name="AtualizarCarteira" component={UpdateWallet} />
         </Navigator>
       ) : (
         <Navigator

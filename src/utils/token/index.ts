@@ -23,8 +23,5 @@ export const getSessionToken = async () => {
 export const removeSessionToken = async () => {
   try {
     await SecureStore.deleteItemAsync("sessionToken");
-    // console.log("Token de sessão removido com sucesso.");
-  } catch (error) {
-    // console.error("Erro ao remover o token de sessão:", error);
-  }
+  } catch (error) {}
 };

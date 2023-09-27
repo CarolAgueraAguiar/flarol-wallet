@@ -1,38 +1,39 @@
-import {
-  Button,
-  FlatList,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {
   TextField,
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { useForm } from "react-hook-form";
-import { storeWallets } from "../../services/wallets/wallets";
-import { useContext } from "react";
-import { UserContext } from "../../context/UserContext";
+import { showWallet, updateWallets } from "../../services/wallets/wallets";
+import { useEffect } from "react";
 import MoneyInput from "../../components/MoneyInput/MoneyInput";
-import { TextInputMask } from "react-native-masked-text";
 import { cleanNumber } from "../../utils/mask";
-import { useFocusEffect } from "@react-navigation/native";
 
-export const AddWallet = ({ navigation: { navigate } }: any) => {
-  const { control, handleSubmit } = useForm();
+export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
+  const { id } = route.params;
+  const { control, setValue, handleSubmit } = useForm();
+
+  const getWallets = async (id: number) => {
+    const walletData = await showWallet(id);
+    setValue("description", walletData.description);
+    setValue("amount", walletData.amount);
+  };
+
+  useEffect(() => {
+    getWallets(id);
+  }, []);
 
   const onSubmit = async (data: any) => {
     data.amount = cleanNumber(data.amount);
-    await storeWallets(data);
+    data.id = id;
+    await updateWallets(data);
     navigate("Carteira");
   };
 
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.text}>Adicionar Carteira</Text>
+        <Text style={styles.text}>Atualizar Carteira</Text>
       </View>
       <View
         style={{
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     padding: 24,
     margin: 12,
     height: 150,
-    backgroundColor: "#81B2CA",
+    backgroundColor: "#cabd81",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

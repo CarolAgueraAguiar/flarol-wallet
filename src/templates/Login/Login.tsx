@@ -7,7 +7,7 @@ import {
 import { Logo } from "../../components/Logo/Logo";
 import { useForm } from "react-hook-form";
 import { login } from "../../services/users/users";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import { saveSessionToken } from "../../utils/token";
 
@@ -22,6 +22,19 @@ export const Login = ({ navigation: { navigate } }: any) => {
     saveSessionToken(loginResponseData.token);
     navigate("Home");
   };
+
+  useEffect(() => {
+    //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
+    const userData = {
+      name: "flavio",
+      email: "flavio@fla.com",
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk1NTc5NjkzLCJleHAiOjE3MDM0NjM2OTN9.a42ZccXgNEHf6gZvf0YuVgasm06CixjTEsLhyxpHK4k",
+    };
+    context.setUser(userData);
+    saveSessionToken(userData.token);
+    navigate("Home");
+  }, []);
 
   return (
     <View style={styles.containerLogin}>

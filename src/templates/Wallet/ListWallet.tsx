@@ -1,14 +1,17 @@
 import {
   Button,
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { ListWalletsProps, listWallets } from "../../services/wallets/wallets";
+import { deleteWallet, listWallets } from "../../services/wallets/wallets";
 import { useEffect, useState } from "react";
 import { formatNumber } from "../../utils/mask";
+import { ListWalletsProps } from "../../types/wallets/wallets";
+import { useIsFocused } from "@react-navigation/native";
 
 export const ListWallet = ({ navigation }: any) => {
   const [wallets, setWallets] = useState<ListWalletsProps[]>([]);
@@ -17,12 +20,22 @@ export const ListWallet = ({ navigation }: any) => {
     setWallets(walletData);
   };
 
+  const onNavigation = (id: number) => {
+    navigation.navigate("AtualizarCarteira", {
+      id,
+    });
+  };
+
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    walletsData();
-  }, []);
+    if (isFocused) {
+      walletsData();
+    }
+  }, [isFocused]);
 
   return (
-    <View>
+    <ScrollView>
       <View style={styles.container}>
         <Text style={styles.text}>Carteira</Text>
       </View>
@@ -42,12 +55,22 @@ export const ListWallet = ({ navigation }: any) => {
             <Text style={styles.itemText}>
               {formatNumber(String(item.amount))}
             </Text>
-            <Button title="Editar" color="yellow" />
-            <Button title="Excluir" color="red" />
+            <Button
+              title="Editar"
+              color="yellow"
+              onPress={() => onNavigation(item.id)}
+            />
+            <Button
+              title="Excluir"
+              color="red"
+              onPress={() => {
+                deleteWallet(item.id);
+              }}
+            />
           </View>
         )}
       />
-    </View>
+    </ScrollView>
   );
 };
 

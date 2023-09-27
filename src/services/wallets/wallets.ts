@@ -1,49 +1,64 @@
-import axios from "axios";
-import { getSessionToken } from "../../utils/token";
-
-export type StoreWalletsProps = {
-  userId: string;
-  description: string;
-  amount: string;
-};
+import {
+  ListWalletsProps,
+  StoreWalletsProps,
+  UpdateWalletsProps,
+} from "../../types/wallets/wallets";
+import { axiosFlarol } from "../axios";
 
 export const storeWallets = async ({
-  userId,
   description,
   amount,
 }: StoreWalletsProps) => {
   try {
-    const token = await getSessionToken();
-    const { data } = await axios.post(
-      "http://localhost:3000/wallets",
-      {
-        userId: Number(userId),
-        description,
-        amount: Number(amount),
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const { data } = await axiosFlarol.post("wallets", {
+      description,
+      amount: Number(amount),
+    });
     return data;
   } catch (e: any) {
     return e;
   }
 };
 
-export type ListWalletsProps = {
-  id: number;
-  description: string;
-  slug: string;
-  amount: number;
-  user_id: number;
-};
-
 export const listWallets = async (): Promise<ListWalletsProps[]> => {
   try {
-    const token = await getSessionToken();
+    const { data } = await axiosFlarol.get("wallets");
 
-    const { data } = await axios.get("http://localhost:3000/wallets", {
-      headers: { Authorization: `Bearer ${token}` },
+    return data;
+  } catch (e: any) {
+    return e;
+  }
+};
+
+export const showWallet = async (id: number): Promise<ListWalletsProps> => {
+  try {
+    const { data } = await axiosFlarol.get(`wallets/${id}`);
+
+    return data;
+  } catch (e: any) {
+    return e;
+  }
+};
+
+export const updateWallets = async ({
+  description,
+  amount,
+  id,
+}: UpdateWalletsProps) => {
+  try {
+    const { data } = await axiosFlarol.put(`wallets/${id}`, {
+      description,
+      amount: Number(amount),
     });
+    return data;
+  } catch (e: any) {
+    return e;
+  }
+};
+
+export const deleteWallet = async (id: number) => {
+  try {
+    const { data } = await axiosFlarol.delete(`wallets/${id}`);
     return data;
   } catch (e: any) {
     return e;
