@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useForm, Controller, Control, FieldValues } from "react-hook-form";
 import { TextInputMask } from "react-native-masked-text";
-import { theme } from "../../../styles/theme";
+import { theme } from "../../styles/theme";
 import { cleanNumber, formatNumber } from "../../utils/mask";
 
 export interface MoneyInputProps {

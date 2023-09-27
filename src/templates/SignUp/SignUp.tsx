@@ -3,7 +3,7 @@ import {
   TextField,
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
-import { theme } from "../../../styles/theme";
+import { theme } from "../../styles/theme";
 import { Logo } from "../../components/Logo/Logo";
 import { useForm } from "react-hook-form";
 import { storeUsers } from "../../services/users/users";

@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { theme } from "../../../styles/theme";
+import { theme } from "../../styles/theme";
 
 function StyledButton({ title, onPress, isPrimary }: any) {
   const buttonStyles = isPrimary

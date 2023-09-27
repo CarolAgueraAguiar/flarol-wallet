@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { theme } from "../../styles/theme";
+import { theme } from "../styles/theme";
 import Home from "../templates/Home/Home";
 import WelcomeScreen from "../templates/Welcome/Welcome";
 import { SignUp } from "../templates/SignUp/SignUp";

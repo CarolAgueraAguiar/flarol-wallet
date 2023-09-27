@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { theme } from "../../../styles/theme";
+import { theme } from "../../styles/theme";
 import { IconLogo } from "../../../assets/svg/IconLogo";
 
 export const Logo = () => {

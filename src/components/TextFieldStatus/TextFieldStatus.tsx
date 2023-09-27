@@ -5,7 +5,7 @@ import {
   TextInput,
   InputModeOptions,
 } from "react-native";
-import { theme } from "../../../styles/theme";
+import { theme } from "../../styles/theme";
 import { Control, Controller, FieldValues } from "react-hook-form";
 
 export interface TextFieldProps {

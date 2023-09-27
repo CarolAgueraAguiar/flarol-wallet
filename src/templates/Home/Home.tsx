@@ -3,7 +3,7 @@ import { Plants } from "../../../assets/svg/Plants";
 import { Wallet } from "../../../assets/svg/Wallet";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
-import { theme } from "../../../styles/theme";
+import { theme } from "../../styles/theme";
 import { ButtonCategory } from "../../components/ButtonCategory/ButtonCategory";
 import { WalletIcon } from "../../../assets/svg/WalletIcon";
 import { BankIcon } from "../../../assets/svg/Bank";
