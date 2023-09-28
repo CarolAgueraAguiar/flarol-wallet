@@ -22,17 +22,17 @@ export const Login = ({ navigation }: any) => {
     saveSessionToken(loginResponseData.token);
   };
 
-  useEffect(() => {
-    //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
-    const userData = {
-      name: "flavio",
-      email: "flavio@fla.com",
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk1NTc5NjkzLCJleHAiOjE3MDM0NjM2OTN9.a42ZccXgNEHf6gZvf0YuVgasm06CixjTEsLhyxpHK4k",
-    };
-    context.setUser(userData);
-    saveSessionToken(userData.token);
-  }, []);
+  // useEffect(() => {
+  //   //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
+  //   const userData = {
+  //     name: "flavio",
+  //     email: "flavio@fla.com",
+  //     token:
+  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk1NTc5NjkzLCJleHAiOjE3MDM0NjM2OTN9.a42ZccXgNEHf6gZvf0YuVgasm06CixjTEsLhyxpHK4k",
+  //   };
+  //   context.setUser(userData);
+  //   saveSessionToken(userData.token);
+  // }, []);
 
   return (
     <View style={styles.containerLogin}>

@@ -35,12 +35,12 @@ export const Routes = () => {
         {isAuthenticated ? (
           <Group>
             <Screen name="Home" component={Home} />
-            <Group screenOptions={{ headerShown: false }}>
+            <Group screenOptions={{ headerShown: true }}>
               <Screen name="Carteira" component={ListWallet} />
               <Screen name="AdicionarCarteira" component={AddWallet} />
               <Screen name="AtualizarCarteira" component={UpdateWallet} />
             </Group>
-            <Group screenOptions={{ headerShown: false }}>
+            <Group screenOptions={{ headerShown: true }}>
               <Screen name="Categoria" component={ListCategory} />
               <Screen name="AdicionarCategoria" component={AddCategory} />
               {/* <Screen name="AtualizarCategoria" component={UpdateCategory} /> */}

@@ -29,20 +29,25 @@ export const ListWallet = ({ navigation }: any) => {
     });
   };
 
+  const deleteWalletAsync = async (id: number) => {
+    await deleteWallet(id);
+    walletsData();
+  };
+
   const handleDeleteWallet = async (id: number) => {
     Alert.alert("Tem certeza que quer excluir ?", "Absoluta ?", [
       {
         text: "Cancelar",
-        onPress: () => console.log("Cancel Pressed"),
+        onPress: () => ({}),
         style: "cancel",
       },
-      { text: "OK", onPress: () => setCancel(true) },
+      {
+        text: "OK",
+        onPress: () => {
+          deleteWalletAsync(id);
+        },
+      },
     ]);
-
-    if (isCancel) {
-      await deleteWallet(id);
-      walletsData();
-    }
   };
 
   useEffect(() => {

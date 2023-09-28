@@ -57,7 +57,9 @@ export const TextField = (props: TextFieldProps) => {
             value={value}
             editable={props.status !== TextFieldStatus.Disabled}
             inputMode={props.inputMode}
-            secureTextEntry={props.name === "password" || props.name === "confirmPassword"}
+            secureTextEntry={
+              props.name === "password" || props.name === "confirm_password"
+            }
           />
         )}
         name={props.name}
