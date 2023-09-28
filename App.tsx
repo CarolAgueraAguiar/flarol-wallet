@@ -13,7 +13,6 @@ import {
   Roboto_900Black,
   Roboto_900Black_Italic,
 } from "@expo-google-fonts/roboto";
-import AppLoading from "expo-app-loading";
 import UserContextProvider from "./src/context/UserContext";
 import { Routes } from "./src/routes/routes";
 import { AppRegistry } from "react-native";
@@ -37,7 +36,7 @@ export default function App() {
   });
 
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return;
   } else {
     return (
       <UserContextProvider>

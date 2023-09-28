@@ -10,17 +10,16 @@ import { login } from "../../services/users/users";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import { saveSessionToken } from "../../utils/token";
+import { useNavigation } from "@react-navigation/native";
 
-export const Login = ({ navigation: { navigate } }: any) => {
+export const Login = ({ navigation }: any) => {
   const { control, handleSubmit } = useForm();
-
   const context = useContext(UserContext);
 
   const onSubmit = async (data: any) => {
     const loginResponseData = await login(data);
     context?.setUser(loginResponseData);
     saveSessionToken(loginResponseData.token);
-    navigate("Home");
   };
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export const Login = ({ navigation: { navigate } }: any) => {
     };
     context.setUser(userData);
     saveSessionToken(userData.token);
-    navigate("Home");
   }, []);
 
   return (

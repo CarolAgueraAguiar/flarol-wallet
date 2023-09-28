@@ -12,12 +12,12 @@
   "dependencies": {
     "@expo-google-fonts/roboto": "^0.2.3",
     "@expo/webpack-config": "^19.0.0",
+    "@react-native-picker/picker": "^2.5.1",
     "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/stack": "^6.3.17",
     "axios": "^1.5.0",
     "expo": "~49.0.8",
-    "expo-app-loading": "^2.1.1",
     "expo-font": "^11.4.0",
     "expo-secure-store": "~12.3.1",
     "expo-splash-screen": "^0.22.0",

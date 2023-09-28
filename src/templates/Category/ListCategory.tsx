@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   FlatList,
   StyleSheet,
@@ -7,61 +6,52 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { deleteWallet, listWallets } from "../../services/wallets/wallets";
 import { useEffect, useState } from "react";
-import { formatNumber } from "../../utils/mask";
-import { ListWalletsProps } from "../../types/wallets/wallets";
 import { useIsFocused } from "@react-navigation/native";
+import {
+  deleteCategory,
+  listCategory,
+} from "../../services/categories/categories";
+import { GetCategoriesProps } from "../../types/categories/categories";
 
-export const ListWallet = ({ navigation }: any) => {
-  const [wallets, setWallets] = useState<ListWalletsProps[]>([]);
-  const [isCancel, setCancel] = useState(false);
+export const ListCategory = ({ navigation }: any) => {
+  const [categories, setCategories] = useState<GetCategoriesProps[]>([]);
   const isFocused = useIsFocused();
 
-  const walletsData = async () => {
-    const walletData = await listWallets();
-    setWallets(walletData);
+  const categoriesData = async () => {
+    const data = await listCategory();
+    setCategories(data);
   };
 
   const onNavigation = (id: number) => {
-    navigation.navigate("AtualizarCarteira", {
+    navigation.navigate("AtualizarCategoria", {
       id,
     });
   };
 
-  const handleDeleteWallet = async (id: number) => {
-    Alert.alert("Tem certeza que quer excluir ?", "Absoluta ?", [
-      {
-        text: "Cancelar",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      { text: "OK", onPress: () => setCancel(true) },
-    ]);
+  const handleDeleteCategory = async (id: number) => {
+    await deleteCategory(id);
 
-    if (isCancel) {
-      await deleteWallet(id);
-      walletsData();
-    }
+    categoriesData();
   };
 
   useEffect(() => {
     if (isFocused) {
-      walletsData();
+      categoriesData();
     }
   }, [isFocused]);
 
   return (
     <FlatList
-      data={wallets}
+      data={categories}
       keyExtractor={(item) => String(item.id)}
       ListHeaderComponent={() => (
         <>
           <View style={styles.container}>
-            <Text style={styles.text}>Carteira</Text>
+            <Text style={styles.text}>Categoria</Text>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("AdicionarCarteira")}
+            onPress={() => navigation.navigate("AdicionarCategoria")}
           >
             <View style={styles.buttonAdd}>
               <Text>Adicionar</Text>
@@ -72,9 +62,7 @@ export const ListWallet = ({ navigation }: any) => {
       renderItem={({ item }) => (
         <View style={styles.itemContainer}>
           <Text style={styles.itemText}>{item.description}</Text>
-          <Text style={styles.itemText}>
-            {formatNumber(String(item.amount))}
-          </Text>
+          <Text style={styles.itemText}>{item.icon.description}</Text>
           <Button
             title="Editar"
             color="yellow"
@@ -84,7 +72,7 @@ export const ListWallet = ({ navigation }: any) => {
             title="Excluir"
             color="red"
             onPress={() => {
-              handleDeleteWallet(item.id);
+              handleDeleteCategory(item.id);
             }}
           />
         </View>

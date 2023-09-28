@@ -7,8 +7,9 @@ import { theme } from "../../styles/theme";
 import { ButtonCategory } from "../../components/ButtonCategory/ButtonCategory";
 import { WalletIcon } from "../../../assets/svg/WalletIcon";
 import { BankIcon } from "../../../assets/svg/Bank";
+import { CategoryIcon } from "../../../assets/svg/Category";
 
-function Home({ navigation }: any) {
+export const Home = ({ navigation }: any) => {
   const context = useContext(UserContext);
 
   return (
@@ -83,21 +84,27 @@ function Home({ navigation }: any) {
           />
           <ButtonCategory
             onClick={() => navigation.navigate("Wallet")}
-            categoryName="Receita"
+            categoryName="Receitas"
             icon={<BankIcon />}
             color={theme.colorsSecondary.green[400]}
           />
           <ButtonCategory
             onClick={() => navigation.navigate("Wallet")}
-            categoryName="Despesa"
+            categoryName="Despesas"
             icon={<BankIcon />}
             color="#d3465c"
+          />
+          <ButtonCategory
+            onClick={() => navigation.navigate("Categoria")}
+            categoryName="Categorias"
+            icon={<CategoryIcon />}
+            color="#bdc30f"
           />
         </View>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   textSucefull: {
@@ -167,4 +174,3 @@ const styles = StyleSheet.create({
     padding: 24,
   },
 });
-export default Home;

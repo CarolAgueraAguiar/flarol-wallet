@@ -1,15 +1,24 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import {
   TextField,
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { useForm } from "react-hook-form";
 import { storeWallets } from "../../services/wallets/wallets";
-import MoneyInput from "../../components/MoneyInput/MoneyInput";
 import { cleanNumber } from "../../utils/mask";
+import { useEffect, useState } from "react";
+import { theme } from "../../styles/theme";
 
-export const AddWallet = ({ navigation: { navigate } }: any) => {
+export const AddCategory = ({ navigation: { navigate } }: any) => {
   const { control, handleSubmit } = useForm();
+
+  const [selectedValue, setSelectedValue] = useState();
+
+  useEffect(() => {
+    //getIcons();
+    //setSelectedValue(icons[0].id);
+  }, []);
 
   const onSubmit = async (data: any) => {
     data.amount = cleanNumber(data.amount);
@@ -20,7 +29,7 @@ export const AddWallet = ({ navigation: { navigate } }: any) => {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.text}>Adicionar Carteira</Text>
+        <Text style={styles.text}>Adicionar Categoria</Text>
       </View>
       <View
         style={{
@@ -33,9 +42,22 @@ export const AddWallet = ({ navigation: { navigate } }: any) => {
           status={TextFieldStatus.Default}
           control={control}
           name="description"
-          placeholder="Digite o nome da carteira"
+          placeholder="Digite o nome da categoria"
         />
-        <MoneyInput control={control} name="amount" />
+        <Picker
+          selectedValue={selectedValue}
+          style={{
+            backgroundColor: theme.colorsSecondary.green[200],
+            width: 328,
+            borderRadius: 5,
+          }}
+          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+        >
+          {/* {icons.map((icon) => (
+            <Picker.Item label={icon.description} value={icon.id} />
+          ))
+          ))} */}
+        </Picker>
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>

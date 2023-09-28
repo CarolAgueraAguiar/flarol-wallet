@@ -59,6 +59,7 @@ export const updateWallets = async ({
 export const deleteWallet = async (id: number) => {
   try {
     const { data } = await axiosFlarol.delete(`wallets/${id}`);
+
     return data;
   } catch (e: any) {
     return e;

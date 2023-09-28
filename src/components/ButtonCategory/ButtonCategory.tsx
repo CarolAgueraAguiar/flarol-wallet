@@ -64,7 +64,8 @@ export const ButtonCategory = ({
         alignItems: "center",
         flexDirection: "column",
         justifyContent: "center",
-        width: "33.33%"
+        width: "33.33%",
+        marginTop: 20,
       }}
     >
       <Text
