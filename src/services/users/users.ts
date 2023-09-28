@@ -27,17 +27,19 @@ export const storeUsers = async ({
   email,
   password,
   confirm_password,
-}: StoreUsersProps) => {
+}: StoreUsersProps):Promise<number> => {
   try {
-    const { data } = await axiosFlarol.post<StoreUsersProps>("users", {
+    const { status } = await axiosFlarol.post("users", {
       name,
       email,
       password,
       confirm_password,
     });
 
-    return data;
+    return status;
   } catch (e: any) {
+    console.log(e.response.data);
+
     return e;
   }
 };

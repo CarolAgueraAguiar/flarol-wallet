@@ -1,4 +1,4 @@
-import { Button, StyleSheet, View } from "react-native";
+import { Alert, Button, StyleSheet, View } from "react-native";
 import {
   TextField,
   TextFieldStatus,
@@ -8,11 +8,16 @@ import { Logo } from "../../components/Logo/Logo";
 import { useForm } from "react-hook-form";
 import { storeUsers } from "../../services/users/users";
 
-export const SignUp = () => {
+export const SignUp = ({ navigation }: any) => {
   const { handleSubmit, control } = useForm();
 
-  const onSubmit = (data: any) => {
-    storeUsers(data);
+  const onSubmit = async (data: any) => {
+    const statusData = await storeUsers(data);
+
+    //NOTE - Tratar mensagens de erros
+    statusData === 201
+      ? navigation.navigate("Login")
+      : Alert.alert("Erro ao cadastrar");
   };
 
   return (
@@ -41,7 +46,7 @@ export const SignUp = () => {
           status={TextFieldStatus.Active}
           placeholder="Digite sua Senha novamente"
           control={control}
-          name="confirmPassword"
+          name="confirm_password"
         />
       </View>
       <Button
