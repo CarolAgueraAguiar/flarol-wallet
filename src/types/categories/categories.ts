@@ -3,6 +3,12 @@ export type StoreCategoriesProps = {
   icon_id: number;
 };
 
+export type UpdateCategoriesProps = {
+  description: string;
+  icon_id: number;
+  id: number;
+};
+
 export interface GetCategoriesProps {
   id: number;
   description: string;

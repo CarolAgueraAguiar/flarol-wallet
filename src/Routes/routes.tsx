@@ -13,6 +13,8 @@ import { AddWallet } from "../templates/Wallet/AddWallet";
 import { UpdateWallet } from "../templates/Wallet/UpdateWallet";
 import { ListCategory } from "../templates/Category/ListCategory";
 import { AddCategory } from "../templates/Category/AddCategory";
+import { updateCategory } from "../services/categories/categories";
+import { UpdateCategory } from "../templates/Category/UpdateCategory";
 
 const { Navigator, Screen, Group } = createStackNavigator();
 
@@ -43,7 +45,7 @@ export const Routes = () => {
             <Group screenOptions={{ headerShown: true }}>
               <Screen name="Categoria" component={ListCategory} />
               <Screen name="AdicionarCategoria" component={AddCategory} />
-              {/* <Screen name="AtualizarCategoria" component={UpdateCategory} /> */}
+              <Screen name="AtualizarCategoria" component={UpdateCategory} />
             </Group>
           </Group>
         ) : (

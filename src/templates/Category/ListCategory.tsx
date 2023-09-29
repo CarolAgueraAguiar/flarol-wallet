@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   FlatList,
   StyleSheet,
@@ -29,10 +30,25 @@ export const ListCategory = ({ navigation }: any) => {
     });
   };
 
-  const handleDeleteCategory = async (id: number) => {
+  const deleteCategoryAsync = async (id: number) => {
     await deleteCategory(id);
-
     categoriesData();
+  };
+
+  const handleDeleteCategory = async (id: number) => {
+    Alert.alert("Tem certeza que quer excluir ?", "Absoluta ?", [
+      {
+        text: "Cancelar",
+        onPress: () => ({}),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          deleteCategoryAsync(id);
+        },
+      },
+    ]);
   };
 
   useEffect(() => {

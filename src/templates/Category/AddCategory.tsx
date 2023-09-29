@@ -9,11 +9,12 @@ import { storeWallets } from "../../services/wallets/wallets";
 import { cleanNumber } from "../../utils/mask";
 import { useEffect, useState } from "react";
 import { theme } from "../../styles/theme";
+import { storeCategory } from "../../services/categories/categories";
 
 export const AddCategory = ({ navigation: { navigate } }: any) => {
   const { control, handleSubmit } = useForm();
 
-  const [selectedValue, setSelectedValue] = useState();
+  // const [selectedValue, setSelectedValue] = useState();
 
   useEffect(() => {
     //getIcons();
@@ -21,9 +22,8 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
   }, []);
 
   const onSubmit = async (data: any) => {
-    data.amount = cleanNumber(data.amount);
-    await storeWallets(data);
-    navigate("Carteira");
+    await storeCategory(data);
+    navigate("Categoria");
   };
 
   return (
@@ -44,7 +44,14 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
           name="description"
           placeholder="Digite o nome da categoria"
         />
-        <Picker
+        <TextField
+          status={TextFieldStatus.Default}
+          control={control}
+          name="icon_id"
+          inputMode="numeric"
+          placeholder="Digite o id do icone"
+        />
+        {/* <Picker
           selectedValue={selectedValue}
           style={{
             backgroundColor: theme.colorsSecondary.green[200],
@@ -53,11 +60,11 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
           }}
           onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
         >
-          {/* {icons.map((icon) => (
+          {icons.map((icon) => (
             <Picker.Item label={icon.description} value={icon.id} />
           ))
-          ))} */}
-        </Picker>
+          ))}
+        </Picker> */}
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>

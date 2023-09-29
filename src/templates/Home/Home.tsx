@@ -31,7 +31,7 @@ export const Home = ({ navigation }: any) => {
             Saldo das Carteira
           </Text>
           <Text style={{ paddingTop: 5 }}>
-            R$ <Text style={{ fontWeight: "700" }}>0,00</Text>
+            R$ <Text style={{ fontWeight: "700" }}>100,00</Text>
           </Text>
         </View>
         <Wallet />

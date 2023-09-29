@@ -1,4 +1,8 @@
-import { StoreCategoriesProps } from "../../types/categories/categories";
+import {
+  GetCategoriesProps,
+  StoreCategoriesProps,
+  UpdateCategoriesProps,
+} from "../../types/categories/categories";
 import { axiosFlarol } from "../axios";
 
 export const storeCategory = async ({
@@ -10,12 +14,34 @@ export const storeCategory = async ({
       "categories",
       {
         description,
-        icon_id,
+        icon_id: Number(icon_id),
       }
     );
 
     return data;
   } catch (e: any) {
+    console.log(e.response.data);
+    return e;
+  }
+};
+
+export const updateCategory = async ({
+  description,
+  icon_id,
+  id,
+}: UpdateCategoriesProps) => {
+  try {
+    const { data } = await axiosFlarol.put<StoreCategoriesProps>(
+      `categories/${id}`,
+      {
+        description,
+        icon_id: Number(icon_id),
+      }
+    );
+
+    return data;
+  } catch (e: any) {
+    console.log(e.response.data);
     return e;
   }
 };
@@ -30,7 +56,9 @@ export const listCategory = async () => {
   }
 };
 
-export const showCategories = async (id: number) => {
+export const showCategories = async (
+  id: number
+): Promise<GetCategoriesProps> => {
   try {
     const { data } = await axiosFlarol.get(`categories/${id}`);
 

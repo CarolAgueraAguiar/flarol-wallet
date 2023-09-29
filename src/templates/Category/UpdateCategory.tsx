@@ -8,28 +8,29 @@ import { showWallet, updateWallets } from "../../services/wallets/wallets";
 import { useEffect } from "react";
 import MoneyInput from "../../components/MoneyInput/MoneyInput";
 import { cleanNumber } from "../../utils/mask";
+import {
+  showCategories,
+  updateCategory,
+} from "../../services/categories/categories";
 
-export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
+export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
   const { id } = route.params;
   const { control, setValue, handleSubmit } = useForm();
 
-  const getWallets = async (id: number) => {
-    const walletData = await showWallet(id);
-    setValue("description", walletData.description);
-    setValue("amount", walletData.amount);
+  const getCategories = async (id: number) => {
+    const categoriesData = await showCategories(id);
+    setValue("description", categoriesData.description);
+    setValue("icon_id", String(categoriesData.icon.id));
   };
 
   useEffect(() => {
-    getWallets(id);
+    getCategories(id);
   }, []);
 
   const onSubmit = async (data: any) => {
-    if (data.amount) {
-      data.amount = cleanNumber(data.amount);
-    }
     data.id = id;
-    await updateWallets(data);
-    navigate("Carteira");
+    await updateCategory(data);
+    navigate("Categoria");
   };
 
   return (
@@ -50,7 +51,12 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
           name="description"
           placeholder="Digite o nome da carteira"
         />
-        <MoneyInput control={control} name="amount" />
+        <TextField
+          status={TextFieldStatus.Default}
+          control={control}
+          name="icon_id"
+          placeholder="Digite o id do icone"
+        />
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
