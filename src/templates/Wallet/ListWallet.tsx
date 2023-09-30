@@ -8,19 +8,28 @@ import {
   View,
 } from "react-native";
 import { deleteWallet, listWallets } from "../../services/wallets/wallets";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { formatNumber } from "../../utils/mask";
 import { ListWalletsProps } from "../../types/wallets/wallets";
 import { useIsFocused } from "@react-navigation/native";
+import { UserContext } from "../../context/UserContext";
 
 export const ListWallet = ({ navigation }: any) => {
+  const context = useContext(UserContext);
   const [wallets, setWallets] = useState<ListWalletsProps[]>([]);
-  const [isCancel, setCancel] = useState(false);
   const isFocused = useIsFocused();
 
   const walletsData = async () => {
+    let totalAmount = 0;
+
     const walletData = await listWallets();
     setWallets(walletData);
+
+    walletData.map((wallet) => {
+      const walletAmount = wallet.amount;
+      totalAmount += walletAmount;
+      context?.setWalletAmount(totalAmount);
+    });
   };
 
   const onNavigation = (id: number) => {

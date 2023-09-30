@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
     color: theme.colorsSecondary.gray[100],
     fontWeight: "bold",
     fontSize: 28,
-    fontFamily: "Roboto_700Bold_Italic",
+    // fontFamily: "Roboto_700Bold_Italic",
   },
   subTitle: {
     color: theme.colorsSecondary.gray[100],
     fontWeight: "400",
     fontSize: 14,
-    fontFamily: "Roboto_100Thin_Italic",
+    // fontFamily: "Roboto_100Thin_Italic",
     textAlign: "center",
   },
   logo: {

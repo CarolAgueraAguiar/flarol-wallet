@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { theme } from "../styles/theme";
+import { colors, theme } from "../styles/theme";
 import { Home } from "../templates/Home/Home";
 import WelcomeScreen from "../templates/Welcome/Welcome";
 import { SignUp } from "../templates/SignUp/SignUp";
@@ -13,13 +13,15 @@ import { AddWallet } from "../templates/Wallet/AddWallet";
 import { UpdateWallet } from "../templates/Wallet/UpdateWallet";
 import { ListCategory } from "../templates/Category/ListCategory";
 import { AddCategory } from "../templates/Category/AddCategory";
-import { updateCategory } from "../services/categories/categories";
 import { UpdateCategory } from "../templates/Category/UpdateCategory";
+import { ListUser } from "../templates/User/ListUser";
+import Profile from "../components/Header/Profile";
+import Greeting from "../components/Header/Greeting";
 
 const { Navigator, Screen, Group } = createStackNavigator();
 
 export const Routes = () => {
-  const { isAuthenticated } = useContext(UserContext);
+  const { isAuthenticated, user } = useContext(UserContext);
 
   useEffect(() => {
     let timeoutId = setTimeout(() => {
@@ -31,12 +33,43 @@ export const Routes = () => {
   return (
     <NavigationContainer theme={theme}>
       <Navigator
-        screenOptions={{ headerShown: true }}
         initialRouteName={isAuthenticated ? "Home" : "Welcome"}
+        screenOptions={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: colors.graylight,
+            borderBottomWidth: 0,
+            shadowColor: "transparent",
+            shadowOpacity: 0,
+            elevation: 0,
+            height: 120,
+          },
+          headerTintColor: colors.secondary,
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerRight: () => <></>,
+        }}
       >
         {isAuthenticated ? (
           <Group>
-            <Screen name="Home" component={Home} />
+            <Screen
+              name="Home"
+              component={Home}
+              options={{
+                headerTitle: (props) => (
+                  <Greeting
+                    mainText={`Olá ${user.name}`}
+                    subText="Bem vindo de volta"
+                    {...props}
+                  />
+                ),
+                headerLeft: () => <></>,
+              }}
+            />
             <Group screenOptions={{ headerShown: true }}>
               <Screen name="Carteira" component={ListWallet} />
               <Screen name="AdicionarCarteira" component={AddWallet} />
@@ -47,9 +80,12 @@ export const Routes = () => {
               <Screen name="AdicionarCategoria" component={AddCategory} />
               <Screen name="AtualizarCategoria" component={UpdateCategory} />
             </Group>
+            <Group screenOptions={{ headerShown: true }}>
+              <Screen name="Usuario" component={ListUser} />
+            </Group>
           </Group>
         ) : (
-          <Group>
+          <Group screenOptions={{ headerShown: false }}>
             <Screen name="Welcome" component={WelcomeScreen} />
             <Screen name="Cadastrar" component={SignUp} />
             <Screen name="Login" component={Login} />

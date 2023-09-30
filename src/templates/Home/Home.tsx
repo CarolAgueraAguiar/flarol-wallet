@@ -1,37 +1,84 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Plants } from "../../../assets/svg/Plants";
 import { Wallet } from "../../../assets/svg/Wallet";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
-import { theme } from "../../styles/theme";
+import { colors, theme } from "../../styles/theme";
 import { ButtonCategory } from "../../components/ButtonCategory/ButtonCategory";
 import { WalletIcon } from "../../../assets/svg/WalletIcon";
 import { BankIcon } from "../../../assets/svg/Bank";
 import { CategoryIcon } from "../../../assets/svg/Category";
+import { UserIcon } from "../../../assets/svg/User";
+import { ArrowDownIcon } from "../../../assets/svg/ArrowDown";
+import { ArrowUpIcon } from "../../../assets/svg/ArrowUp";
+import Profile from "../../components/Header/Profile";
+import Avi from "../../../assets/avatar.png";
+import { listWallets } from "../../services/wallets/wallets";
+import { formatNumber } from "../../utils/mask";
+import { formatCurrentDate } from "../../utils/Date";
 
 export const Home = ({ navigation }: any) => {
   const context = useContext(UserContext);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Profile
+          img={Avi}
+          imgContainerStyle={{ backgroundColor: colors.tertiary }}
+          onPress={() => navigation.navigate("Usuario")}
+        />
+      ),
+    });
+  }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Profile
+          img={Avi}
+          imgContainerStyle={{ backgroundColor: colors.tertiary }}
+          onPress={() => navigation.navigate("Usuario")}
+        />
+      ),
+    });
+
+    const walletsData = async () => {
+      let totalAmount = 0;
+
+      const walletData = await listWallets();
+      walletData.map((wallet) => {
+        const walletAmount = wallet.amount;
+        totalAmount += walletAmount;
+        context?.setWalletAmount(totalAmount);
+      });
+    };
+
+    walletsData();
+  }, []);
 
   return (
     <View>
       <View style={styles.container}>
         <View>
-          <Text style={{ color: "#fff", fontSize: 24, fontWeight: "600" }}>
+          <Text style={{ color: "#fff", fontSize: 24, fontWeight: "500" }}>
             Seja bem-vindo(a)
           </Text>
           <Text style={{ color: "#efefef" }}>
-            <Text style={{ fontWeight: "700" }}>{context?.user.name}</Text>
+            <Text style={{ fontWeight: "600", fontSize: 18 }}>
+              {context?.user.name}
+            </Text>
           </Text>
         </View>
         <Plants />
       </View>
       <View style={styles.wallet}>
         <View>
-          <Text style={{ color: "#000", fontSize: 20, fontWeight: "700" }}>
+          <Text style={{ color: "#000", fontSize: 20, fontWeight: "500" }}>
             Saldo das Carteira
           </Text>
-          <Text style={{ paddingTop: 5 }}>
-            R$ <Text style={{ fontWeight: "700" }}>100,00</Text>
+          <Text style={{ paddingTop: 5, fontWeight: "700" }}>
+            {formatNumber(String(context?.walletAmount))}
           </Text>
         </View>
         <Wallet />
@@ -45,10 +92,10 @@ export const Home = ({ navigation }: any) => {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#000", fontSize: 20, fontWeight: "700" }}>
+          <Text style={{ color: "#000", fontSize: 20, fontWeight: "500" }}>
             Visão geral do mês
           </Text>
-          <Text>Set, 23</Text>
+          <Text>{formatCurrentDate()}</Text>
         </View>
         <View style={styles.receitas}>
           <Text style={styles.textSucefull}>Receitas</Text>
@@ -72,7 +119,6 @@ export const Home = ({ navigation }: any) => {
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
-            padding: 24,
             width: "100%",
           }}
         >
@@ -85,13 +131,13 @@ export const Home = ({ navigation }: any) => {
           <ButtonCategory
             onClick={() => navigation.navigate("Wallet")}
             categoryName="Receitas"
-            icon={<BankIcon />}
-            color={theme.colorsSecondary.green[400]}
+            icon={<ArrowUpIcon />}
+            color="#2D6A4F"
           />
           <ButtonCategory
             onClick={() => navigation.navigate("Wallet")}
             categoryName="Despesas"
-            icon={<BankIcon />}
+            icon={<ArrowDownIcon />}
             color="#d3465c"
           />
           <ButtonCategory
@@ -99,6 +145,12 @@ export const Home = ({ navigation }: any) => {
             categoryName="Categorias"
             icon={<CategoryIcon />}
             color="#bdc30f"
+          />
+          <ButtonCategory
+            onClick={() => navigation.navigate("Usuario")}
+            categoryName="Usuário"
+            icon={<UserIcon />}
+            color="#836F81"
           />
         </View>
       </View>

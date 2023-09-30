@@ -6,7 +6,6 @@ import {
   View,
 } from "react-native";
 import { theme } from "../../styles/theme";
-import { WalletIcon } from "../../../assets/svg/WalletIcon";
 
 export type ButtonCategoryProps = {
   categoryName: string;
@@ -65,7 +64,7 @@ export const ButtonCategory = ({
         flexDirection: "column",
         justifyContent: "center",
         width: "33.33%",
-        marginTop: 20,
+        marginTop: 5,
       }}
     >
       <Text
@@ -74,7 +73,7 @@ export const ButtonCategory = ({
           justifyContent: "center",
           alignItems: "center",
           fontWeight: "600",
-          marginBottom: 10,
+          marginBottom: 5,
           fontSize: 16,
           textAlign: "center",
         }}

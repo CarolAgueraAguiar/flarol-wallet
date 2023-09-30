@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     flexBasis: 0,
     color: theme.colorsSecondary.gray[700],
-    fontFamily: "Roboto_300Light",
+    // fontFamily: "Roboto_300Light",
     fontSize: 16,
   },
 });

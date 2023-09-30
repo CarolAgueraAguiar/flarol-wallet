@@ -10,7 +10,6 @@ import { login } from "../../services/users/users";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import { saveSessionToken } from "../../utils/token";
-import { useNavigation } from "@react-navigation/native";
 
 export const Login = ({ navigation }: any) => {
   const { control, handleSubmit } = useForm();
@@ -22,17 +21,17 @@ export const Login = ({ navigation }: any) => {
     saveSessionToken(loginResponseData.token);
   };
 
-  // useEffect(() => {
-  //   //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
-  //   const userData = {
-  //     name: "flavio",
-  //     email: "flavio@fla.com",
-  //     token:
-  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk1NTc5NjkzLCJleHAiOjE3MDM0NjM2OTN9.a42ZccXgNEHf6gZvf0YuVgasm06CixjTEsLhyxpHK4k",
-  //   };
-  //   context.setUser(userData);
-  //   saveSessionToken(userData.token);
-  // }, []);
+  useEffect(() => {
+    //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
+    const userData = {
+      name: "Carolina Aguera",
+      email: "carolaguerabr@gmail.com",
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk2MDg5ODY5LCJleHAiOjE3MDM5NzM4Njl9.WOg4Myvvk9UxmC0kkPt5lZohVbLw5C-7CsobvGoGW8c",
+    };
+    context.setUser(userData);
+    saveSessionToken(userData.token);
+  }, []);
 
   return (
     <View style={styles.containerLogin}>
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
   text: {
     color: theme.colorsSecondary.gray[100],
     fontSize: 26,
-    fontFamily: "Roboto_700Bold",
+    // fontFamily: "Roboto_700Bold",
     textAlign: "center",
     lineHeight: theme.lineHeight,
   },
