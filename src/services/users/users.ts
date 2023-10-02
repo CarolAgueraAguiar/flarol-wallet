@@ -3,6 +3,7 @@ import {
   LoginProps,
   LoginResponse,
   StoreUsersProps,
+  UpdateUsersProps,
 } from "../../types/users/users";
 import { axiosFlarol } from "../axios";
 
@@ -45,18 +46,12 @@ export const storeUsers = async ({
   }
 };
 
-export const updateUser = async ({
-  name,
-  email,
-  password,
-  confirm_password,
-}: StoreUsersProps): Promise<number> => {
+export const updateUser = async (props: UpdateUsersProps): Promise<number> => {
+  console.log({ props });
+
   try {
     const { status } = await axiosFlarol.put("users", {
-      name,
-      email,
-      password,
-      confirm_password,
+      props,
     });
 
     return status;
@@ -67,9 +62,19 @@ export const updateUser = async ({
   }
 };
 
-export const getUsers = async (): Promise<GetUserProps> => {
+export const getUser = async (): Promise<GetUserProps> => {
   try {
     const { data } = await axiosFlarol.get<GetUserProps>("users");
+
+    return data;
+  } catch (e: any) {
+    return e;
+  }
+};
+
+export const deleteUser = async (): Promise<GetUserProps> => {
+  try {
+    const { data } = await axiosFlarol.delete<GetUserProps>("users");
 
     return data;
   } catch (e: any) {

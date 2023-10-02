@@ -5,6 +5,13 @@ export type StoreUsersProps = {
   confirm_password: string;
 };
 
+export type UpdateUsersProps = {
+  name: string;
+  email: string;
+  password?: string;
+  confirm_password?: string;
+};
+
 export type LoginProps = {
   email: string;
   password: string;

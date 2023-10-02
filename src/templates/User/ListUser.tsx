@@ -1,27 +1,22 @@
 import { useContext, useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { UserContext } from "../../context/UserContext";
 import {
   TextField,
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { useForm } from "react-hook-form";
-import { getUsers, updateUser } from "../../services/users/users";
+import { deleteUser, getUser, updateUser } from "../../services/users/users";
 import Profile from "../../components/Header/Profile";
 import Avi from "../../../assets/avatar.png";
 import { colors } from "../../styles/theme";
 
 export const ListUser = ({ navigation: { navigate, setOptions } }: any) => {
   const context = useContext(UserContext);
-
-  setOptions({
-    title: "Config do Usuário",
-  });
-
   const { control, setValue, handleSubmit } = useForm();
 
   const getInfosUser = async () => {
-    const userData = await getUsers();
+    const userData = await getUser();
 
     setValue("name", userData.name);
     setValue("email", userData.email);
@@ -32,9 +27,44 @@ export const ListUser = ({ navigation: { navigate, setOptions } }: any) => {
   }, []);
 
   const onSubmit = async (data: any) => {
+    if (
+      data.password === undefined ||
+      data.password === "" ||
+      data.confirm_password === undefined ||
+      data.confirm_password === ""
+    ) {
+      delete data.password;
+      delete data.confirm_password;
+    }
     await updateUser(data);
     context.logout();
     navigate("Login");
+  };
+
+  const deleteUserAsync = async () => {
+    await deleteUser();
+    context.logout();
+    navigate("Welcome");
+  };
+
+  const handleDeleteCategory = async () => {
+    Alert.alert(
+      "Tem certeza que quer excluir seu usuário ?",
+      "Não tem como recuperar, terá que criar uma nova conta ?",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => ({}),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            deleteUserAsync();
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -82,7 +112,13 @@ export const ListUser = ({ navigation: { navigate, setOptions } }: any) => {
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
-          <Text>Criar</Text>
+          <Text>Atualizar</Text>
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={handleDeleteCategory}>
+        <View style={styles.buttonDelete}>
+          <Text>Deletar meu usuário</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -122,6 +158,17 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  buttonDelete: {
+    borderRadius: 24,
+    lineHeight: 1.25,
+    margin: 12,
+    height: 40,
+    backgroundColor: "red",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#fff",
   },
   text: {
     color: "#fff",

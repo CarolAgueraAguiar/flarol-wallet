@@ -25,9 +25,9 @@ export const Login = ({ navigation }: any) => {
     //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
     const userData = {
       name: "Carolina Aguera",
-      email: "carolaguerabr@gmail.com",
+      email: "carol@aguera.com.br",
       token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk2MDg5ODY5LCJleHAiOjE3MDM5NzM4Njl9.WOg4Myvvk9UxmC0kkPt5lZohVbLw5C-7CsobvGoGW8c",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImlhdCI6MTY5NjIwNjU2NCwiZXhwIjoxNzA0MDkwNTY0fQ.kLznfUrQpqYYXp4uHdekuikkj22XnaMz_GrAvcRKOM8",
     };
     context.setUser(userData);
     saveSessionToken(userData.token);

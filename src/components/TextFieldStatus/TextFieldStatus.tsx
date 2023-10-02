@@ -15,6 +15,7 @@ export interface TextFieldProps {
   name: string;
   inputMode?: InputModeOptions;
   style?: any;
+  required?: boolean;
 }
 
 export enum TextFieldStatus {
@@ -63,7 +64,7 @@ export const TextField = (props: TextFieldProps) => {
           />
         )}
         name={props.name}
-        rules={{ required: "Campo obrigatório" }}
+        rules={{ required: props.required ? "Campo Obrigatório" : false }}
       />
     </View>
   );
