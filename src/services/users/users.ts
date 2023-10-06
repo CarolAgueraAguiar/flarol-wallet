@@ -19,8 +19,7 @@ export const login = async ({
 
     return data;
   } catch (e: any) {
-    console.log(e.response.data);
-    return e;
+    return e.response.data;
   }
 };
 
@@ -31,17 +30,17 @@ export const storeUsers = async ({
   confirm_password,
 }: StoreUsersProps): Promise<number> => {
   try {
-    const { status } = await axiosFlarol.post("users", {
+    const response = await axiosFlarol.post("users", {
       name,
       email,
       password,
       confirm_password,
     });
+    console.log(response);
 
-    return status;
+    return response.status;
   } catch (e: any) {
-    console.log(e.response.data);
-
+    console.log(e.response);
     return e;
   }
 };

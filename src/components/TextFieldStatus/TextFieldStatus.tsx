@@ -6,7 +6,7 @@ import {
   InputModeOptions,
 } from "react-native";
 import { theme } from "../../styles/theme";
-import { Control, Controller, FieldValues } from "react-hook-form";
+import { Control, Controller, FieldErrors, FieldValues } from "react-hook-form";
 
 export interface TextFieldProps {
   status: TextFieldStatus;
@@ -16,6 +16,7 @@ export interface TextFieldProps {
   inputMode?: InputModeOptions;
   style?: any;
   required?: boolean;
+  errors?: FieldErrors<FieldValues>;
 }
 
 export enum TextFieldStatus {

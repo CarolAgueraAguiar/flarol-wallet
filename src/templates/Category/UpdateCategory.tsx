@@ -15,7 +15,12 @@ import {
 
 export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
   const { id } = route.params;
-  const { control, setValue, handleSubmit } = useForm();
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const getCategories = async (id: number) => {
     const categoriesData = await showCategories(id);
@@ -50,12 +55,14 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
           control={control}
           name="description"
           placeholder="Digite o nome da carteira"
+          errors={errors}
         />
         <TextField
           status={TextFieldStatus.Default}
           control={control}
           name="icon_id"
           placeholder="Digite o id do icone"
+          errors={errors}
         />
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>

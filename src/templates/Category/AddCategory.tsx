@@ -12,7 +12,11 @@ import { theme } from "../../styles/theme";
 import { storeCategory } from "../../services/categories/categories";
 
 export const AddCategory = ({ navigation: { navigate } }: any) => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   // const [selectedValue, setSelectedValue] = useState();
 
@@ -43,6 +47,7 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
           control={control}
           name="description"
           placeholder="Digite o nome da categoria"
+          errors={errors}
         />
         <TextField
           status={TextFieldStatus.Default}
@@ -50,6 +55,7 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
           name="icon_id"
           inputMode="numeric"
           placeholder="Digite o id do icone"
+          errors={errors}
         />
         {/* <Picker
           selectedValue={selectedValue}

@@ -11,7 +11,12 @@ import { cleanNumber } from "../../utils/mask";
 
 export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
   const { id } = route.params;
-  const { control, setValue, handleSubmit } = useForm();
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const getWallets = async (id: number) => {
     const walletData = await showWallet(id);
@@ -49,6 +54,7 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
           control={control}
           name="description"
           placeholder="Digite o nome da carteira"
+          errors={errors}
         />
         <MoneyInput control={control} name="amount" />
       </View>

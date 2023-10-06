@@ -9,7 +9,11 @@ import MoneyInput from "../../components/MoneyInput/MoneyInput";
 import { cleanNumber } from "../../utils/mask";
 
 export const AddWallet = ({ navigation: { navigate } }: any) => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = async (data: any) => {
     data.amount = cleanNumber(data.amount);
@@ -34,6 +38,7 @@ export const AddWallet = ({ navigation: { navigate } }: any) => {
           control={control}
           name="description"
           placeholder="Digite o nome da carteira"
+          errors={errors}
         />
         <MoneyInput control={control} name="amount" />
       </View>

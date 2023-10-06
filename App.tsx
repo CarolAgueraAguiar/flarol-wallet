@@ -2,6 +2,7 @@ import { useFonts } from "expo-font";
 import UserContextProvider from "./src/context/UserContext";
 import { Routes } from "./src/routes/routes";
 import { AppRegistry } from "react-native";
+import { ToastProvider } from "react-native-toast-notifications";
 
 AppRegistry.registerComponent("YourAppName", () => App);
 
@@ -16,7 +17,18 @@ export default function App() {
   } else {
     return (
       <UserContextProvider>
-        <Routes />
+        <ToastProvider
+          placement="bottom"
+          duration={5000}
+          animationType="slide-in"
+          animationDuration={250}
+          successColor="green"
+          dangerColor="red"
+          warningColor="orange"
+          normalColor="gray"
+        >
+          <Routes />
+        </ToastProvider>
       </UserContextProvider>
     );
   }

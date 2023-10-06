@@ -13,7 +13,12 @@ import { colors } from "../../styles/theme";
 
 export const ListUser = ({ navigation: { navigate, setOptions } }: any) => {
   const context = useContext(UserContext);
-  const { control, setValue, handleSubmit } = useForm();
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const getInfosUser = async () => {
     const userData = await getUser();
@@ -88,12 +93,14 @@ export const ListUser = ({ navigation: { navigate, setOptions } }: any) => {
           status={TextFieldStatus.Default}
           control={control}
           name="name"
+          errors={errors}
         />
 
         <TextField
           status={TextFieldStatus.Default}
           control={control}
           name="email"
+          errors={errors}
         />
 
         <TextField
@@ -101,6 +108,7 @@ export const ListUser = ({ navigation: { navigate, setOptions } }: any) => {
           control={control}
           name="password"
           placeholder="Digite sua Nova Senha"
+          errors={errors}
         />
 
         <TextField
@@ -108,6 +116,7 @@ export const ListUser = ({ navigation: { navigate, setOptions } }: any) => {
           control={control}
           name="confirm_password"
           placeholder="Confirme sua Nova Senha Novamente"
+          errors={errors}
         />
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
