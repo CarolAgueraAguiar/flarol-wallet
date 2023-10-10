@@ -7,9 +7,13 @@ function StyledButton({ title, onPress, isPrimary }: any) {
     ? styles.primaryButton
     : styles.secondaryButton;
 
+  const buttonTextStyles = isPrimary
+    ? styles.buttonText
+    : styles.buttonTextSecondary;
+
   return (
     <TouchableOpacity style={buttonStyles} onPress={onPress}>
-      <Text style={styles.buttonText}>{title}</Text>
+      <Text style={buttonTextStyles}>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -17,20 +21,25 @@ function StyledButton({ title, onPress, isPrimary }: any) {
 const styles = StyleSheet.create({
   primaryButton: {
     margin: 10,
-    backgroundColor: theme.colorsSecondary.green[400],
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    backgroundColor: "#bdc30f",
+    paddingVertical: 20,
+    paddingHorizontal: 40,
     borderRadius: 5,
   },
   secondaryButton: {
     margin: 10,
-    backgroundColor: theme.colorsSecondary.blue[400],
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    backgroundColor: "#242424",
+    paddingVertical: 20,
+    paddingHorizontal: 40,
     borderRadius: 5,
   },
-  buttonText: {
+  buttonTextSecondary: {
     color: "white",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  buttonText: {
+    color: "#242424",
     fontSize: 16,
     textAlign: "center",
   },

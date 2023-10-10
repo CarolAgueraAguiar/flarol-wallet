@@ -14,6 +14,9 @@ import {
   listCategory,
 } from "../../services/categories/categories";
 import { GetCategoriesProps } from "../../types/categories/categories";
+import { Decoration } from "../../../assets/svg/Decoration";
+import { CircleIcon } from "../../../assets/svg/CircleIcon";
+import { Add } from "../../../assets/svg/Add";
 
 export const ListCategory = ({ navigation }: any) => {
   const [categories, setCategories] = useState<GetCategoriesProps[]>([]);
@@ -65,12 +68,19 @@ export const ListCategory = ({ navigation }: any) => {
         <>
           <View style={styles.container}>
             <Text style={styles.text}>Categoria</Text>
+            <View style={{ position: "absolute", top: 0, right: 0 }}>
+              <Decoration />
+            </View>
+            <View style={{ position: "absolute", bottom: 0, left: 0 }}>
+              <CircleIcon />
+            </View>
           </View>
           <TouchableOpacity
             onPress={() => navigation.navigate("AdicionarCategoria")}
+            style={{ display: "flex", alignItems: "flex-end" }}
           >
             <View style={styles.buttonAdd}>
-              <Text>Adicionar</Text>
+              <Add />
             </View>
           </TouchableOpacity>
         </>
@@ -116,20 +126,25 @@ const styles = StyleSheet.create({
     padding: 24,
     margin: 12,
     height: 150,
-    backgroundColor: "#81B2CA",
+    backgroundColor: "#bdc30fa2",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   buttonAdd: {
-    borderRadius: 24,
-    lineHeight: 1.25,
+    borderRadius: 100,
     margin: 12,
-    height: 40,
+    height: 50,
+    width: 50,
     backgroundColor: "green",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+
+    borderStyle: "dashed",
+    borderWidth: 1,
+    borderColor: "#fff",
+    borderTopColor: "white",
   },
   text: {
     color: "#fff",

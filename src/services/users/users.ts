@@ -10,17 +10,28 @@ import { axiosFlarol } from "../axios";
 export const login = async ({
   email,
   password,
-}: LoginProps): Promise<LoginResponse> => {
+}: LoginProps): Promise<[LoginResponse | null, ReturnError | null]> => {
   try {
     const { data } = await axiosFlarol.post<LoginResponse>("users/login", {
       email,
       password,
     });
 
-    return data;
+    return [data, null];
   } catch (e: any) {
-    return e.response.data;
+    return [null, e.response.data as ReturnError];
   }
+};
+
+type ReturnErrorMessage = {
+  error: string;
+  field: string;
+};
+
+export type ReturnError = {
+  error: string;
+  message: ReturnErrorMessage[];
+  statusCode: number;
 };
 
 export const storeUsers = async ({
@@ -28,7 +39,7 @@ export const storeUsers = async ({
   email,
   password,
   confirm_password,
-}: StoreUsersProps): Promise<number> => {
+}: StoreUsersProps): Promise<[number | null, ReturnError | null]> => {
   try {
     const response = await axiosFlarol.post("users", {
       name,
@@ -36,12 +47,10 @@ export const storeUsers = async ({
       password,
       confirm_password,
     });
-    console.log(response);
 
-    return response.status;
+    return [response.status, null];
   } catch (e: any) {
-    console.log(e.response);
-    return e;
+    return [null, e.response.data as ReturnError];
   }
 };
 

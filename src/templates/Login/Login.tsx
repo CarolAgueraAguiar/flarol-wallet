@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../../styles/theme";
 import {
   TextField,
@@ -12,6 +12,13 @@ import { UserContext } from "../../context/UserContext";
 import { saveSessionToken } from "../../utils/token";
 import { useToast } from "react-native-toast-notifications";
 
+export interface FormErrors {
+  [key: string]: {
+    message: string;
+    type: string;
+  };
+}
+
 export const Login = ({ navigation }: any) => {
   const {
     control,
@@ -20,26 +27,30 @@ export const Login = ({ navigation }: any) => {
     setError,
   } = useForm();
   const context = useContext(UserContext);
-  const toast = useToast();
 
   const onSubmit = async (data: any) => {
-    const loginResponseData = await login(data);
-    console.log(loginResponseData);
-    if (
-      loginResponseData.message !== "" &&
-      loginResponseData.statusCode === 400
-    ) {
-      toast.show(loginResponseData.message, {
-        type: "danger",
-        placement: "bottom",
-        duration: 4000,
-        animationType: "zoom-in",
+    const [loginData, error] = await login(data);
+
+    if (error) {
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      Object.keys(errorObject).forEach((field) => {
+        setError(field, errorObject[field]);
       });
       return;
     }
 
-    context?.setUser(loginResponseData);
-    saveSessionToken(loginResponseData.token);
+    if (loginData) {
+      context?.setUser(loginData);
+      saveSessionToken(loginData.token);
+    }
   };
 
   // useEffect(() => {
@@ -73,17 +84,36 @@ export const Login = ({ navigation }: any) => {
           errors={errors}
         />
       </View>
-      <Button
-        title="Entrar"
-        onPress={handleSubmit(onSubmit)}
-        color={theme.colorsSecondary.green[400]}
-        accessibilityLabel="Entrar"
-      />
+      <TouchableOpacity onPress={handleSubmit(onSubmit)} style={styles.button}>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 16,
+            fontWeight: "600",
+          }}
+        >
+          Entrar
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  button: {
+    height: 50,
+    width: 100,
+    borderRadius: 15,
+    margin: 12,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "green",
+    borderStyle: "dashed",
+    borderWidth: 1.5,
+    borderColor: "#fff",
+    borderTopColor: "white",
+  },
   containerLogin: {
     flex: 1,
     justifyContent: "center",
@@ -96,7 +126,6 @@ const styles = StyleSheet.create({
   text: {
     color: theme.colorsSecondary.gray[100],
     fontSize: 26,
-    // fontFamily: "Roboto_700Bold",
     textAlign: "center",
     lineHeight: theme.lineHeight,
   },

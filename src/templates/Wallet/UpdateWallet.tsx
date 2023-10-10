@@ -8,6 +8,8 @@ import { showWallet, updateWallets } from "../../services/wallets/wallets";
 import { useEffect } from "react";
 import MoneyInput from "../../components/MoneyInput/MoneyInput";
 import { cleanNumber } from "../../utils/mask";
+import { Decoration } from "../../../assets/svg/Decoration";
+import { CircleIcon } from "../../../assets/svg/CircleIcon";
 
 export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
   const { id } = route.params;
@@ -40,7 +42,13 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.text}>Atualizar Carteira</Text>
+        <Text style={styles.text}>Carteira</Text>
+        <View style={{ position: "absolute", top: 0, right: 0 }}>
+          <Decoration />
+        </View>
+        <View style={{ position: "absolute", bottom: 0, left: 0 }}>
+          <CircleIcon />
+        </View>
       </View>
       <View
         style={{
@@ -60,7 +68,7 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
-          <Text>Criar</Text>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Atualizar</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -81,12 +89,13 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   container: {
+    position: "relative",
     borderRadius: 24,
     lineHeight: 1.25,
     padding: 24,
     margin: 12,
     height: 150,
-    backgroundColor: "#cabd81",
+    backgroundColor: "#242424",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

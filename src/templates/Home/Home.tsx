@@ -21,6 +21,7 @@ export const Home = ({ navigation }: any) => {
   const context = useContext(UserContext);
 
   useEffect(() => {
+    navigation.removeListener;
     navigation.setOptions({
       headerRight: () => (
         <Profile
@@ -92,10 +93,10 @@ export const Home = ({ navigation }: any) => {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#000", fontSize: 20, fontWeight: "500" }}>
+          <Text style={{ color: "#fff", fontSize: 20, fontWeight: "500" }}>
             Visão geral do mês
           </Text>
-          <Text>{formatCurrentDate()}</Text>
+          <Text style={{ color: "#fff" }}>{formatCurrentDate()}</Text>
         </View>
         <View style={styles.receitas}>
           <Text style={styles.textSucefull}>Receitas</Text>
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.25,
     flexShrink: 0,
     padding: 24,
-    backgroundColor: "#D9E7E5",
+    backgroundColor: "#242424",
     margin: 12,
     marginTop: 0,
     display: "flex",
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
   myBudget: {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    backgroundColor: "#F4F6F6",
+    backgroundColor: "#D9E7E5",
     height: "70%",
   },
   text: {

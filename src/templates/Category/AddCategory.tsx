@@ -10,6 +10,8 @@ import { cleanNumber } from "../../utils/mask";
 import { useEffect, useState } from "react";
 import { theme } from "../../styles/theme";
 import { storeCategory } from "../../services/categories/categories";
+import { Decoration } from "../../../assets/svg/Decoration";
+import { CircleIcon } from "../../../assets/svg/CircleIcon";
 
 export const AddCategory = ({ navigation: { navigate } }: any) => {
   const {
@@ -34,6 +36,12 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
     <View>
       <View style={styles.container}>
         <Text style={styles.text}>Adicionar Categoria</Text>
+        <View style={{ position: "absolute", top: 0, right: 0 }}>
+          <Decoration />
+        </View>
+        <View style={{ position: "absolute", bottom: 0, left: 0 }}>
+          <CircleIcon />
+        </View>
       </View>
       <View
         style={{
@@ -74,7 +82,7 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
-          <Text>Criar</Text>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Criar</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -100,7 +108,7 @@ const styles = StyleSheet.create({
     padding: 24,
     margin: 12,
     height: 150,
-    backgroundColor: "#81B2CA",
+    backgroundColor: "#bdc30fa2",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

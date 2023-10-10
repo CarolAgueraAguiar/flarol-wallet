@@ -17,11 +17,12 @@ import { UpdateCategory } from "../templates/Category/UpdateCategory";
 import { ListUser } from "../templates/User/ListUser";
 import Profile from "../components/Header/Profile";
 import Greeting from "../components/Header/Greeting";
+import { Button, Text } from "react-native";
 
 const { Navigator, Screen, Group } = createStackNavigator();
 
 export const Routes = () => {
-  const { isAuthenticated, user } = useContext(UserContext);
+  const { isAuthenticated, user, logout } = useContext(UserContext);
 
   useEffect(() => {
     let timeoutId = setTimeout(() => {
@@ -72,16 +73,43 @@ export const Routes = () => {
             />
             <Group screenOptions={{ headerShown: true }}>
               <Screen name="Carteira" component={ListWallet} />
-              <Screen name="AdicionarCarteira" component={AddWallet} />
+              <Screen
+                name="AdicionarCarteira"
+                options={{
+                  headerTitle: "",
+                  headerRight: () => <Text>Adicionar Carteira</Text>,
+                }}
+                component={AddWallet}
+              />
               <Screen name="AtualizarCarteira" component={UpdateWallet} />
             </Group>
             <Group screenOptions={{ headerShown: true }}>
               <Screen name="Categoria" component={ListCategory} />
-              <Screen name="AdicionarCategoria" component={AddCategory} />
+              <Screen
+                name="AdicionarCategoria"
+                options={{
+                  headerTitle: "",
+                  headerRight: () => <Text>Adicionar Categoria</Text>,
+                }}
+                component={AddCategory}
+              />
               <Screen name="AtualizarCategoria" component={UpdateCategory} />
             </Group>
             <Group screenOptions={{ headerShown: true }}>
-              <Screen name="Usuario" component={ListUser} />
+              <Screen
+                name="Usuario"
+                component={ListUser}
+                options={{
+                  headerRight: () => (
+                    <Button
+                      title="Sair"
+                      onPress={() => logout()}
+                      color={theme.colors.notification}
+                      accessibilityLabel="Sair"
+                    />
+                  ),
+                }}
+              />
             </Group>
           </Group>
         ) : (

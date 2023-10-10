@@ -67,6 +67,9 @@ export const TextField = (props: TextFieldProps) => {
         name={props.name}
         rules={{ required: props.required ? "Campo Obrigatório" : false }}
       />
+      {props.errors && props.errors[props.name] && (
+        <Text style={{ color: "red" }}>{props.errors[props.name].message}</Text>
+      )}
     </View>
   );
 };
@@ -103,7 +106,6 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     flexBasis: 0,
     color: theme.colorsSecondary.gray[700],
-    // fontFamily: "Roboto_300Light",
     fontSize: 16,
   },
   textStatusActive: {

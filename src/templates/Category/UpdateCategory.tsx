@@ -67,7 +67,7 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
-          <Text>Criar</Text>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Atualizar</Text>
         </View>
       </TouchableOpacity>
     </View>

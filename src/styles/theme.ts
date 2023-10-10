@@ -12,7 +12,7 @@ export const theme = {
   dark: true,
   colors: {
     primary: "#2B6A9D",
-    background: "#2C383F",
+    background: "#2B6A9D",
     card: "#DEEBE8",
     text: "rgb(28, 28, 30)",
     border: "rgb(216, 216, 216)",
