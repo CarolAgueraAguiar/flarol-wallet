@@ -5,13 +5,12 @@ import {
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { useForm } from "react-hook-form";
-import { storeWallets } from "../../services/wallets/wallets";
-import { cleanNumber } from "../../utils/mask";
 import { useEffect, useState } from "react";
 import { theme } from "../../styles/theme";
-import { storeCategory } from "../../services/categories/categories";
+import { listIcons, storeCategory } from "../../services/categories/categories";
 import { Decoration } from "../../../assets/svg/Decoration";
 import { CircleIcon } from "../../../assets/svg/CircleIcon";
+import { SvgXml } from "react-native-svg";
 
 export const AddCategory = ({ navigation: { navigate } }: any) => {
   const {
@@ -20,11 +19,17 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
     formState: { errors },
   } = useForm();
 
-  // const [selectedValue, setSelectedValue] = useState();
+  const [icons, setIcons] = useState<any>();
+  const [selectedIcon, setSelectedIcon] = useState<any>();
+
+  const getIcons = async () => {
+    const response = await listIcons();
+    setSelectedIcon(response?.[0].data);
+    setIcons(response);
+  };
 
   useEffect(() => {
-    //getIcons();
-    //setSelectedValue(icons[0].id);
+    getIcons();
   }, []);
 
   const onSubmit = async (data: any) => {
@@ -57,28 +62,30 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
           placeholder="Digite o nome da categoria"
           errors={errors}
         />
-        <TextField
-          status={TextFieldStatus.Default}
-          control={control}
-          name="icon_id"
-          inputMode="numeric"
-          placeholder="Digite o id do icone"
-          errors={errors}
-        />
-        {/* <Picker
-          selectedValue={selectedValue}
-          style={{
-            backgroundColor: theme.colorsSecondary.green[200],
-            width: 328,
-            borderRadius: 5,
-          }}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-        >
-          {icons.map((icon) => (
-            <Picker.Item label={icon.description} value={icon.id} />
-          ))
-          ))}
-        </Picker> */}
+        {icons && (
+          <View style={styles.itemContainer}>
+            <Picker
+              selectedValue={selectedIcon}
+              style={{
+                height: 200,
+                backgroundColor: "#fff",
+                width: 265,
+                borderRadius: 5,
+                marginRight: 10,
+              }}
+              onValueChange={(itemValue) => setSelectedIcon(itemValue)}
+            >
+              {icons?.map((icon: any) => (
+                <Picker.Item
+                  key={icon.id}
+                  label={icon.desription}
+                  value={icon.data}
+                />
+              ))}
+            </Picker>
+            <SvgXml xml={selectedIcon} width={50} height={50} color="white" />
+          </View>
+        )}
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>

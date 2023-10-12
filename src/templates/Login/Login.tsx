@@ -53,17 +53,18 @@ export const Login = ({ navigation }: any) => {
     }
   };
 
-  // useEffect(() => {
-  //   //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
-  //   const userData = {
-  //     name: "Carolina Aguera",
-  //     email: "carol@aguera.com.br",
-  //     token:
-  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImlhdCI6MTY5NjIwNjU2NCwiZXhwIjoxNzA0MDkwNTY0fQ.kLznfUrQpqYYXp4uHdekuikkj22XnaMz_GrAvcRKOM8",
-  //   };
-  //   context.setUser(userData);
-  //   saveSessionToken(userData.token);
-  // }, []);
+  useEffect(() => {
+    //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
+    const userData = {
+      name: "Carolina",
+      email: "carol@gmail.com",
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk3MDcwODg0LCJleHAiOjE2OTk2NjI4ODR9.1qLYvS_eP-ID5NCnr5TfzIPF1AR1dyE0En7Slawm-WM",
+      hasWallet: true,
+    };
+    context.setUser(userData);
+    saveSessionToken(userData.token);
+  }, []);
 
   return (
     <View style={styles.containerLogin}>

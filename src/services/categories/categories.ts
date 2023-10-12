@@ -77,3 +77,13 @@ export const deleteCategory = async (id: number) => {
     return e;
   }
 };
+
+export const listIcons = async () => {
+  try {
+    const { data } = await axiosFlarol.get("categories/icons");
+
+    return data;
+  } catch (e: any) {
+    return e;
+  }
+};
