@@ -17,6 +17,7 @@ export interface TextFieldProps {
   style?: any;
   required?: boolean;
   errors?: FieldErrors<FieldValues>;
+  onClick?: () => void;
 }
 
 export enum TextFieldStatus {
@@ -51,6 +52,7 @@ export const TextField = (props: TextFieldProps) => {
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             style={classes.text}
+            onPressIn={props.onClick}
             placeholder={props.placeholder}
             placeholderTextColor={theme.colorsSecondary.gray[300]}
             autoCapitalize="none"

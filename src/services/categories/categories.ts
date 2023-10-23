@@ -4,13 +4,14 @@ import {
   UpdateCategoriesProps,
 } from "../../types/categories/categories";
 import { axiosFlarol } from "../axios";
+import { ReturnError } from "../users/users";
 
 export const storeCategory = async ({
   description,
   icon_id,
-}: StoreCategoriesProps) => {
+}: StoreCategoriesProps): Promise<[number | null, ReturnError | null]> => {
   try {
-    const { data } = await axiosFlarol.post<StoreCategoriesProps>(
+    const { status } = await axiosFlarol.post<StoreCategoriesProps>(
       "categories",
       {
         description,
@@ -18,10 +19,9 @@ export const storeCategory = async ({
       }
     );
 
-    return data;
+    return [status, null];
   } catch (e: any) {
-    console.log(e.response.data);
-    return e;
+    return [null, e.response.data];
   }
 };
 
@@ -29,9 +29,9 @@ export const updateCategory = async ({
   description,
   icon_id,
   id,
-}: UpdateCategoriesProps) => {
+}: UpdateCategoriesProps): Promise<[number | null, ReturnError | null]> => {
   try {
-    const { data } = await axiosFlarol.put<StoreCategoriesProps>(
+    const { status } = await axiosFlarol.put<StoreCategoriesProps>(
       `categories/${id}`,
       {
         description,
@@ -39,10 +39,9 @@ export const updateCategory = async ({
       }
     );
 
-    return data;
+    return [status, null];
   } catch (e: any) {
-    console.log(e.response.data);
-    return e;
+    return [null, e];
   }
 };
 

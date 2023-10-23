@@ -130,13 +130,13 @@ export const Home = ({ navigation }: any) => {
             color="#730fc3"
           />
           <ButtonCategory
-            onClick={() => navigation.navigate("Wallet")}
+            onClick={() => navigation.navigate("Income")}
             categoryName="Receitas"
             icon={<ArrowUpIcon />}
             color="#2D6A4F"
           />
           <ButtonCategory
-            onClick={() => navigation.navigate("Wallet")}
+            onClick={() => navigation.navigate("Expenses")}
             categoryName="Despesas"
             icon={<ArrowDownIcon />}
             color="#d3465c"

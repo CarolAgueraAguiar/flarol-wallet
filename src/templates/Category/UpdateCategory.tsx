@@ -4,14 +4,15 @@ import {
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { useForm } from "react-hook-form";
-import { showWallet, updateWallets } from "../../services/wallets/wallets";
-import { useEffect } from "react";
-import MoneyInput from "../../components/MoneyInput/MoneyInput";
-import { cleanNumber } from "../../utils/mask";
+import { useEffect, useState } from "react";
 import {
   showCategories,
   updateCategory,
 } from "../../services/categories/categories";
+import { Picker } from "@react-native-picker/picker";
+import { SvgXml } from "react-native-svg";
+import { FormErrors } from "../Login/Login";
+import { useToast } from "react-native-toast-notifications";
 
 export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
   const { id } = route.params;
@@ -22,10 +23,16 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
     formState: { errors },
   } = useForm();
 
+  const toast = useToast();
+
+  const [icons, setIcons] = useState<any>();
+  const [selectedIcon, setSelectedIcon] = useState<any>();
+  const [selectedIconData, setSelectedIconData] = useState<any>();
+
   const getCategories = async (id: number) => {
     const categoriesData = await showCategories(id);
     setValue("description", categoriesData.description);
-    setValue("icon_id", String(categoriesData.icon.id));
+    setIcons(categoriesData.icon);
   };
 
   useEffect(() => {
@@ -33,8 +40,31 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
   }, []);
 
   const onSubmit = async (data: any) => {
-    data.id = id;
-    await updateCategory(data);
+    const [response, error] = await updateCategory({
+      description: data.description,
+      icon_id: selectedIcon.id,
+      id: id,
+    });
+
+    if (error) {
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      if (errorObject.description) {
+        toast.show("O nome da categoria não pode ser vazio", {
+          type: "danger",
+        });
+      }
+
+      return;
+    }
+
     navigate("Categoria");
   };
 
@@ -57,13 +87,39 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
           placeholder="Digite o nome da carteira"
           errors={errors}
         />
-        <TextField
-          status={TextFieldStatus.Default}
-          control={control}
-          name="icon_id"
-          placeholder="Digite o id do icone"
-          errors={errors}
-        />
+
+        {icons && (
+          <View style={styles.itemContainer}>
+            <Picker
+              selectedValue={selectedIcon}
+              style={{
+                height: 200,
+                backgroundColor: "#fff",
+                width: 265,
+                borderRadius: 5,
+                marginRight: 10,
+              }}
+              onValueChange={(itemValue) => {
+                setSelectedIcon(itemValue);
+                setSelectedIconData(icons.data);
+              }}
+            >
+              {/* {icons.map((icon: any) => ( */}
+              <Picker.Item
+                key={icons.id}
+                label={icons.desription}
+                value={icons.id}
+              />
+              {/* ))} */}
+            </Picker>
+            <SvgXml
+              xml={selectedIconData}
+              width={50}
+              height={50}
+              color="white"
+            />
+          </View>
+        )}
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>

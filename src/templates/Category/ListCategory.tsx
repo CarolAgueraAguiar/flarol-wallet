@@ -17,6 +17,7 @@ import { GetCategoriesProps } from "../../types/categories/categories";
 import { Decoration } from "../../../assets/svg/Decoration";
 import { CircleIcon } from "../../../assets/svg/CircleIcon";
 import { Add } from "../../../assets/svg/Add";
+import { SvgXml } from "react-native-svg";
 
 export const ListCategory = ({ navigation }: any) => {
   const [categories, setCategories] = useState<GetCategoriesProps[]>([]);
@@ -88,7 +89,7 @@ export const ListCategory = ({ navigation }: any) => {
       renderItem={({ item }) => (
         <View style={styles.itemContainer}>
           <Text style={styles.itemText}>{item.description}</Text>
-          <Text style={styles.itemText}>{item.icon.description}</Text>
+          <SvgXml xml={item.icon.data} width={30} height={30} color="white" />
           <Button
             title="Editar"
             color="yellow"

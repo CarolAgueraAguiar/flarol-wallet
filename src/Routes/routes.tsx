@@ -18,6 +18,8 @@ import { ListUser } from "../templates/User/ListUser";
 import Profile from "../components/Header/Profile";
 import Greeting from "../components/Header/Greeting";
 import { Button, Text } from "react-native";
+import { AddIncome } from "../templates/Transactions/Income/AddIncome";
+import { AddExpenses } from "../templates/Transactions/Expenses/AddExpenses";
 
 const { Navigator, Screen, Group } = createStackNavigator();
 
@@ -108,6 +110,42 @@ export const Routes = () => {
                       accessibilityLabel="Sair"
                     />
                   ),
+                }}
+              />
+            </Group>
+            <Group screenOptions={{ headerShown: true }}>
+              <Screen
+                name="Income"
+                component={AddIncome}
+                options={{
+                  headerStyle: {
+                    backgroundColor: "#63a195",
+                    borderBottomWidth: 0,
+                    shadowColor: "transparent",
+                    shadowOpacity: 0,
+                    elevation: 0,
+                    height: 120,
+                  },
+                  headerTintColor: "#fff",
+                  headerTitle: "Receita",
+                }}
+              />
+            </Group>
+            <Group screenOptions={{ headerShown: true }}>
+              <Screen
+                name="Expenses"
+                component={AddExpenses}
+                options={{
+                  headerStyle: {
+                    backgroundColor: "#e07d8c",
+                    borderBottomWidth: 0,
+                    shadowColor: "transparent",
+                    shadowOpacity: 0,
+                    elevation: 0,
+                    height: 120,
+                  },
+                  headerTintColor: "#fff",
+                  headerTitle: "Receita",
                 }}
               />
             </Group>

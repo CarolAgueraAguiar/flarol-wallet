@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -24,6 +26,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "owner": "carolinaaguera"
+    "owner": "carolinaaguera",
+    "extra": {
+      "eas": {
+        "projectId": "d991c16c-c9cb-4230-832c-fbd7d35b00f5"
+      }
+    }
   }
 }
