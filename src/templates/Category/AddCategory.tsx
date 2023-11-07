@@ -42,7 +42,7 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
   const onSubmit = async (data: any) => {
     const [response, error] = await storeCategory({
       description: data.description,
-      icon_id: selectedIcon.id,
+      icon_id: selectedIcon,
     });
 
     if (error) {

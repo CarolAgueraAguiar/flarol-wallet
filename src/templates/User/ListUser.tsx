@@ -11,7 +11,7 @@ import Profile from "../../components/Header/Profile";
 import Avi from "../../../assets/avatar.png";
 import { colors } from "../../styles/theme";
 
-export const ListUser = ({ navigation: { navigate, setOptions } }: any) => {
+export const ListUser = ({ navigation: { navigate } }: any) => {
   const context = useContext(UserContext);
   const {
     control,

@@ -15,7 +15,7 @@ export const storeCategory = async ({
       "categories",
       {
         description,
-        icon_id: Number(icon_id),
+        icon_id: icon_id,
       }
     );
 

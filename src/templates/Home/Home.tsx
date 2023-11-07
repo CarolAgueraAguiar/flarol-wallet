@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Plants } from "../../../assets/svg/Plants";
 import { Wallet } from "../../../assets/svg/Wallet";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import { colors, theme } from "../../styles/theme";
 import { ButtonCategory } from "../../components/ButtonCategory/ButtonCategory";
@@ -13,25 +13,22 @@ import { ArrowDownIcon } from "../../../assets/svg/ArrowDown";
 import { ArrowUpIcon } from "../../../assets/svg/ArrowUp";
 import Profile from "../../components/Header/Profile";
 import Avi from "../../../assets/avatar.png";
-import { listWallets } from "../../services/wallets/wallets";
 import { formatNumber } from "../../utils/mask";
 import { formatCurrentDate } from "../../utils/Date";
+import { listHome } from "../../services/home/home";
+import { GetHomeProps } from "../../types/home/home";
+import { PiggyBank } from "../../../assets/svg/PiggyBank";
+import { useIsFocused } from "@react-navigation/native";
 
 export const Home = ({ navigation }: any) => {
   const context = useContext(UserContext);
+  const [home, setHome] = useState<GetHomeProps>();
+  const isFocused = useIsFocused();
 
-  useEffect(() => {
-    navigation.removeListener;
-    navigation.setOptions({
-      headerRight: () => (
-        <Profile
-          img={Avi}
-          imgContainerStyle={{ backgroundColor: colors.tertiary }}
-          onPress={() => navigation.navigate("Usuario")}
-        />
-      ),
-    });
-  }, []);
+  const walletsData = async () => {
+    const data = await listHome();
+    setHome(data);
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -43,20 +40,15 @@ export const Home = ({ navigation }: any) => {
         />
       ),
     });
-
-    const walletsData = async () => {
-      let totalAmount = 0;
-
-      const walletData = await listWallets();
-      walletData.map((wallet) => {
-        const walletAmount = wallet.amount;
-        totalAmount += walletAmount;
-        context?.setWalletAmount(totalAmount);
-      });
-    };
 
     walletsData();
-  }, []);
+  }, [navigation]);
+
+  useEffect(() => {
+    if (isFocused) {
+      walletsData();
+    }
+  }, [isFocused]);
 
   return (
     <View>
@@ -79,7 +71,7 @@ export const Home = ({ navigation }: any) => {
             Saldo das Carteira
           </Text>
           <Text style={{ paddingTop: 5, fontWeight: "700" }}>
-            {formatNumber(String(context?.walletAmount))}
+            {formatNumber(String(home?.total))}
           </Text>
         </View>
         <Wallet />
@@ -100,14 +92,14 @@ export const Home = ({ navigation }: any) => {
         </View>
         <View style={styles.receitas}>
           <Text style={styles.textSucefull}>Receitas</Text>
-          <Text style={styles.textSucefull}>
-            R$ <Text style={{ fontWeight: "700" }}>0,00</Text>
+          <Text style={styles.textSucefullNumber}>
+            {formatNumber(String(home?.receitas))}
           </Text>
         </View>
         <View style={styles.despesas}>
           <Text style={styles.textDanger}>Despesas</Text>
-          <Text style={styles.textDanger}>
-            R$ <Text style={{ fontWeight: "700" }}>0,00</Text>
+          <Text style={styles.textDangerNumber}>
+            {formatNumber(String(home?.despesas))}
           </Text>
         </View>
       </View>
@@ -153,6 +145,12 @@ export const Home = ({ navigation }: any) => {
             icon={<UserIcon />}
             color="#836F81"
           />
+          <ButtonCategory
+            onClick={() => navigation.navigate("Pork")}
+            categoryName="Porquinho"
+            icon={<PiggyBank />}
+            color="#1aa035"
+          />
         </View>
       </View>
     </View>
@@ -163,8 +161,16 @@ const styles = StyleSheet.create({
   textSucefull: {
     color: theme.colorsSecondary.green[300],
   },
+  textSucefullNumber: {
+    color: theme.colorsSecondary.green[300],
+    fontWeight: "700",
+  },
   textDanger: {
     color: theme.colors.notification,
+  },
+  textDangerNumber: {
+    color: theme.colors.notification,
+    fontWeight: "700",
   },
   container: {
     borderRadius: 24,

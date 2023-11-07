@@ -1,37 +1,89 @@
 import {
-  Alert,
-  Button,
   FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { deleteWallet, listWallets } from "../../services/wallets/wallets";
-import { useContext, useEffect, useState } from "react";
-import { formatNumber } from "../../utils/mask";
-import { ListWalletsProps } from "../../types/wallets/wallets";
+import { useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import { UserContext } from "../../context/UserContext";
-import { Add } from "../../../assets/svg/Add";
-import { Decoration } from "../../../assets/svg/Decoration";
-import { CircleIcon } from "../../../assets/svg/CircleIcon";
-import { useToast } from "react-native-toast-notifications";
-import { theme } from "../../styles/theme";
+import { listTransactions } from "../../../services/transactions/transactions";
+import { GetTransactionProps } from "../../../types/transactions/transactions";
+import { Add } from "../../../../assets/svg/Add";
+import { formatNumber } from "../../../utils/mask";
+import { theme } from "../../../styles/theme";
+import { SvgXml } from "react-native-svg";
+import { TransactionStatus } from "../../../enum/TransactionStatus";
 
-export const ListWallet = ({ navigation }: any) => {
-  const context = useContext(UserContext);
-  const [wallets, setWallets] = useState<ListWalletsProps[]>([]);
+export const ListExpenses = ({ navigation }: any) => {
+  const [expenses, setExpenses] = useState<GetTransactionProps[]>();
   const isFocused = useIsFocused();
-  const toast = useToast();
+
+  const transactionsData = async () => {
+    const data = await listTransactions();
+    setExpenses(data);
+  };
+
+  const onNavigation = (id: number) => {
+    navigation.navigate("UpdateExpenses", {
+      id,
+    });
+  };
+
+  const statusExpense = (status: string) => {
+    if (status === TransactionStatus.PAIED) {
+      return (
+        <View
+          style={{
+            backgroundColor: "green",
+            padding: 6,
+            width: 60,
+            margin: 12,
+            borderRadius: 5,
+          }}
+        >
+          <Text
+            style={{
+              textAlign: "center",
+              color: "#fff",
+              fontWeight: "bold",
+            }}
+          >
+            Pago
+          </Text>
+        </View>
+      );
+    }
+    return (
+      <View
+        style={{
+          backgroundColor: "red",
+          padding: 6,
+          width: 60,
+          margin: 12,
+          borderRadius: 5,
+        }}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            color: "#fff",
+            fontWeight: "bold",
+          }}
+        >
+          Não Pago
+        </Text>
+      </View>
+    );
+  };
 
   const cardColors = [
-    "#E0533D",
-    "#9DA7D0",
-    "#469B88",
-    "#377CC8",
-    "#EED868",
     "#E78C9D",
+    "#EED868",
+    "#377CC8",
+    "#469B88",
+    "#9DA7D0",
+    "#E0533D",
   ];
 
   const getCardColor = (index: number) => {
@@ -39,71 +91,21 @@ export const ListWallet = ({ navigation }: any) => {
     return cardColors[colorIndex];
   };
 
-  const walletsData = async () => {
-    let totalAmount = 0;
-
-    const walletData = await listWallets();
-    setWallets(walletData);
-
-    walletData.map((wallet) => {
-      const walletAmount = wallet.amount;
-      totalAmount += walletAmount;
-      context?.setWalletAmount(totalAmount);
-    });
-  };
-
-  const onNavigation = (id: number) => {
-    navigation.navigate("AtualizarCarteira", {
-      id,
-    });
-  };
-
-  const deleteWalletAsync = async (id: number) => {
-    await deleteWallet(id);
-    walletsData();
-    toast.show("Carteira excluída com sucesso", { type: "success" });
-  };
-
-  const handleDeleteWallet = async (id: number) => {
-    Alert.alert("Tem certeza que quer excluir ?", "Absoluta ?", [
-      {
-        text: "Cancelar",
-        onPress: () => ({}),
-        style: "cancel",
-      },
-      {
-        text: "OK",
-        onPress: () => {
-          deleteWalletAsync(id);
-        },
-      },
-    ]);
-  };
-
   useEffect(() => {
     if (isFocused) {
-      walletsData();
+      transactionsData();
     }
   }, [isFocused]);
 
   return (
     <FlatList
-      data={wallets}
+      data={expenses}
       keyExtractor={(item) => String(item.id)}
       ListHeaderComponent={() => (
         <View>
-          <View style={styles.container}>
-            <Text style={styles.text}>Carteira</Text>
-            <View style={{ position: "absolute", top: 0, right: 0 }}>
-              <Decoration />
-            </View>
-            <View style={{ position: "absolute", bottom: 0, left: 0 }}>
-              <CircleIcon />
-            </View>
-          </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("AdicionarCarteira")}
-            style={{ display: "flex", alignItems: "flex-end" }}
+            onPress={() => navigation.navigate("AddExpenses")}
+            style={{ display: "flex", alignItems: "center", margin: 12 }}
           >
             <View style={styles.buttonAdd}>
               <Add />
@@ -122,7 +124,7 @@ export const ListWallet = ({ navigation }: any) => {
         >
           <View
             style={{
-              height: 176,
+              height: 230,
               width: "100%",
               borderRadius: 24,
               display: "flex",
@@ -133,10 +135,29 @@ export const ListWallet = ({ navigation }: any) => {
             }}
           >
             <View>
-              <Text style={styles.quadradoTextHeader}>{item.description}</Text>
-              <Text style={styles.quadradoTextBody}>
-                {formatNumber(String(item.amount))}
+              <Text style={styles.quadradoTextHeader}>
+                Nome: {item.description}
               </Text>
+              <Text style={styles.quadradoTextBody}>
+                Valor: {formatNumber(String(item.amount))}
+              </Text>
+              {statusExpense(item.status)}
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  margin: 12,
+                }}
+              >
+                <SvgXml
+                  xml={item.category.icon.data}
+                  width={50}
+                  height={50}
+                  color="white"
+                />
+                <Text>{item.category.slug}</Text>
+              </View>
             </View>
             <View style={{ padding: 24 }}>
               <TouchableOpacity
@@ -162,7 +183,7 @@ export const ListWallet = ({ navigation }: any) => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  handleDeleteWallet(item.id);
+                  // handleDeleteWallet(item.id);
                 }}
                 style={{
                   margin: 10,
@@ -195,12 +216,12 @@ const styles = StyleSheet.create({
   quadradoTextHeader: {
     fontSize: 18,
     fontWeight: "600",
-    padding: 24,
+    padding: 12,
   },
   quadradoTextBody: {
     fontSize: 16,
     fontWeight: "700",
-    padding: 24,
+    padding: 12,
   },
   columnLabels: {
     flexDirection: "row",
@@ -247,8 +268,8 @@ const styles = StyleSheet.create({
   buttonAdd: {
     borderRadius: 100,
     margin: 12,
-    height: 50,
-    width: 50,
+    height: 40,
+    width: "100%",
     backgroundColor: "green",
     display: "flex",
     alignItems: "center",

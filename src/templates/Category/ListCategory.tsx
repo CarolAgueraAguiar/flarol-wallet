@@ -89,7 +89,13 @@ export const ListCategory = ({ navigation }: any) => {
       renderItem={({ item }) => (
         <View style={styles.itemContainer}>
           <Text style={styles.itemText}>{item.description}</Text>
-          <SvgXml xml={item.icon.data} width={30} height={30} color="white" />
+          <SvgXml
+            xml={item.icon.data}
+            style={{ width: 120 }}
+            width={30}
+            height={30}
+            color="white"
+          />
           <Button
             title="Editar"
             color="yellow"
@@ -120,6 +126,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: "700",
+    width: 140,
   },
   container: {
     borderRadius: 24,

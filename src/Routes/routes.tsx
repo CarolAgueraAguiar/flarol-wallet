@@ -15,11 +15,12 @@ import { ListCategory } from "../templates/Category/ListCategory";
 import { AddCategory } from "../templates/Category/AddCategory";
 import { UpdateCategory } from "../templates/Category/UpdateCategory";
 import { ListUser } from "../templates/User/ListUser";
-import Profile from "../components/Header/Profile";
 import Greeting from "../components/Header/Greeting";
 import { Button, Text } from "react-native";
 import { AddIncome } from "../templates/Transactions/Income/AddIncome";
 import { AddExpenses } from "../templates/Transactions/Expenses/AddExpenses";
+import { ListExpenses } from "../templates/Transactions/Expenses/ListExpenses";
+import { UpdateExpenses } from "../templates/Transactions/Expenses/UpdateExpenses";
 
 const { Navigator, Screen, Group } = createStackNavigator();
 
@@ -95,7 +96,14 @@ export const Routes = () => {
                 }}
                 component={AddCategory}
               />
-              <Screen name="AtualizarCategoria" component={UpdateCategory} />
+              <Screen
+                name="AtualizarCategoria"
+                options={{
+                  headerTitle: "",
+                  headerRight: () => <Text>Atualizar Categoria</Text>,
+                }}
+                component={UpdateCategory}
+              />
             </Group>
             <Group screenOptions={{ headerShown: true }}>
               <Screen
@@ -134,6 +142,22 @@ export const Routes = () => {
             <Group screenOptions={{ headerShown: true }}>
               <Screen
                 name="Expenses"
+                component={ListExpenses}
+                options={{
+                  headerStyle: {
+                    backgroundColor: "#e07d8c",
+                    borderBottomWidth: 0,
+                    shadowColor: "transparent",
+                    shadowOpacity: 0,
+                    elevation: 0,
+                    height: 120,
+                  },
+                  headerTintColor: "#fff",
+                  headerTitle: "Despesas",
+                }}
+              />
+              <Screen
+                name="AddExpenses"
                 component={AddExpenses}
                 options={{
                   headerStyle: {
@@ -145,7 +169,23 @@ export const Routes = () => {
                     height: 120,
                   },
                   headerTintColor: "#fff",
-                  headerTitle: "Receita",
+                  headerTitle: "Despesas",
+                }}
+              />
+              <Screen
+                name="UpdateExpenses"
+                component={UpdateExpenses}
+                options={{
+                  headerStyle: {
+                    backgroundColor: "#e07d8c",
+                    borderBottomWidth: 0,
+                    shadowColor: "transparent",
+                    shadowOpacity: 0,
+                    elevation: 0,
+                    height: 120,
+                  },
+                  headerTintColor: "#fff",
+                  headerTitle: "Despesas",
                 }}
               />
             </Group>

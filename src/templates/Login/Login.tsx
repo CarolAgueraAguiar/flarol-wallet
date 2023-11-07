@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { LogBox, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../../styles/theme";
 import {
   TextField,
@@ -10,7 +10,6 @@ import { login } from "../../services/users/users";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import { saveSessionToken } from "../../utils/token";
-import { useToast } from "react-native-toast-notifications";
 
 export interface FormErrors {
   [key: string]: {
@@ -28,6 +27,11 @@ export const Login = ({ navigation }: any) => {
   } = useForm();
   const context = useContext(UserContext);
 
+  useEffect(() => {
+    LogBox.ignoreLogs([
+      "Sending `onAnimatedValueUpdate` with no listeners registered.",
+    ]);
+  }, []);
   const onSubmit = async (data: any) => {
     const [loginData, error] = await login(data);
 
@@ -59,7 +63,7 @@ export const Login = ({ navigation }: any) => {
       name: "Carolina",
       email: "carol@gmail.com",
       token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk3MDcwODg0LCJleHAiOjE2OTk2NjI4ODR9.1qLYvS_eP-ID5NCnr5TfzIPF1AR1dyE0En7Slawm-WM",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk4NTc2OTg4LCJleHAiOjE3MDExNjg5ODh9.9cY-O0QkCovZ6sUValcj5MwXiw-4H3TNQMivEmXvTlY",
       hasWallet: true,
     };
     context.setUser(userData);

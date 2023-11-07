@@ -18,6 +18,7 @@ export interface TextFieldProps {
   required?: boolean;
   errors?: FieldErrors<FieldValues>;
   onClick?: () => void;
+  onChangeText?: (text: string) => void;
 }
 
 export enum TextFieldStatus {
@@ -56,7 +57,9 @@ export const TextField = (props: TextFieldProps) => {
             placeholder={props.placeholder}
             placeholderTextColor={theme.colorsSecondary.gray[300]}
             autoCapitalize="none"
-            onChangeText={(text) => onChange(text)}
+            onChangeText={
+              props.onChangeText ? props.onChangeText : (text) => onChange(text)
+            }
             onBlur={onBlur}
             value={value}
             editable={props.status !== TextFieldStatus.Disabled}

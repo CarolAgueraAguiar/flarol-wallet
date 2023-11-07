@@ -9,7 +9,7 @@ export const colors = {
   accent: "#fbcd77",
 };
 export const theme = {
-  dark: true,
+  dark: false,
   colors: {
     primary: "#2B6A9D",
     background: "#2B6A9D",
@@ -23,10 +23,10 @@ export const theme = {
       50: "#ebeded",
       100: "#E6FFFA",
       200: "#DEEBE8",
-      300: "#42887C",
-      400: "#2D6A4F",
-      500: "#37474F",
-      700: "#2C383F",
+      300: "#5e9188",
+      400: "#3e5954",
+      500: "#253342",
+      700: "#232226",
     },
     blue: {
       200: "#A0E9FD",

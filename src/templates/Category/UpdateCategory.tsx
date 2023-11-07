@@ -13,6 +13,7 @@ import { Picker } from "@react-native-picker/picker";
 import { SvgXml } from "react-native-svg";
 import { FormErrors } from "../Login/Login";
 import { useToast } from "react-native-toast-notifications";
+import { Icon } from "../../types/categories/categories";
 
 export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
   const { id } = route.params;
@@ -25,12 +26,14 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
 
   const toast = useToast();
 
-  const [icons, setIcons] = useState<any>();
+  const [icons, setIcons] = useState<Icon>();
   const [selectedIcon, setSelectedIcon] = useState<any>();
   const [selectedIconData, setSelectedIconData] = useState<any>();
 
   const getCategories = async (id: number) => {
     const categoriesData = await showCategories(id);
+    console.log(categoriesData);
+
     setValue("description", categoriesData.description);
     setIcons(categoriesData.icon);
   };
@@ -91,7 +94,7 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
         {icons && (
           <View style={styles.itemContainer}>
             <Picker
-              selectedValue={selectedIcon}
+              selectedValue={icons.id}
               style={{
                 height: 200,
                 backgroundColor: "#fff",
@@ -104,20 +107,13 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
                 setSelectedIconData(icons.data);
               }}
             >
-              {/* {icons.map((icon: any) => ( */}
               <Picker.Item
                 key={icons.id}
-                label={icons.desription}
+                label={icons.description}
                 value={icons.id}
               />
-              {/* ))} */}
             </Picker>
-            <SvgXml
-              xml={selectedIconData}
-              width={50}
-              height={50}
-              color="white"
-            />
+            <SvgXml xml={icons.data} width={50} height={50} color="white" />
           </View>
         )}
       </View>
