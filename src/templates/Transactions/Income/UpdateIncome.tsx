@@ -161,7 +161,7 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
     const objectData = {
       id: id,
       walletIdOld: walletId,
-      amount: (cleanNumber(getValues("amount"), data.amount)),
+      amount: cleanNumber(data.amount),
       description: data.description,
       date: formatarDataParaEnvio(data.date),
       status: isRecived
