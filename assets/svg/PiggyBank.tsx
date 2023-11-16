@@ -1,7 +1,7 @@
 import * as React from "react";
 import Svg, { G, Path } from "react-native-svg";
 
-export const PiggyBank = () => {
+export const PiggyBank = ({ color = "#fff" }) => {
   return (
     <Svg width={35} height={35} viewBox="0 0 256 256">
       <G
@@ -24,7 +24,7 @@ export const PiggyBank = () => {
           strokeLinecap="butt"
           strokeLinejoin="miter"
           strokeMiterlimit={10}
-          fill="#ffffff"
+          fill={color}
           fillRule="nonzero"
           opacity={1}
         />
@@ -37,7 +37,7 @@ export const PiggyBank = () => {
           strokeLinecap="butt"
           strokeLinejoin="miter"
           strokeMiterlimit={10}
-          fill="#ffffff"
+          fill={color}
           fillRule="nonzero"
           opacity={1}
         />
@@ -50,7 +50,7 @@ export const PiggyBank = () => {
           strokeLinecap="butt"
           strokeLinejoin="miter"
           strokeMiterlimit={10}
-          fill="#ffffff"
+          fill={color}
           fillRule="nonzero"
           opacity={1}
         />
@@ -63,7 +63,7 @@ export const PiggyBank = () => {
           strokeLinecap="butt"
           strokeLinejoin="miter"
           strokeMiterlimit={10}
-          fill="#ffffff"
+          fill={color}
           fillRule="nonzero"
           opacity={1}
         />

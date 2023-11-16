@@ -11,7 +11,23 @@ export const formatNumber = (value: string) => {
   return formattedValue;
 };
 
-export const cleanNumber = (value: string) => {
-  const numericValue = parseFloat(value.replace(/[^0-9]/g, "")) / 100;
-  return numericValue.toFixed(2);
+export const cleanNumber = (value: number) => {
+  return parseFloat(
+    String(value)
+      .replace(/[^0-9\,\.]/g, "")
+      .replace(".", "")
+      .replace(",", ".")
+  );
+};
+
+export const cleanNumberNegative = (value: number) => {
+  let amount = String(value);
+
+  let numericValue = parseFloat(amount.replace(/[^0-9]/g, ""));
+
+  if (amount.includes("-")) {
+    numericValue *= -1;
+  }
+
+  return -numericValue.toFixed(2);
 };

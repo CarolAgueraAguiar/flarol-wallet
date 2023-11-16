@@ -32,8 +32,6 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
 
   const getCategories = async (id: number) => {
     const categoriesData = await showCategories(id);
-    console.log(categoriesData);
-
     setValue("description", categoriesData.description);
     setIcons(categoriesData.icon);
   };

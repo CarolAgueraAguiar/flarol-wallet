@@ -32,8 +32,6 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
 
   const onSubmit = async (data: any) => {
     if (data.amount) {
-      console.log(data.amount);
-      
       data.amount = cleanNumber(data.amount);
     }
     data.id = id;

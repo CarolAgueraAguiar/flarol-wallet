@@ -1,23 +1,30 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { useForm, Controller, Control, FieldValues } from "react-hook-form";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  useForm,
+  Controller,
+  Control,
+  FieldValues,
+  FieldErrors,
+} from "react-hook-form";
 import { TextInputMask } from "react-native-masked-text";
 import { theme } from "../../styles/theme";
-import { cleanNumber, formatNumber } from "../../utils/mask";
 
 export interface MoneyInputProps {
   control: Control<FieldValues, any>;
   name: string;
+  errors?: FieldErrors<FieldValues>;
 }
 
-export default function MoneyInput({ control, name }: MoneyInputProps) {
-  const { setValue } = useForm();
+export default function MoneyInput({ control, name, errors }: MoneyInputProps) {
+  const { setValue, watch } = useForm();
+
   return (
     <View style={styles.root}>
       <Controller
         name={name}
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onChange, onBlur, value, name } }) => (
           <TextInputMask
             style={styles.text}
             type="money"
@@ -37,6 +44,9 @@ export default function MoneyInput({ control, name }: MoneyInputProps) {
           />
         )}
       />
+      {errors && errors[name] && (
+        <Text style={{ color: "red" }}>{errors[name]?.message}</Text>
+      )}
     </View>
   );
 }

@@ -132,7 +132,7 @@ export const ListWallet = ({ navigation }: any) => {
               backgroundColor: getCardColor(index),
             }}
           >
-            <View>
+            <View style={{ maxWidth: 200 }}>
               <Text style={styles.quadradoTextHeader}>{item.description}</Text>
               <Text style={styles.quadradoTextBody}>
                 {formatNumber(String(item.amount))}

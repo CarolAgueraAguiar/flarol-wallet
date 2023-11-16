@@ -1,6 +1,4 @@
 import {
-  Button,
-  Keyboard,
   ScrollView,
   StyleSheet,
   Switch,
@@ -8,44 +6,68 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useForm } from "react-hook-form";
+
 import { useEffect, useMemo, useState } from "react";
-import { useToast } from "react-native-toast-notifications";
+import { useForm } from "react-hook-form";
 import {
   TextField,
   TextFieldStatus,
 } from "../../../components/TextFieldStatus/TextFieldStatus";
+import { Calendar } from "react-native-calendars";
+import MoneyInput from "../../../components/MoneyInput/MoneyInput";
 import { RadioButtonProps, RadioGroup } from "react-native-radio-buttons-group";
 import { Picker } from "@react-native-picker/picker";
-import MoneyInput from "../../../components/MoneyInput/MoneyInput";
 import { GetCategoriesProps } from "../../../types/categories/categories";
 import { ListWalletsProps } from "../../../types/wallets/wallets";
 import { listCategory } from "../../../services/categories/categories";
 import { listWallets } from "../../../services/wallets/wallets";
+import {
+  showTransaction,
+  updateTransaction,
+} from "../../../services/transactions/transactions";
 import { cleanNumber } from "../../../utils/mask";
 import { TransactionStatus } from "../../../enum/TransactionStatus";
-import { createTransaction } from "../../../services/transactions/transactions";
-import { Calendar } from "react-native-calendars";
-import { formatarData, formatarDataParaEnvio } from "../../../utils/Date";
-import { FormErrors } from "../../Login/Login";
+import { useToast } from "react-native-toast-notifications";
+import {
+  formatarDataTimeStamp,
+  formatarDataParaEnvio,
+  formatarData,
+} from "../../../utils/Date";
 
-export const AddIncome = ({ navigation }: any) => {
+export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
+  const { id, walletId } = route.params;
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors },
-    setValue,
-    setError,
-    clearErrors,
+    getValues,
   } = useForm();
-  const toast = useToast();
 
   const [selectedDate, setSelectedDate] = useState("");
+
+  const getIncome = async () => {
+    const data = await showTransaction(id, walletId);
+
+    setIsRecived(data.status === TransactionStatus.RECEIVED);
+    setValue("description", data.description);
+    setValue("amount", data.amount);
+    setValue("categoryId", data.category_id);
+    setValue("categoryName", data.category.description);
+    setValue("walletId", data.wallet_id);
+    setValue("walletName", data.wallet.description);
+    setValue("date", formatarDataTimeStamp(data.date));
+  };
+
+  useEffect(() => {
+    getIncome();
+  }, []);
+
   const [selectedRepeat, setSelectedRepeat] = useState(1);
   const [selectedRepeatName, setSelectedRepeatName] = useState("Diario");
   const [isRecived, setIsRecived] = useState(false);
-
   const [isRepeatOrSplit, setIsRepeatOrSplit] = useState(false);
+  const toast = useToast();
 
   const repeatOptions = [
     { nome: "Diário", dias: 1 },
@@ -57,7 +79,6 @@ export const AddIncome = ({ navigation }: any) => {
     { nome: "Semestral", dias: 180 },
     { nome: "A cada 2 semanas", dias: 14 },
   ];
-
   const toggleSwitchReceived = () => {
     setIsRecived((previousState) => !previousState);
   };
@@ -118,33 +139,17 @@ export const AddIncome = ({ navigation }: any) => {
   const handleDateChange = (day: any) => {
     setSelectedDate(day.dateString);
     setValue("date", formatarData(day.dateString));
-    clearErrors("date");
     closeCalendar();
   };
 
   const getCategories = async () => {
     const data = await listCategory();
-    if (data.length === 0) {
-      toast.show("Não há categoria cadastrada", {
-        type: "danger",
-        duration: 3000,
-      });
-
-      setTimeout(function () {
-        navigation.navigate("AdicionarCategoria");
-      }, 3000);
-      return;
-    }
     setCategories(data);
-    setValue("categoryId", data[0].id);
-    setValue("categoryName", data[0].description);
   };
 
   const getWallets = async () => {
     const data = await listWallets();
     setWallets(data);
-    setValue("walletId", data[0].id);
-    setValue("walletName", data[0].description);
   };
 
   useEffect(() => {
@@ -154,86 +159,57 @@ export const AddIncome = ({ navigation }: any) => {
 
   const onSubmit = async (data: any) => {
     const objectData = {
-      amount: data.amount ? Number(cleanNumber(data.amount)) : 0,
-      description: data.description || "",
-      date: data.date ? formatarDataParaEnvio(data.date) : "",
+      id: id,
+      walletIdOld: walletId,
+      amount: (cleanNumber(getValues("amount"), data.amount)),
+      description: data.description,
+      date: formatarDataParaEnvio(data.date),
       status: isRecived
         ? TransactionStatus.RECEIVED
         : TransactionStatus.NOT_RECEIVED,
       installment: data.repeat ? Number(data.repeat) : 1,
-      period: selectedRepeat || 0,
-      walletId: data.walletId || "",
-      categoryId: data.categoryId || "",
+      period: selectedRepeat,
+      walletId: data.walletId,
+      categoryId: data.categoryId,
     };
 
-    const [storeData, error] = await createTransaction(objectData);
-
-    if (error) {
-      const errorObject: FormErrors = {};
-
-      error.message.forEach((errorItem) => {
-        return (errorObject[errorItem.field] = {
-          message: errorItem.error,
-          type: "required",
-        });
-      });
-
-      Object.keys(errorObject).forEach((field) => {
-        setError(field, errorObject[field]);
-      });
-      return;
-    }
-
+    const storeData = await updateTransaction(objectData);
     if (storeData === 201) {
-      toast.show("Transação criada com sucesso", {
+      toast.show("Receita alterada com sucesso", {
         type: "success",
       });
-      navigation.navigate("Home");
+      navigate("Home");
     } else {
-      toast.show("Erro ao criar transação", {
+      toast.show("Erro ao alterar transação", {
         type: "danger",
       });
     }
   };
-
   return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScrollView>
       <View
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          marginTop: 20,
         }}
       >
-        <View>
-          <Text style={{ color: "#000" }}>Digite o valor</Text>
-          <MoneyInput control={control} name="amount" errors={errors} />
-        </View>
-        <View>
-          <Text style={{ color: "#000" }}>Digite o descrição:</Text>
-          <TextField
-            status={TextFieldStatus.Default}
-            control={control}
-            name="description"
-            placeholder="Descrição"
-            errors={errors}
-          />
-        </View>
-        <View>
-          <Text style={{ color: "#000" }}>Selecione a data da receita:</Text>
-          <TextField
-            status={TextFieldStatus.Default}
-            control={control}
-            name="date"
-            placeholder="Selecione a Data"
-            errors={errors}
-            onClick={openCalendar}
-          />
-        </View>
+        <MoneyInput control={control} name="amount" errors={errors} />
+        <TextField
+          status={TextFieldStatus.Default}
+          control={control}
+          name="description"
+          placeholder="Descrição"
+          errors={errors}
+        />
+        <TextField
+          status={TextFieldStatus.Default}
+          control={control}
+          name="date"
+          placeholder="Selecione a Data"
+          errors={errors}
+          onClick={openCalendar}
+        />
         {isCalendarVisible && (
           <Calendar
             displayName="date"
@@ -263,19 +239,14 @@ export const AddIncome = ({ navigation }: any) => {
             }}
           />
         )}
-        <View>
-          <Text style={{ color: "#000" }}>
-            Selecione a categoria da receita:
-          </Text>
-          <TextField
-            status={TextFieldStatus.Default}
-            control={control}
-            name="categoryName"
-            placeholder="Categoria"
-            errors={errors}
-            onClick={openCategory}
-          />
-        </View>
+        <TextField
+          status={TextFieldStatus.Default}
+          control={control}
+          name="categoryName"
+          placeholder="Categoria"
+          errors={errors}
+          onClick={openCategory}
+        />
         {isCategoryVisible && (
           <Picker
             selectedValue={categoriesSelected}
@@ -303,20 +274,16 @@ export const AddIncome = ({ navigation }: any) => {
             ))}
           </Picker>
         )}
-        <View>
-          <Text style={{ color: "#000" }}>Selecione a Carteira:</Text>
-          <TextField
-            status={TextFieldStatus.Default}
-            control={control}
-            name="walletName"
-            placeholder="Carteira"
-            errors={errors}
-            onClick={openWallets}
-          />
-        </View>
+        <TextField
+          status={TextFieldStatus.Default}
+          control={control}
+          name="walletName"
+          placeholder="Carteira"
+          errors={errors}
+          onClick={openWallets}
+        />
         {isWalletVisible && (
           <Picker
-            selectionColor={"#1aae9f9b"}
             selectedValue={walletSelected}
             style={{
               height: 200,
@@ -335,7 +302,6 @@ export const AddIncome = ({ navigation }: any) => {
           >
             {wallets.map((option, index) => (
               <Picker.Item
-                color="#000"
                 key={index}
                 label={option.description}
                 value={option.id}
@@ -343,6 +309,7 @@ export const AddIncome = ({ navigation }: any) => {
             ))}
           </Picker>
         )}
+
         <View style={styles.switch}>
           <Switch
             trackColor={{ false: "#767577", true: "#1aae9f" }}
@@ -354,7 +321,7 @@ export const AddIncome = ({ navigation }: any) => {
           <Text
             style={{
               marginLeft: 10,
-              color: "#000",
+              color: "#f4f3f4",
               fontWeight: "600",
               fontSize: 16,
             }}
@@ -362,132 +329,10 @@ export const AddIncome = ({ navigation }: any) => {
             Recebido ?
           </Text>
         </View>
-        <View style={styles.switch}>
-          <Switch
-            trackColor={{ false: "#767577", true: "#1aae9f" }}
-            thumbColor={isRepeatOrSplit ? "#fff" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitchRepeatOrSplit}
-            value={isRepeatOrSplit}
-          />
-          <Text
-            style={{
-              marginLeft: 10,
-              color: "#000",
-              fontWeight: "600",
-              fontSize: 16,
-            }}
-          >
-            Repetir ou parcelar ?
-          </Text>
-        </View>
       </View>
-      {isRepeatOrSplit && (
-        <View>
-          <RadioGroup
-            radioButtons={radioButtons}
-            onPress={setSelectedId}
-            selectedId={selectedId}
-            accessibilityLabel="Valor Fixo ou Parcelar"
-            layout="row"
-            containerStyle={{
-              paddingBottom: 16,
-              paddingTop: 16,
-              paddingLeft: 32,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          />
-          {selectedId === "fixo" && (
-            <View
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <TextField
-                status={TextFieldStatus.Default}
-                control={control}
-                name="repeat"
-                placeholder="Repetir"
-                errors={errors}
-              />
-              <Picker
-                selectedValue={selectedRepeat}
-                style={{
-                  height: 200,
-                  backgroundColor: "#fff",
-                  width: 328,
-                  borderRadius: 5,
-                }}
-                onValueChange={(itemValue) => {
-                  const searchName = repeatOptions.find(
-                    (option: any) => option.dias === itemValue
-                  )!.nome;
-
-                  setSelectedRepeat(itemValue);
-                  setSelectedRepeatName(searchName);
-                }}
-              >
-                {repeatOptions.map((option, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={option.nome}
-                    value={option.dias}
-                  />
-                ))}
-              </Picker>
-            </View>
-          )}
-          {selectedId === "parcelar" && (
-            <View
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <TextField
-                status={TextFieldStatus.Default}
-                control={control}
-                name="split"
-                placeholder="Parcelar em"
-                errors={errors}
-              />
-              <Picker
-                selectedValue={selectedRepeat}
-                style={{
-                  height: 200,
-                  backgroundColor: "#fff",
-                  width: 328,
-                  borderRadius: 5,
-                }}
-                onValueChange={(itemValue) => {
-                  const searchName = repeatOptions.find(
-                    (option: any) => option.dias === itemValue
-                  )!.nome;
-
-                  setSelectedRepeat(itemValue);
-                  setSelectedRepeatName(searchName);
-                }}
-              >
-                {repeatOptions.map((option, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={option.nome}
-                    value={option.dias}
-                  />
-                ))}
-              </Picker>
-            </View>
-          )}
-        </View>
-      )}
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
-          <Text style={{ color: "#000", fontWeight: "600" }}>Criar</Text>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Criar</Text>
         </View>
       </TouchableOpacity>
     </ScrollView>

@@ -25,11 +25,11 @@ import { TransactionStatus } from "../../../enum/TransactionStatus";
 import { cleanNumber } from "../../../utils/mask";
 import { createTransaction } from "../../../services/transactions/transactions";
 import {
-  formatarDataTimeStamp,
   formatarDataParaEnvio,
   formatarData,
   formatDateToYearMonthDay,
 } from "../../../utils/Date";
+import { FormErrors } from "../../Login/Login";
 
 export const AddExpenses = ({ navigation }: any) => {
   const {
@@ -37,7 +37,9 @@ export const AddExpenses = ({ navigation }: any) => {
     handleSubmit,
     formState: { errors },
     setValue,
+    setError,
   } = useForm();
+
   const toast = useToast();
 
   const [selectedDate, setSelectedDate] = useState("");
@@ -71,7 +73,7 @@ export const AddExpenses = ({ navigation }: any) => {
         value: "fixo",
         color: "#e07d8c",
         borderColor: "#f4f3f4",
-        labelStyle: { fontWeight: "600", color: "#f4f3f4", fontSize: 16 },
+        labelStyle: { fontWeight: "600", color: "#000", fontSize: 16 },
         selected: true,
       },
       {
@@ -80,7 +82,7 @@ export const AddExpenses = ({ navigation }: any) => {
         value: "parcelar",
         color: "#e07d8c",
         borderColor: "#f4f3f4",
-        labelStyle: { fontWeight: "600", color: "#f4f3f4", fontSize: 16 },
+        labelStyle: { fontWeight: "600", color: "#000", fontSize: 16 },
         selected: false,
       },
     ],
@@ -121,6 +123,17 @@ export const AddExpenses = ({ navigation }: any) => {
 
   const getCategories = async () => {
     const data = await listCategory();
+    if (data.length === 0) {
+      toast.show("Não há categoria cadastrada", {
+        type: "danger",
+        duration: 3000,
+      });
+
+      setTimeout(function () {
+        navigation.navigate("AdicionarCategoria");
+      }, 3000);
+      return;
+    }
     setCategories(data);
     setValue("categoryId", data[0].id);
     setValue("categoryName", data[0].description);
@@ -142,17 +155,34 @@ export const AddExpenses = ({ navigation }: any) => {
 
   const onSubmit = async (data: any) => {
     const objectData = {
-      amount: -Number(cleanNumber(data.amount)),
-      description: data.description,
-      date: formatarDataParaEnvio(data.date),
+      amount: data.amount ? -Number(cleanNumber(data.amount)) : 0,
+      description: data.description || "",
+      date: data.date ? formatarDataParaEnvio(data.date) : "",
       status: isPaid ? TransactionStatus.PAIED : TransactionStatus.NOT_PAIED,
       installment: data.repeat ? Number(data.repeat) : 1,
-      period: selectedRepeat,
-      walletId: data.walletId,
-      categoryId: data.categoryId,
+      period: selectedRepeat || 0,
+      walletId: data.walletId || "",
+      categoryId: data.categoryId || "",
     };
 
-    const storeData = await createTransaction(objectData);
+    const [storeData, error] = await createTransaction(objectData);
+
+    if (error) {
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      Object.keys(errorObject).forEach((field) => {
+        setError(field, errorObject[field]);
+      });
+      return;
+    }
+
     if (storeData === 201) {
       toast.show("Transação criada com sucesso", {
         type: "success",
@@ -166,7 +196,10 @@ export const AddExpenses = ({ navigation }: any) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+    >
       <View
         style={{
           display: "flex",
@@ -176,11 +209,11 @@ export const AddExpenses = ({ navigation }: any) => {
         }}
       >
         <View>
-          <Text style={{ color: "#fff" }}>Digite o valor</Text>
-          <MoneyInput control={control} name="amount" />
+          <Text style={{ color: "#000" }}>Digite o valor:</Text>
+          <MoneyInput control={control} name="amount" errors={errors} />
         </View>
         <View>
-          <Text style={{ color: "#fff" }}>Digite o descrição:</Text>
+          <Text style={{ color: "#000" }}>Digite o descrição:</Text>
           <TextField
             status={TextFieldStatus.Default}
             control={control}
@@ -190,7 +223,7 @@ export const AddExpenses = ({ navigation }: any) => {
           />
         </View>
         <View>
-          <Text style={{ color: "#fff" }}>Selecione a data da despesa:</Text>
+          <Text style={{ color: "#000" }}>Selecione a data da despesa:</Text>
           <TextField
             status={TextFieldStatus.Default}
             control={control}
@@ -229,8 +262,8 @@ export const AddExpenses = ({ navigation }: any) => {
           />
         )}
         <View>
-          <Text style={{ color: "#fff" }}>
-            Selecione a categoria da despesa:
+          <Text style={{ color: "#000" }}>
+            Selecione a categoria da receita:
           </Text>
           <TextField
             status={TextFieldStatus.Default}
@@ -243,7 +276,6 @@ export const AddExpenses = ({ navigation }: any) => {
         </View>
         {isCategoryVisible && (
           <Picker
-            selectionColor={"#c420395f"}
             selectedValue={categoriesSelected}
             style={{
               height: 200,
@@ -262,7 +294,6 @@ export const AddExpenses = ({ navigation }: any) => {
           >
             {categories.map((option, index) => (
               <Picker.Item
-                color="#ca727f"
                 key={index}
                 label={option.description}
                 value={option.id}
@@ -271,7 +302,7 @@ export const AddExpenses = ({ navigation }: any) => {
           </Picker>
         )}
         <View>
-          <Text style={{ color: "#fff" }}>Selecione a Carteira:</Text>
+          <Text style={{ color: "#000" }}>Selecione a Carteira:</Text>
           <TextField
             status={TextFieldStatus.Default}
             control={control}
@@ -322,7 +353,7 @@ export const AddExpenses = ({ navigation }: any) => {
           <Text
             style={{
               marginLeft: 10,
-              color: "#f4f3f4",
+              color: "#000",
               fontWeight: "600",
               fontSize: 16,
             }}
@@ -341,7 +372,7 @@ export const AddExpenses = ({ navigation }: any) => {
           <Text
             style={{
               marginLeft: 10,
-              color: "#f4f3f4",
+              color: "#000",
               fontWeight: "600",
               fontSize: 16,
             }}
@@ -433,7 +464,7 @@ export const AddExpenses = ({ navigation }: any) => {
                 }}
                 onValueChange={(itemValue) => {
                   const searchName = repeatOptions.find(
-                    (icon: any) => icon.id === itemValue
+                    (option: any) => option.dias === itemValue
                   )!.nome;
                   setSelectedRepeat(itemValue);
                   setSelectedRepeatName(searchName);
@@ -453,7 +484,7 @@ export const AddExpenses = ({ navigation }: any) => {
       )}
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
-          <Text style={{ color: "#fff", fontWeight: "600" }}>Criar</Text>
+          <Text style={{ color: "#000", fontWeight: "600" }}>Criar</Text>
         </View>
       </TouchableOpacity>
     </ScrollView>

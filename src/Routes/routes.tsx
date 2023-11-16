@@ -21,6 +21,9 @@ import { AddIncome } from "../templates/Transactions/Income/AddIncome";
 import { AddExpenses } from "../templates/Transactions/Expenses/AddExpenses";
 import { ListExpenses } from "../templates/Transactions/Expenses/ListExpenses";
 import { UpdateExpenses } from "../templates/Transactions/Expenses/UpdateExpenses";
+import { ListIncome } from "../templates/Transactions/Income/ListIncome";
+import { UpdateIncome } from "../templates/Transactions/Income/UpdateIncome";
+import PiggyBankScreen from "../templates/PiggyBank/PiggyBank";
 
 const { Navigator, Screen, Group } = createStackNavigator();
 
@@ -123,8 +126,40 @@ export const Routes = () => {
             </Group>
             <Group screenOptions={{ headerShown: true }}>
               <Screen
-                name="Income"
+                name="Incomes"
+                component={ListIncome}
+                options={{
+                  headerStyle: {
+                    backgroundColor: "#63a195",
+                    borderBottomWidth: 0,
+                    shadowColor: "transparent",
+                    shadowOpacity: 0,
+                    elevation: 0,
+                    height: 120,
+                  },
+                  headerTintColor: "#fff",
+                  headerTitle: "Receita",
+                }}
+              />
+              <Screen
+                name="AddIncome"
                 component={AddIncome}
+                options={{
+                  headerStyle: {
+                    backgroundColor: "#63a195",
+                    borderBottomWidth: 0,
+                    shadowColor: "transparent",
+                    shadowOpacity: 0,
+                    elevation: 0,
+                    height: 120,
+                  },
+                  headerTintColor: "#fff",
+                  headerTitle: "Receita",
+                }}
+              />
+              <Screen
+                name="UpdateIncome"
+                component={UpdateIncome}
                 options={{
                   headerStyle: {
                     backgroundColor: "#63a195",
@@ -186,6 +221,15 @@ export const Routes = () => {
                   },
                   headerTintColor: "#fff",
                   headerTitle: "Despesas",
+                }}
+              />
+            </Group>
+            <Group screenOptions={{ headerShown: true }}>
+              <Screen
+                name="PiggyBank"
+                component={PiggyBankScreen}
+                options={{
+                  headerTitle: "Porquinho",
                 }}
               />
             </Group>

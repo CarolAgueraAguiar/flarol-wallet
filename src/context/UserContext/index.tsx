@@ -5,6 +5,7 @@ interface User {
   name: string;
   email: string;
   token: string;
+  hasWallet: boolean;
 }
 
 interface MeuContextoType {
@@ -25,12 +26,17 @@ export const UserContext = createContext<MeuContextoType>(
 );
 
 function UserContextProvider({ children }: MeuContextoProviderProps) {
-  const [user, setUser] = useState<User>({ name: "", email: "", token: "" });
+  const [user, setUser] = useState<User>({
+    name: "",
+    email: "",
+    token: "",
+    hasWallet: false,
+  });
   const [walletAmount, setWalletAmount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const logout = () => {
-    setUser({ name: "", email: "", token: "" });
+    setUser({ name: "", email: "", token: "", hasWallet: false });
     setIsAuthenticated(false);
   };
 

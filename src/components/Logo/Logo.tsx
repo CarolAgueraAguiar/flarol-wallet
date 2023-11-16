@@ -23,16 +23,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   title: {
-    color: theme.colorsSecondary.gray[100],
+    color: theme.colorsSecondary.green[500],
     fontWeight: "bold",
     fontSize: 28,
-    // fontFamily: "Roboto_700Bold_Italic",
   },
   subTitle: {
-    color: theme.colorsSecondary.gray[100],
+    color: theme.colorsSecondary.green[500],
     fontWeight: "400",
     fontSize: 14,
-    // fontFamily: "Roboto_100Thin_Italic",
     textAlign: "center",
   },
   logo: {

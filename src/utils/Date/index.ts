@@ -41,12 +41,8 @@ export const formatarData = (dataOriginal: string): string => {
 };
 
 export const formatarDataParaEnvio = (dataOriginal: string): string => {
-  const data = new Date(dataOriginal);
-  const dia = String(data.getDate()).padStart(2, "0");
-  const mes = String(data.getMonth() + 1).padStart(2, "0");
-  const ano = String(data.getFullYear());
-
-  return `${ano}-${mes}-${dia}`;
+  const data = dataOriginal.split("/").reverse().join("-");
+  return data;
 };
 
 export const formatDateToYearMonthDay = (): string => {

@@ -56,8 +56,8 @@ export const AddCategory = ({ navigation: { navigate } }: any) => {
       });
 
       if (errorObject.description) {
-        toast.show("O nome da categoria não pode ser vazio", {
-          type: "danger",
+        setError("description", {
+          message: "O nome da categoria não pode ser vazio",
         });
       }
 

@@ -54,19 +54,17 @@ export const storeUsers = async ({
   }
 };
 
-export const updateUser = async (props: UpdateUsersProps): Promise<number> => {
-  console.log({ props });
-
+export const updateUser = async (
+  props: UpdateUsersProps
+): Promise<[number | null, ReturnError | null]> => {
   try {
     const { status } = await axiosFlarol.put("users", {
       props,
     });
 
-    return status;
+    return [status, null];
   } catch (e: any) {
-    console.log(e.response.data);
-
-    return e;
+    return [null, e.response.data as ReturnError];
   }
 };
 

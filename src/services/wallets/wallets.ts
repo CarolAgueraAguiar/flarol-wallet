@@ -4,19 +4,21 @@ import {
   UpdateWalletsProps,
 } from "../../types/wallets/wallets";
 import { axiosFlarol } from "../axios";
+import { ReturnError } from "../users/users";
 
 export const storeWallets = async ({
   description,
   amount,
-}: StoreWalletsProps) => {
+}: StoreWalletsProps): Promise<[number | null, ReturnError | null]> => {
   try {
-    const { data } = await axiosFlarol.post("wallets", {
+    const { status } = await axiosFlarol.post("wallets", {
       description,
-      amount: Number(amount),
+      amount: amount,
     });
-    return data;
+
+    return [status, null];
   } catch (e: any) {
-    return e;
+    return [null, e.response.data as ReturnError];
   }
 };
 

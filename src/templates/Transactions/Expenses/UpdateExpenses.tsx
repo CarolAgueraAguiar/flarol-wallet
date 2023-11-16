@@ -25,7 +25,7 @@ import {
   showTransaction,
   updateTransaction,
 } from "../../../services/transactions/transactions";
-import { cleanNumber } from "../../../utils/mask";
+import { cleanNumber, cleanNumberNegative } from "../../../utils/mask";
 import { TransactionStatus } from "../../../enum/TransactionStatus";
 import { useToast } from "react-native-toast-notifications";
 import {
@@ -35,7 +35,7 @@ import {
 } from "../../../utils/Date";
 
 export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
-  const { id } = route.params;
+  const { id, walletId } = route.params;
   const {
     control,
     setValue,
@@ -45,17 +45,20 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
 
   const [selectedDate, setSelectedDate] = useState("");
 
-  const getExpenses = async (id: number) => {
-    const data = await showTransaction(id);
+  const getExpenses = async () => {
+    const data = await showTransaction(id, walletId);
+    setIsPaid(data.status === TransactionStatus.PAIED);
     setValue("description", data.description);
     setValue("amount", data.amount);
     setValue("categoryId", data.category_id);
+    setValue("categoryName", data.category.description);
     setValue("walletId", data.wallet_id);
+    setValue("walletName", data.wallet.description);
     setValue("date", formatarDataTimeStamp(data.date));
   };
 
   useEffect(() => {
-    getExpenses(id);
+    getExpenses();
   }, []);
 
   const [selectedRepeat, setSelectedRepeat] = useState(1);
@@ -154,7 +157,9 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
 
   const onSubmit = async (data: any) => {
     const objectData = {
-      amount: -Number(cleanNumber(data.amount)),
+      id: id,
+      walletIdOld: walletId,
+      amount: -Number(cleanNumberNegative(data.amount)),
       description: data.description,
       date: formatarDataParaEnvio(data.date),
       status: isPaid ? TransactionStatus.PAIED : TransactionStatus.NOT_PAIED,
@@ -166,7 +171,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
 
     const storeData = await updateTransaction(objectData);
     if (storeData === 201) {
-      toast.show("Transação alterada com sucesso", {
+      toast.show("Despesa alterada com sucesso", {
         type: "success",
       });
       navigate("Home");
@@ -320,127 +325,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
             Pago ?
           </Text>
         </View>
-        <View style={styles.switch}>
-          <Switch
-            trackColor={{ false: "#767577", true: "#e07d8c" }}
-            thumbColor={isRepeatOrSplit ? "#fff" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitchRepeatOrSplit}
-            value={isRepeatOrSplit}
-          />
-          <Text
-            style={{
-              marginLeft: 10,
-              color: "#f4f3f4",
-              fontWeight: "600",
-              fontSize: 16,
-            }}
-          >
-            Repetir ou parcelar ?
-          </Text>
-        </View>
       </View>
-      {isRepeatOrSplit && (
-        <View>
-          <RadioGroup
-            radioButtons={radioButtons}
-            onPress={setSelectedId}
-            selectedId={selectedId}
-            accessibilityLabel="Valor Fixo ou Parcelar"
-            layout="row"
-            containerStyle={{
-              paddingBottom: 16,
-              paddingTop: 16,
-              paddingLeft: 32,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          />
-          {selectedId === "fixo" && (
-            <View
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <TextField
-                status={TextFieldStatus.Default}
-                control={control}
-                name="repeat"
-                placeholder="Repetir"
-                errors={errors}
-              />
-              <Picker
-                selectedValue={selectedRepeat}
-                style={{
-                  height: 200,
-                  backgroundColor: "#fff",
-                  width: 328,
-                  borderRadius: 5,
-                }}
-                onValueChange={(itemValue) => {
-                  const searchName = repeatOptions.find(
-                    (option: any) => option.dias === itemValue
-                  )!.nome;
-                  setSelectedRepeat(itemValue);
-                  setSelectedRepeatName(searchName);
-                }}
-              >
-                {repeatOptions.map((option, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={option.nome}
-                    value={option.dias}
-                  />
-                ))}
-              </Picker>
-            </View>
-          )}
-          {selectedId === "parcelar" && (
-            <View
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <TextField
-                status={TextFieldStatus.Default}
-                control={control}
-                name="split"
-                placeholder="Parcelar em"
-                errors={errors}
-              />
-              <Picker
-                selectedValue={selectedRepeat}
-                style={{
-                  height: 200,
-                  backgroundColor: "#fff",
-                  width: 328,
-                  borderRadius: 5,
-                }}
-                onValueChange={(itemValue) => {
-                  const searchName = repeatOptions.find(
-                    (icon: any) => icon.id === itemValue
-                  )!.nome;
-                  setSelectedRepeat(itemValue);
-                  setSelectedRepeatName(searchName);
-                }}
-              >
-                {repeatOptions.map((option, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={option.nome}
-                    value={option.dias}
-                  />
-                ))}
-              </Picker>
-            </View>
-          )}
-        </View>
-      )}
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
           <Text style={{ color: "#fff", fontWeight: "600" }}>Criar</Text>

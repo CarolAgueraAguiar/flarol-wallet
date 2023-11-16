@@ -12,6 +12,11 @@ export type StoreTransactionProps = {
   categoryId: number;
 };
 
+export type UpdateTransactionProps = {
+  id: number;
+  walletIdOld: number;
+} & StoreTransactionProps;
+
 export interface GetTransactionProps {
   id: number;
   description: string;
@@ -26,6 +31,7 @@ export interface GetTransactionProps {
   updatedAt: string;
   deletedAt: any;
   category: Category;
+  wallet: Wallet;
 }
 
 export interface Category {
@@ -38,4 +44,15 @@ export interface Category {
   user_id: number;
   icon_id: number;
   icon: Icon;
+}
+
+export interface Wallet {
+  id: number;
+  description: string;
+  slug: string;
+  amount: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+  user_id: number;
 }

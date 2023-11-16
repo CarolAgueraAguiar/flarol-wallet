@@ -1,6 +1,6 @@
 export type StoreWalletsProps = {
   description: string;
-  amount: string;
+  amount: number;
 };
 
 export type ListWalletsProps = {

@@ -21,7 +21,7 @@ import { PiggyBank } from "../../../assets/svg/PiggyBank";
 import { useIsFocused } from "@react-navigation/native";
 
 export const Home = ({ navigation }: any) => {
-  const context = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [home, setHome] = useState<GetHomeProps>();
   const isFocused = useIsFocused();
 
@@ -45,6 +45,10 @@ export const Home = ({ navigation }: any) => {
   }, [navigation]);
 
   useEffect(() => {
+    if (!user.hasWallet) {
+      navigation.navigate("AdicionarCarteira");
+      return;
+    }
     if (isFocused) {
       walletsData();
     }
@@ -58,9 +62,7 @@ export const Home = ({ navigation }: any) => {
             Seja bem-vindo(a)
           </Text>
           <Text style={{ color: "#efefef" }}>
-            <Text style={{ fontWeight: "600", fontSize: 18 }}>
-              {context?.user.name}
-            </Text>
+            <Text style={{ fontWeight: "600", fontSize: 18 }}>{user.name}</Text>
           </Text>
         </View>
         <Plants />
@@ -122,7 +124,7 @@ export const Home = ({ navigation }: any) => {
             color="#730fc3"
           />
           <ButtonCategory
-            onClick={() => navigation.navigate("Income")}
+            onClick={() => navigation.navigate("Incomes")}
             categoryName="Receitas"
             icon={<ArrowUpIcon />}
             color="#2D6A4F"
@@ -146,7 +148,7 @@ export const Home = ({ navigation }: any) => {
             color="#836F81"
           />
           <ButtonCategory
-            onClick={() => navigation.navigate("Pork")}
+            onClick={() => navigation.navigate("PiggyBank")}
             categoryName="Porquinho"
             icon={<PiggyBank />}
             color="#1aa035"

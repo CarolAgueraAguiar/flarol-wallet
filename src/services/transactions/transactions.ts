@@ -1,8 +1,10 @@
 import {
   GetTransactionProps,
   StoreTransactionProps,
+  UpdateTransactionProps,
 } from "../../types/transactions/transactions";
 import { axiosFlarol } from "../axios";
+import { ReturnError } from "../users/users";
 
 export const createTransaction = async ({
   amount,
@@ -13,7 +15,7 @@ export const createTransaction = async ({
   period,
   walletId,
   categoryId,
-}: StoreTransactionProps): Promise<number> => {
+}: StoreTransactionProps): Promise<[number | null, ReturnError | null]> => {
   try {
     const response = await axiosFlarol.post<StoreTransactionProps>(
       "transactions",
@@ -29,16 +31,16 @@ export const createTransaction = async ({
       }
     );
 
-    return response.status;
+    return [response.status, null];
   } catch (e: any) {
-    return e;
+    return [null, e.response.data as ReturnError];
   }
 };
 
-export const listTransactions = async (): Promise<GetTransactionProps[]> => {
+export const listExpenses = async (): Promise<GetTransactionProps[]> => {
   try {
     const { data } = await axiosFlarol.get<GetTransactionProps[]>(
-      "transactions?wallet_id=13&type=despesa"
+      "transactions?type=despesa"
     );
 
     return data;
@@ -47,12 +49,24 @@ export const listTransactions = async (): Promise<GetTransactionProps[]> => {
   }
 };
 
+export const listIncomes = async (): Promise<GetTransactionProps[]> => {
+  try {
+    const { data } = await axiosFlarol.get<GetTransactionProps[]>(
+      "transactions?type=receita"
+    );
+
+    return data;
+  } catch (e: any) {
+    return e;
+  }
+};
 export const showTransaction = async (
-  id: number
+  id: number,
+  walletId: number
 ): Promise<GetTransactionProps> => {
   try {
     const { data } = await axiosFlarol.get<GetTransactionProps>(
-      `transactions/13/${id}`
+      `transactions/${walletId}/${id}`
     );
 
     return data;
@@ -62,6 +76,8 @@ export const showTransaction = async (
 };
 
 export const updateTransaction = async ({
+  id,
+  walletIdOld,
   amount,
   description,
   date,
@@ -70,10 +86,10 @@ export const updateTransaction = async ({
   period,
   walletId,
   categoryId,
-}: StoreTransactionProps): Promise<number> => {
+}: UpdateTransactionProps): Promise<number> => {
   try {
     const response = await axiosFlarol.put<StoreTransactionProps>(
-      "transactions",
+      `transactions/${walletIdOld}/${id}`,
       {
         amount,
         description,

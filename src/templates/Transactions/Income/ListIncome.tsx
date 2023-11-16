@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import { listExpenses } from "../../../services/transactions/transactions";
+import { listIncomes } from "../../../services/transactions/transactions";
 import { GetTransactionProps } from "../../../types/transactions/transactions";
 import { Add } from "../../../../assets/svg/Add";
 import { formatNumber } from "../../../utils/mask";
@@ -15,24 +15,24 @@ import { theme } from "../../../styles/theme";
 import { SvgXml } from "react-native-svg";
 import { TransactionStatus } from "../../../enum/TransactionStatus";
 
-export const ListExpenses = ({ navigation }: any) => {
-  const [expenses, setExpenses] = useState<GetTransactionProps[]>();
+export const ListIncome = ({ navigation }: any) => {
+  const [incomes, setIncomes] = useState<GetTransactionProps[]>();
   const isFocused = useIsFocused();
 
   const transactionsData = async () => {
-    const data = await listExpenses();
-    setExpenses(data);
+    const data = await listIncomes();
+    setIncomes(data);
   };
 
   const onNavigation = (id: number, walletId: number) => {
-    navigation.navigate("UpdateExpenses", {
+    navigation.navigate("UpdateIncome", {
       id,
       walletId,
     });
   };
 
   const statusExpense = (status: string) => {
-    if (status === TransactionStatus.PAIED) {
+    if (status === TransactionStatus.RECEIVED) {
       return (
         <View
           style={{
@@ -49,7 +49,7 @@ export const ListExpenses = ({ navigation }: any) => {
               fontWeight: "bold",
             }}
           >
-            Pago
+            Recebido
           </Text>
         </View>
       );
@@ -70,17 +70,17 @@ export const ListExpenses = ({ navigation }: any) => {
             fontWeight: "bold",
           }}
         >
-          Não Pago
+          Não Recebido
         </Text>
       </View>
     );
   };
 
   const cardColors = [
+    "#469B88",
     "#E78C9D",
     "#EED868",
     "#377CC8",
-    "#469B88",
     "#9DA7D0",
     "#E0533D",
   ];
@@ -98,12 +98,12 @@ export const ListExpenses = ({ navigation }: any) => {
 
   return (
     <FlatList
-      data={expenses}
+      data={incomes}
       keyExtractor={(item) => String(item.id)}
       ListHeaderComponent={() => (
         <View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("AddExpenses")}
+            onPress={() => navigation.navigate("AddIncome")}
             style={{ display: "flex", alignItems: "center", margin: 12 }}
           >
             <View style={styles.buttonAdd}>
