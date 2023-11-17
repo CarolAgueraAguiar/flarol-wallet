@@ -40,7 +40,9 @@ export const AddIncome = ({ navigation }: any) => {
   } = useForm();
   const toast = useToast();
 
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [selectedRepeat, setSelectedRepeat] = useState(1);
   const [selectedRepeatName, setSelectedRepeatName] = useState("Diario");
   const [isRecived, setIsRecived] = useState(false);
@@ -121,6 +123,10 @@ export const AddIncome = ({ navigation }: any) => {
     clearErrors("date");
     closeCalendar();
   };
+
+  useEffect(() => {
+    setValue("date", formatarData(selectedDate));
+  }, []);
 
   const getCategories = async () => {
     const data = await listCategory();

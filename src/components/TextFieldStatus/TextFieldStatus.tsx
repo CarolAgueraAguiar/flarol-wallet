@@ -39,7 +39,7 @@ export const TextField = (props: TextFieldProps) => {
     ],
     text: [
       styles.text,
-      props.status === TextFieldStatus.Disabled && styles.textStatusDisabled,
+      props.status === TextFieldStatus.Disabled && styles.textStatusActive,
       props.status === TextFieldStatus.Error && styles.textStatusError,
       props.status === TextFieldStatus.Filled && styles.textStatusFilled,
       props.status === TextFieldStatus.Active && styles.textStatusActive,
@@ -73,7 +73,9 @@ export const TextField = (props: TextFieldProps) => {
         rules={{ required: props.required ? "Campo Obrigatório" : false }}
       />
       {props.errors && props.errors[props.name] && (
-        <Text style={{ color: "red" }}>{props.errors[props.name].message}</Text>
+        <Text style={{ color: "red" }}>
+          {props.errors?.[props.name]?.message?.toString()}
+        </Text>
       )}
     </View>
   );
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
   },
   rootStatusDisabled: {
-    opacity: 0.5,
+    opacity: 1,
   },
   text: {
     height: 24,
@@ -121,8 +123,5 @@ const styles = StyleSheet.create({
   },
   textStatusError: {
     color: "#F75A68",
-  },
-  textStatusDisabled: {
-    color: theme.colorsSecondary.gray[200],
   },
 });

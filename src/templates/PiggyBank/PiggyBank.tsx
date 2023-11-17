@@ -77,11 +77,16 @@ const PiggyBankScreen: React.FC = ({ navigation }: any) => {
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("AdicionarCarteira")}
+            onPress={() => navigation.navigate("AdicionarPorquinho")}
             style={{ display: "flex", alignItems: "center", margin: 12 }}
           >
             <View style={styles.buttonAdd}>
               <Add />
+              <Text
+                style={{ marginLeft: 10, color: "#fff", fontWeight: "600" }}
+              >
+                Adicionar
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -128,13 +133,13 @@ const styles = StyleSheet.create({
   },
   buttonAdd: {
     borderRadius: 100,
-    margin: 12,
-    height: 50,
+    height: 40,
     width: "100%",
     backgroundColor: "green",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
 
     borderStyle: "dashed",
     borderWidth: 1,

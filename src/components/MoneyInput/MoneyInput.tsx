@@ -45,7 +45,9 @@ export default function MoneyInput({ control, name, errors }: MoneyInputProps) {
         )}
       />
       {errors && errors[name] && (
-        <Text style={{ color: "red" }}>{errors[name]?.message}</Text>
+        <Text style={{ color: "red" }}>
+          {errors[name]?.message?.toString()}
+        </Text>
       )}
     </View>
   );
