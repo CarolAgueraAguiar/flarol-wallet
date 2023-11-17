@@ -14,14 +14,75 @@ import { formatNumber } from "../../../utils/mask";
 import { theme } from "../../../styles/theme";
 import { SvgXml } from "react-native-svg";
 import { TransactionStatus } from "../../../enum/TransactionStatus";
+import { FilterExpenses } from "../../../components/Filter/FilterExpenses";
+import { FilterDate } from "../../../components/Filter/FilterDate";
+import ButtonClearFilters from "../../../components/Filter/ButtonClearFilters";
 
 export const ListExpenses = ({ navigation }: any) => {
   const [expenses, setExpenses] = useState<GetTransactionProps[]>();
   const isFocused = useIsFocused();
 
+  const [filteredExpenses, setFilteredExpenses] = useState<
+    GetTransactionProps[] | null
+  >(null);
+  const [filterStatus, setFilterStatus] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
   const transactionsData = async () => {
     const data = await listExpenses();
     setExpenses(data);
+
+    applyFilter(data, filterStatus, startDate, endDate);
+  };
+
+  const applyFilter = (
+    data: GetTransactionProps[],
+    status: string | null,
+    startDate: Date | null,
+    endDate: Date | null
+  ) => {
+    let filteredData = data;
+
+    if (status !== null) {
+      filteredData = filteredData.filter(
+        (expense) => expense.status === status
+      );
+    }
+
+    if (startDate !== null) {
+      filteredData = filteredData.filter(
+        (expense) => new Date(expense.date) >= startDate
+      );
+    }
+
+    if (endDate !== null) {
+      filteredData = filteredData.filter(
+        (expense) => new Date(expense.date) <= endDate
+      );
+    }
+
+    setFilteredExpenses(filteredData);
+  };
+
+  const setNewFilterStatus = (status: string | null) => {
+    if (expenses) {
+      applyFilter(expenses, status, startDate, endDate);
+    }
+    setFilterStatus(status);
+  };
+
+  const setFilterDate = (start: Date | null, end: Date | null) => {
+    if (expenses) {
+      applyFilter(expenses, filterStatus, start, end);
+    }
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  const handleClearFilters = () => {
+    setFilterDate(null, null);
+    setNewFilterStatus(null);
   };
 
   const onNavigation = (id: number, walletId: number) => {
@@ -98,7 +159,7 @@ export const ListExpenses = ({ navigation }: any) => {
 
   return (
     <FlatList
-      data={expenses}
+      data={filteredExpenses}
       keyExtractor={(item) => String(item.id)}
       ListHeaderComponent={() => (
         <View>
@@ -108,8 +169,34 @@ export const ListExpenses = ({ navigation }: any) => {
           >
             <View style={styles.buttonAdd}>
               <Add />
+              <Text
+                style={{ marginLeft: 10, color: "#fff", fontWeight: "600" }}
+              >
+                Adicionar
+              </Text>
             </View>
           </TouchableOpacity>
+          <View
+            style={{
+              backgroundColor: "#f2f2f2",
+              margin: 12,
+              borderRadius: 12,
+              padding: 12,
+            }}
+          >
+            <FilterExpenses
+              onFilterChange={setNewFilterStatus}
+              filterStatus={filterStatus}
+            />
+            <FilterDate
+              onFilterChange={setFilterDate}
+              startDate={startDate}
+              endDate={endDate}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+            />
+            <ButtonClearFilters onPress={handleClearFilters} />
+          </View>
         </View>
       )}
       renderItem={({ item, index }) => (
@@ -255,6 +342,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
 
     borderStyle: "dashed",
     borderWidth: 1,

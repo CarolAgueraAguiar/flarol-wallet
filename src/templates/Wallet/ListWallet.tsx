@@ -103,10 +103,15 @@ export const ListWallet = ({ navigation }: any) => {
           </View>
           <TouchableOpacity
             onPress={() => navigation.navigate("AdicionarCarteira")}
-            style={{ display: "flex", alignItems: "flex-end" }}
+            style={{ display: "flex", alignItems: "center", margin: 12 }}
           >
             <View style={styles.buttonAdd}>
               <Add />
+              <Text
+                style={{ marginLeft: 10, color: "#fff", fontWeight: "600" }}
+              >
+                Adicionar
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -122,67 +127,37 @@ export const ListWallet = ({ navigation }: any) => {
         >
           <View
             style={{
-              height: 176,
+              height: 100,
               width: "100%",
               borderRadius: 24,
+              borderWidth: 2,
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "center",
               backgroundColor: getCardColor(index),
             }}
           >
-            <View style={{ maxWidth: 200 }}>
+            <View
+              style={{
+                width: "100%",
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 12,
+              }}
+            >
               <Text style={styles.quadradoTextHeader}>{item.description}</Text>
-              <Text style={styles.quadradoTextBody}>
-                {formatNumber(String(item.amount))}
-              </Text>
-            </View>
-            <View style={{ padding: 24 }}>
-              <TouchableOpacity
+              <View
                 style={{
-                  margin: 10,
-                  backgroundColor: "#242424",
-                  paddingVertical: 10,
-                  paddingHorizontal: 20,
-                  borderRadius: 5,
-                }}
-                onPress={() => onNavigation(item.id)}
-              >
-                <Text
-                  style={{
-                    color: "yellow",
-                    fontSize: 16,
-                    fontWeight: "500",
-                    textAlign: "center",
-                  }}
-                >
-                  Editar
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleDeleteWallet(item.id);
-                }}
-                style={{
-                  margin: 10,
-                  backgroundColor: "#242424",
-                  paddingVertical: 10,
-                  paddingHorizontal: 20,
-                  borderRadius: 5,
+                  backgroundColor: "green",
+                  borderRadius: 10,
+                  borderWidth: 2,
                 }}
               >
-                <Text
-                  style={{
-                    color: "red",
-                    fontSize: 16,
-                    fontWeight: "500",
-                    textAlign: "center",
-                  }}
-                >
-                  Excluir
+                <Text style={styles.quadradoTextBody}>
+                  {formatNumber(String(item.amount))}
                 </Text>
-              </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
@@ -195,12 +170,11 @@ const styles = StyleSheet.create({
   quadradoTextHeader: {
     fontSize: 18,
     fontWeight: "600",
-    padding: 24,
   },
   quadradoTextBody: {
     fontSize: 16,
     fontWeight: "700",
-    padding: 24,
+    padding: 6,
   },
   columnLabels: {
     flexDirection: "row",
@@ -247,12 +221,13 @@ const styles = StyleSheet.create({
   buttonAdd: {
     borderRadius: 100,
     margin: 12,
-    height: 50,
-    width: 50,
+    height: 40,
+    width: "100%",
     backgroundColor: "green",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
 
     borderStyle: "dashed",
     borderWidth: 1,

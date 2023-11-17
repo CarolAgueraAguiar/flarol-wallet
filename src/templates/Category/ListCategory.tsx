@@ -78,10 +78,15 @@ export const ListCategory = ({ navigation }: any) => {
           </View>
           <TouchableOpacity
             onPress={() => navigation.navigate("AdicionarCategoria")}
-            style={{ display: "flex", alignItems: "flex-end" }}
+            style={{ display: "flex", alignItems: "center", margin: 12 }}
           >
             <View style={styles.buttonAdd}>
               <Add />
+              <Text
+                style={{ marginLeft: 10, color: "#fff", fontWeight: "600" }}
+              >
+                Adicionar
+              </Text>
             </View>
           </TouchableOpacity>
         </>
@@ -142,12 +147,13 @@ const styles = StyleSheet.create({
   buttonAdd: {
     borderRadius: 100,
     margin: 12,
-    height: 50,
-    width: 50,
+    height: 40,
+    width: "100%",
     backgroundColor: "green",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
 
     borderStyle: "dashed",
     borderWidth: 1,
