@@ -28,9 +28,9 @@ export const listPiggyBank = async () => {
   try {
     const { data } = await axiosFlarol.get("piggy");
 
-    return data;
+    return [data, null];
   } catch (e: any) {
-    return e;
+    return [null, e.response.data];
   }
 };
 

@@ -5,3 +5,12 @@ export interface StorePiggyBank {
   initial_value: number;
   wallet_id: number;
 }
+
+export interface ListPiggyBank {
+  amount: number;
+  final_amount: number;
+  final_date: string;
+  id: number;
+  name: string;
+  progress: number;
+}

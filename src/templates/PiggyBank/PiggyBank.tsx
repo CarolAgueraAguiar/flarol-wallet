@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,14 +12,16 @@ import { CircleIcon } from "../../../assets/svg/CircleIcon";
 import { Add } from "../../../assets/svg/Add";
 import { PiggyBank } from "../../../assets/svg/PiggyBank";
 import { PiggyBank2 } from "../../../assets/svg/PiggyBank2";
+import { listPiggyBank } from "../../services/piggyBank/piggybank";
+import { ListPiggyBank, StorePiggyBank } from "../../types/piggyBank/piggybank";
 
 interface PiggyBank {
   current: number;
   goal: number;
+  progress: number;
 }
 
-const PiggyBankCard: React.FC<PiggyBank> = ({ current, goal }) => {
-  const progress = current / goal;
+const PiggyBankCard: React.FC<PiggyBank> = ({ current, goal, progress }) => {
   let color = "#6200ee";
 
   if (progress < 0.3) {
@@ -51,19 +53,26 @@ const PiggyBankCard: React.FC<PiggyBank> = ({ current, goal }) => {
 };
 
 const PiggyBankScreen: React.FC = ({ navigation }: any) => {
-  const piggyBanks: PiggyBank[] = [
-    { current: 0, goal: 100 },
-    { current: 10, goal: 100 },
-    { current: 40, goal: 100 },
-    { current: 60, goal: 100 },
-    { current: 80, goal: 100 },
-    { current: 100, goal: 100 },
-  ];
+  const [piggyBanks, setPiggyBanks] = useState<ListPiggyBank[]>([]);
+
+  const listPiggys = async () => {
+    const [piggyBanks, error] = await listPiggyBank();
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+    setPiggyBanks(piggyBanks);
+  };
+
+  useEffect(() => {
+    listPiggys();
+  }, []);
 
   return (
     <FlatList
       data={piggyBanks}
-      keyExtractor={(item) => String(item.current)}
+      keyExtractor={(item) => String(item.id)}
       ListHeaderComponent={() => (
         <View>
           <View style={styles.container}>
@@ -93,7 +102,12 @@ const PiggyBankScreen: React.FC = ({ navigation }: any) => {
       )}
       renderItem={({ item, index }) => (
         <View style={styles.containerContent}>
-          <PiggyBankCard key={index} current={item.current} goal={item.goal} />
+          <PiggyBankCard
+            key={index}
+            current={item.amount}
+            goal={item.final_amount}
+            progress={item.progress}
+          />
         </View>
       )}
     />
