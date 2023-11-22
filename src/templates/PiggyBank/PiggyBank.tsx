@@ -14,6 +14,7 @@ import { PiggyBank } from "../../../assets/svg/PiggyBank";
 import { PiggyBank2 } from "../../../assets/svg/PiggyBank2";
 import { listPiggyBank } from "../../services/piggyBank/piggybank";
 import { ListPiggyBank, StorePiggyBank } from "../../types/piggyBank/piggybank";
+import { useToast } from "react-native-toast-notifications";
 
 interface PiggyBank {
   current: number;
@@ -54,15 +55,25 @@ const PiggyBankCard: React.FC<PiggyBank> = ({ current, goal, progress }) => {
 
 const PiggyBankScreen: React.FC = ({ navigation }: any) => {
   const [piggyBanks, setPiggyBanks] = useState<ListPiggyBank[]>([]);
+  const toast = useToast();
 
   const listPiggys = async () => {
     const [piggyBanks, error] = await listPiggyBank();
 
     if (error) {
-      console.log(error);
+      toast.show("Erro ao listar Porquinhos", {
+        type: "danger",
+      });
       return;
     }
+
     setPiggyBanks(piggyBanks);
+  };
+
+  const onNavigation = (id: number) => {
+    navigation.navigate("EditarPorquinho", {
+      id,
+    });
   };
 
   useEffect(() => {
@@ -101,14 +112,17 @@ const PiggyBankScreen: React.FC = ({ navigation }: any) => {
         </View>
       )}
       renderItem={({ item, index }) => (
-        <View style={styles.containerContent}>
+        <TouchableOpacity
+          style={styles.containerContent}
+          onPress={() => onNavigation(item.id)}
+        >
           <PiggyBankCard
             key={index}
             current={item.amount}
             goal={item.final_amount}
             progress={item.progress}
           />
-        </View>
+        </TouchableOpacity>
       )}
     />
   );

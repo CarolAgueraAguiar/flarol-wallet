@@ -1,4 +1,8 @@
-import { StorePiggyBank } from "../../types/piggyBank/piggybank";
+import {
+  ShowPiggyBank,
+  StorePiggyBank,
+  UpdatePiggyBankProps,
+} from "../../types/piggyBank/piggybank";
 import { axiosFlarol } from "../axios";
 import { ReturnError } from "../users/users";
 
@@ -34,12 +38,36 @@ export const listPiggyBank = async () => {
   }
 };
 
-export const showCategories = async (id: number): Promise<any> => {
+export const showPiggyBank = async (
+  id: number
+): Promise<[ShowPiggyBank | null, ReturnError | null]> => {
   try {
-    const { data } = await axiosFlarol.get(`piggy/${id}`);
+    const { data } = await axiosFlarol.get<ShowPiggyBank>(`piggy/${id}`);
 
-    return data;
+    return [data, null];
   } catch (e: any) {
-    return e;
+    return [null, e.response.data];
+  }
+};
+
+export const updatePiggyBank = async ({
+  id,
+  name,
+  final_amount,
+  final_date,
+}: UpdatePiggyBankProps): Promise<[number | null, ReturnError | null]> => {
+  try {
+    const { status } = await axiosFlarol.put<UpdatePiggyBankProps>(
+      `categories/${id}`,
+      {
+        name,
+        final_amount,
+        final_date,
+      }
+    );
+
+    return [status, null];
+  } catch (e: any) {
+    return [null, e];
   }
 };

@@ -25,6 +25,7 @@ import { ListIncome } from "../templates/Transactions/Income/ListIncome";
 import { UpdateIncome } from "../templates/Transactions/Income/UpdateIncome";
 import PiggyBankScreen from "../templates/PiggyBank/PiggyBank";
 import AdicionarPorquinhoScreen from "../templates/PiggyBank/AddPiggyBank";
+import UpdatePorquinhoScreen from "../templates/PiggyBank/UpdatePiggyBank";
 
 const { Navigator, Screen, Group } = createStackNavigator();
 
@@ -247,6 +248,22 @@ export const Routes = () => {
                   },
                   headerTintColor: "#fff",
                   headerTitle: "Adicionar Porquinho",
+                }}
+              />
+              <Screen
+                name="EditarPorquinho"
+                component={UpdatePorquinhoScreen}
+                options={{
+                  headerStyle: {
+                    backgroundColor: "#1aa035",
+                    borderBottomWidth: 0,
+                    shadowColor: "transparent",
+                    shadowOpacity: 0,
+                    elevation: 0,
+                    height: 120,
+                  },
+                  headerTintColor: "#fff",
+                  headerTitle: "Editar Porquinho",
                 }}
               />
             </Group>

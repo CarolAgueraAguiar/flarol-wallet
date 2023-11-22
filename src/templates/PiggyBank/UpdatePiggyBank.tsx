@@ -7,7 +7,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { storePiggyBank } from "../../services/piggyBank/piggybank";
+import {
+  showPiggyBank,
+  storePiggyBank,
+  updatePiggyBank,
+} from "../../services/piggyBank/piggybank";
 import { FormErrors } from "../Login/Login";
 import { useForm } from "react-hook-form";
 import { useToast } from "react-native-toast-notifications";
@@ -17,13 +21,22 @@ import {
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { Calendar } from "react-native-calendars";
-import { formatarData, formatarDataParaEnvio } from "../../utils/Date";
+import {
+  formatarData,
+  formatarDataParaEnvio,
+  formatarDataTimeStamp,
+} from "../../utils/Date";
 import { listWallets } from "../../services/wallets/wallets";
 import { ListWalletsProps } from "../../types/wallets/wallets";
 import { Picker } from "@react-native-picker/picker";
 import { cleanNumber } from "../../utils/mask";
 
-const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
+const UpdatePorquinhoScreen: React.FC = ({
+  navigation: { navigate },
+  route,
+}: any) => {
+  const { id } = route.params;
+
   const [isCalendarVisible, setCalendarVisibility] = useState(false);
   const [isWalletVisible, setWalletVisibility] = useState(false);
   const [wallets, setWallets] = useState<ListWalletsProps[]>([]);
@@ -60,6 +73,22 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
     closeCalendar();
   };
 
+  const listPiggys = async () => {
+    const [piggyBanks, error] = await showPiggyBank(id);
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+    setValue("name", piggyBanks!.piggy.name);
+    setValue("date", formatarDataTimeStamp(piggyBanks!.piggy.final_date));
+    setValue("goal", piggyBanks!.piggy.final_amount);
+  };
+
+  useEffect(() => {
+    listPiggys();
+  }, []);
+
   useEffect(() => {
     setValue("date", formatarData(selectedDate));
   }, []);
@@ -77,14 +106,13 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
 
   const onSubmit = async (data: any) => {
     const newPiggyBank = {
+      id: id,
       name: data.name,
       final_date: data.date ? formatarDataParaEnvio(data.date) : "",
-      initial_value: data.current ? Number(cleanNumber(data.current)) : 0,
       final_amount: data.goal ? Number(cleanNumber(data.goal)) : 0,
-      wallet_id: data.walletId,
     };
 
-    const [storePiggy, error] = await storePiggyBank(newPiggyBank);
+    const [storePiggy, error] = await updatePiggyBank(newPiggyBank);
 
     if (error) {
       const errorObject: FormErrors = {};
@@ -99,13 +127,6 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
       Object.keys(errorObject).forEach((field) => {
         setError(field, errorObject[field]);
       });
-
-      if (errorObject.wallet_id) {
-        toast.show(errorObject.wallet_id.message, {
-          type: "danger",
-        });
-      }
-
       return;
     }
 
@@ -113,13 +134,13 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
       toast.show("Porquinho criado com sucesso", {
         type: "success",
       });
-      navigation.navigate("Home");
+      navigate("Home");
     } else {
       toast.show("Erro ao criar porquinho", {
         type: "danger",
       });
     }
-    navigation.navigate("Home");
+    navigate("Home");
   };
 
   return (
@@ -137,10 +158,6 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
           placeholder="Digite o nome do porquinho"
           errors={errors}
         />
-      </View>
-      <View>
-        <Text style={{ margin: 8 }}>Valor Inicial:</Text>
-        <MoneyInput control={control} name="current" errors={errors} />
       </View>
       <View>
         <Text style={{ margin: 8 }}>Objetivo:</Text>
@@ -188,53 +205,11 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
         )}
       </View>
 
-      <View>
-        <Text style={{ margin: 8 }}>Selecione a Carteira:</Text>
-        <TextField
-          status={TextFieldStatus.Disabled}
-          control={control}
-          name="walletName"
-          placeholder="Carteira"
-          errors={errors}
-          onClick={openWallets}
-        />
-      </View>
-      {isWalletVisible && (
-        <Picker
-          selectionColor="#1aa0359c"
-          selectedValue={walletSelected}
-          style={{
-            height: 200,
-            backgroundColor: "#fff",
-            width: 328,
-            borderRadius: 5,
-            marginLeft: 8,
-            marginBottom: 20,
-          }}
-          onValueChange={(itemId) => {
-            const searchName = wallets.find(
-              (icon: any) => icon.id === itemId
-            )!.description;
-            setValue("walletId", itemId);
-            setValue("walletName", searchName);
-            setWalletSelected(itemId);
-          }}
-        >
-          {wallets.map((option, index) => (
-            <Picker.Item
-              color="#000"
-              key={index}
-              label={option.description}
-              value={option.id}
-            />
-          ))}
-        </Picker>
-      )}
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
         style={styles.buttonAdd}
       >
-        <Text style={{ color: "#fff", fontWeight: "700" }}>Adicionar</Text>
+        <Text style={{ color: "#fff", fontWeight: "700" }}>Salvar</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -258,7 +233,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     backgroundColor: "#5577A5",
     alignItems: "center",
+    justifyContent: "flex-end",
   },
 });
 
-export default AdicionarPorquinhoScreen;
+export default UpdatePorquinhoScreen;
