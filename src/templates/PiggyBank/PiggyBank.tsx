@@ -15,14 +15,24 @@ import { PiggyBank2 } from "../../../assets/svg/PiggyBank2";
 import { listPiggyBank } from "../../services/piggyBank/piggybank";
 import { ListPiggyBank, StorePiggyBank } from "../../types/piggyBank/piggybank";
 import { useToast } from "react-native-toast-notifications";
+import { formatarDataTimeStamp } from "../../utils/Date";
+import { useIsFocused } from "@react-navigation/native";
 
 interface PiggyBank {
   current: number;
   goal: number;
   progress: number;
+  final_date: string;
+  name: string;
 }
 
-const PiggyBankCard: React.FC<PiggyBank> = ({ current, goal, progress }) => {
+const PiggyBankCard: React.FC<PiggyBank> = ({
+  current,
+  goal,
+  progress,
+  final_date,
+  name,
+}) => {
   let color = "#6200ee";
 
   if (progress < 0.3) {
@@ -35,13 +45,42 @@ const PiggyBankCard: React.FC<PiggyBank> = ({ current, goal, progress }) => {
     color = "#00ff00"; // verde para 100% ou mais
   }
 
+  const currentDate = new Date();
+  const finalDate = new Date(final_date);
+  const timeDifference = finalDate.getTime() - currentDate.getTime();
+
+  const daysDifference = timeDifference / (1000 * 3600 * 24);
+  let colorDate = "#6200ee";
+
+  if (daysDifference <= 7) {
+    colorDate = "#aa0e0e"; // vermelho para menos de 7 dias
+  } else if (daysDifference <= 14) {
+    colorDate = "#ffaa00"; // laranja para menos de 14 dias
+  } else if (daysDifference <= 30) {
+    colorDate = "#ffff00"; // amarelo para menos de 30 dias
+  } else {
+    colorDate = "#00ff00"; // verde para mais de 30 dias
+  }
+
   const piggyBankPosition = (progress * 93).toString() + "%";
 
   return (
     <View style={styles.card}>
       <View style={styles.title}>
-        <Text>Valor Atual: R${current}</Text>
-        <Text>Objetivo: R${goal}</Text>
+        <Text style={{ color: "#e2e2e2", fontWeight: "800", fontSize: 18 }}>
+          {name}
+        </Text>
+        <Text style={{ color: colorDate, fontWeight: "700", fontSize: 15 }}>
+          {formatarDataTimeStamp(final_date)}
+        </Text>
+      </View>
+      <View style={styles.title}>
+        <Text style={{ color: "#fff", fontWeight: "700", fontSize: 17 }}>
+          R${current}
+        </Text>
+        <Text style={{ color: color, fontWeight: "700", fontSize: 17 }}>
+          R${goal}
+        </Text>
       </View>
       <ProgressBar
         progress={progress}
@@ -56,6 +95,7 @@ const PiggyBankCard: React.FC<PiggyBank> = ({ current, goal, progress }) => {
 const PiggyBankScreen: React.FC = ({ navigation }: any) => {
   const [piggyBanks, setPiggyBanks] = useState<ListPiggyBank[]>([]);
   const toast = useToast();
+  const isFocused = useIsFocused();
 
   const listPiggys = async () => {
     const [piggyBanks, error] = await listPiggyBank();
@@ -77,8 +117,10 @@ const PiggyBankScreen: React.FC = ({ navigation }: any) => {
   };
 
   useEffect(() => {
-    listPiggys();
-  }, []);
+    if (isFocused) {
+      listPiggys();
+    }
+  }, [isFocused]);
 
   return (
     <FlatList
@@ -121,6 +163,8 @@ const PiggyBankScreen: React.FC = ({ navigation }: any) => {
             current={item.amount}
             goal={item.final_amount}
             progress={item.progress}
+            final_date={item.final_date}
+            name={item.name}
           />
         </TouchableOpacity>
       )}
@@ -147,9 +191,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingBottom: 12,
+    alignItems: "center",
   },
   containerContent: {
-    backgroundColor: "#5577A5",
+    backgroundColor: "#5576a5d5",
     margin: 12,
     borderRadius: 10,
   },

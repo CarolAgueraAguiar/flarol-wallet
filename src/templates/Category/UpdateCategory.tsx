@@ -6,6 +6,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import {
+  listIcons,
   showCategories,
   updateCategory,
 } from "../../services/categories/categories";
@@ -14,6 +15,8 @@ import { SvgXml } from "react-native-svg";
 import { FormErrors } from "../Login/Login";
 import { useToast } from "react-native-toast-notifications";
 import { Icon } from "../../types/categories/categories";
+import { Decoration } from "../../../assets/svg/Decoration";
+import { CircleIcon } from "../../../assets/svg/CircleIcon";
 
 export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
   const { id } = route.params;
@@ -26,53 +29,56 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
 
   const toast = useToast();
 
-  const [icons, setIcons] = useState<Icon>();
+  const [icons, setIcons] = useState<Icon[]>([]);
   const [selectedIcon, setSelectedIcon] = useState<any>();
   const [selectedIconData, setSelectedIconData] = useState<any>();
 
   const getCategories = async (id: number) => {
     const categoriesData = await showCategories(id);
     setValue("description", categoriesData.description);
-    setIcons(categoriesData.icon);
+    setSelectedIcon(categoriesData.icon.id);
+    setSelectedIconData(categoriesData.icon.data);
+  };
+
+  const getIcons = async () => {
+    const response = await listIcons();
+    setIcons(response);
   };
 
   useEffect(() => {
     getCategories(id);
+    getIcons();
   }, []);
 
   const onSubmit = async (data: any) => {
     const [response, error] = await updateCategory({
       description: data.description,
-      icon_id: selectedIcon.id,
+      icon_id: selectedIcon,
       id: id,
     });
 
-    if (error) {
-      const errorObject: FormErrors = {};
-
-      error.message.forEach((errorItem) => {
-        return (errorObject[errorItem.field] = {
-          message: errorItem.error,
-          type: "required",
-        });
+    if (response === 204) {
+      toast.show("Categoria alterada com sucesso", {
+        type: "success",
       });
-
-      if (errorObject.description) {
-        toast.show("O nome da categoria não pode ser vazio", {
-          type: "danger",
-        });
-      }
-
-      return;
+      navigate("Categoria");
+    } else {
+      toast.show(`Erro ao alterar categoria (${error?.statusCode})`, {
+        type: "danger",
+      });
     }
-
-    navigate("Categoria");
   };
 
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.text}>Atualizar Carteira</Text>
+        <Text style={styles.text}>Categoria</Text>
+        <View style={{ position: "absolute", top: 0, right: 0 }}>
+          <Decoration />
+        </View>
+        <View style={{ position: "absolute", bottom: 0, left: 0 }}>
+          <CircleIcon />
+        </View>
       </View>
       <View
         style={{
@@ -92,7 +98,7 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
         {icons && (
           <View style={styles.itemContainer}>
             <Picker
-              selectedValue={icons.id}
+              selectedValue={selectedIcon}
               style={{
                 height: 200,
                 backgroundColor: "#fff",
@@ -102,16 +108,27 @@ export const UpdateCategory = ({ navigation: { navigate }, route }: any) => {
               }}
               onValueChange={(itemValue) => {
                 setSelectedIcon(itemValue);
-                setSelectedIconData(icons.data);
+                setSelectedIconData(
+                  icons.find((icon: any) => icon.id === itemValue)?.data
+                );
               }}
             >
-              <Picker.Item
-                key={icons.id}
-                label={icons.description}
-                value={icons.id}
-              />
+              {icons.map((icon: any) => (
+                <Picker.Item
+                  key={icon.id}
+                  label={icon.desription}
+                  value={icon.id}
+                />
+              ))}
             </Picker>
-            <SvgXml xml={icons.data} width={50} height={50} color="white" />
+            {selectedIconData && (
+              <SvgXml
+                xml={selectedIconData}
+                width={50}
+                height={50}
+                color="white"
+              />
+            )}
           </View>
         )}
       </View>
@@ -143,7 +160,7 @@ const styles = StyleSheet.create({
     padding: 24,
     margin: 12,
     height: 150,
-    backgroundColor: "#cabd81",
+    backgroundColor: "#bdc30fa2",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

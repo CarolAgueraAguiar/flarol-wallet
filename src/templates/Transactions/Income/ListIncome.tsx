@@ -17,9 +17,10 @@ import { TransactionStatus } from "../../../enum/TransactionStatus";
 import { FilterIncomes } from "../../../components/Filter/FilterIncomes";
 import { FilterDate } from "../../../components/Filter/FilterDate";
 import ButtonClearFilters from "../../../components/Filter/ButtonClearFilters";
+import { useToast } from "react-native-toast-notifications";
 
 export const ListIncome = ({ navigation }: any) => {
-  const [incomes, setIncomes] = useState<GetTransactionProps[]>();
+  const [incomes, setIncomes] = useState<GetTransactionProps[]>([]);
   const isFocused = useIsFocused();
 
   const [filteredIncomes, setFilteredIncomes] = useState<
@@ -28,12 +29,30 @@ export const ListIncome = ({ navigation }: any) => {
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const toast = useToast();
 
   const transactionsData = async () => {
-    const data = await listIncomes();
-    setIncomes(data);
+    const [data, error] = await listIncomes();
 
-    applyFilter(data, filterStatus, startDate, endDate);
+    if (error) {
+      toast.show(
+        `Erro ao retornar listagem de Receitas - (${error.statusCode})`,
+        {
+          type: "danger",
+        }
+      );
+      navigation.navigate("Home");
+      return;
+    }
+
+    if (data && data.length > 0) {
+      setIncomes(data);
+      applyFilter(data, filterStatus, startDate, endDate);
+      return;
+    }
+
+    setIncomes([]);
+    setFilteredIncomes([]);
   };
 
   const applyFilter = (
@@ -68,16 +87,16 @@ export const ListIncome = ({ navigation }: any) => {
   const setNewFilterStatus = (status: string | null) => {
     if (incomes) {
       applyFilter(incomes, status, startDate, endDate);
+      setFilterStatus(status);
     }
-    setFilterStatus(status);
   };
 
   const setFilterDate = (start: Date | null, end: Date | null) => {
     if (incomes) {
       applyFilter(incomes, filterStatus, start, end);
+      setStartDate(start);
+      setEndDate(end);
     }
-    setStartDate(start);
-    setEndDate(end);
   };
 
   const handleClearFilters = () => {
@@ -233,30 +252,32 @@ export const ListIncome = ({ navigation }: any) => {
               }}
             >
               <Text style={styles.quadradoTextHeader}>{item.description}</Text>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: "#9a9292",
-                  padding: 6,
-                  borderRadius: 5,
-                  width: "auto",
-                  justifyContent: "space-between",
-                }}
-              >
-                <SvgXml
-                  xml={item.category.icon.data}
-                  width={20}
-                  height={20}
-                  color="white"
-                />
-                <Text
-                  style={{ color: "#fff", fontWeight: "600", marginLeft: 10 }}
+              {item.category && (
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: "#9a9292",
+                    padding: 6,
+                    borderRadius: 5,
+                    width: "auto",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  {item.category.slug}
-                </Text>
-              </View>
+                  <SvgXml
+                    xml={item.category.icon.data}
+                    width={20}
+                    height={20}
+                    color="white"
+                  />
+                  <Text
+                    style={{ color: "#fff", fontWeight: "600", marginLeft: 10 }}
+                  >
+                    {item.category.slug}
+                  </Text>
+                </View>
+              )}
             </View>
             <View
               style={{
@@ -285,6 +306,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     paddingBottom: 12,
+    maxWidth: 200,
   },
   quadradoTextBody: {
     fontSize: 16,

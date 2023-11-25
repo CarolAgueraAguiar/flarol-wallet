@@ -117,13 +117,14 @@ export const ListWallet = ({ navigation }: any) => {
         </View>
       )}
       renderItem={({ item, index }) => (
-        <View
+        <TouchableOpacity
           style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             margin: 12,
           }}
+          onPress={() => onNavigation(item.id)}
         >
           <View
             style={{
@@ -160,7 +161,7 @@ export const ListWallet = ({ navigation }: any) => {
               </View>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       )}
     />
   );

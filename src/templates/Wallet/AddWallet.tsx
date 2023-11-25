@@ -54,7 +54,7 @@ export const AddWallet = ({ navigation: { navigate } }: any) => {
         type: "success",
       });
       setUser({ ...user, hasWallet: true });
-      navigate("Home");
+      navigate("Carteira");
     } else {
       toast.show("Erro ao criar carteira", {
         type: "danger",

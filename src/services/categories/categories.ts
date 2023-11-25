@@ -41,7 +41,7 @@ export const updateCategory = async ({
 
     return [status, null];
   } catch (e: any) {
-    return [null, e];
+    return [null, e.response.data];
   }
 };
 

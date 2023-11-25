@@ -10,7 +10,9 @@ import {
 import {
   showPiggyBank,
   storePiggyBank,
+  transferPiggyBank,
   updatePiggyBank,
+  withDrawPiggyBank,
 } from "../../services/piggyBank/piggybank";
 import { FormErrors } from "../Login/Login";
 import { useForm } from "react-hook-form";
@@ -30,6 +32,8 @@ import { listWallets } from "../../services/wallets/wallets";
 import { ListWalletsProps } from "../../types/wallets/wallets";
 import { Picker } from "@react-native-picker/picker";
 import { cleanNumber } from "../../utils/mask";
+import { Add } from "../../../assets/svg/Add";
+import { IconMinus } from "../../../assets/svg/IconMinus";
 
 const UpdatePorquinhoScreen: React.FC = ({
   navigation: { navigate },
@@ -38,7 +42,9 @@ const UpdatePorquinhoScreen: React.FC = ({
   const { id } = route.params;
 
   const [isCalendarVisible, setCalendarVisibility] = useState(false);
+  const [isInputTransferVisible, setInputTransferVisibility] = useState(false);
   const [isWalletVisible, setWalletVisibility] = useState(false);
+  const [isInputSaqueVisible, setInputSaqueVisibility] = useState(false);
   const [wallets, setWallets] = useState<ListWalletsProps[]>([]);
   const [walletSelected, setWalletSelected] = useState("");
   const [selectedDate, setSelectedDate] = useState(
@@ -51,6 +57,7 @@ const UpdatePorquinhoScreen: React.FC = ({
     formState: { errors },
     setError,
     setValue,
+    getValues,
   } = useForm();
 
   const toast = useToast();
@@ -63,10 +70,6 @@ const UpdatePorquinhoScreen: React.FC = ({
     setCalendarVisibility(false);
   };
 
-  const openWallets = () => {
-    setWalletVisibility((previousState) => !previousState);
-  };
-
   const handleDateChange = (day: any) => {
     setSelectedDate(day.dateString);
     setValue("date", formatarData(day.dateString));
@@ -77,9 +80,13 @@ const UpdatePorquinhoScreen: React.FC = ({
     const [piggyBanks, error] = await showPiggyBank(id);
 
     if (error) {
-      console.log(error);
+      toast.show(`Erro ao retornar o porquinho - (${error.statusCode})`, {
+        type: "danger",
+      });
+      navigate("PiggyBank");
       return;
     }
+
     setValue("name", piggyBanks!.piggy.name);
     setValue("date", formatarDataTimeStamp(piggyBanks!.piggy.final_date));
     setValue("goal", piggyBanks!.piggy.final_amount);
@@ -96,6 +103,7 @@ const UpdatePorquinhoScreen: React.FC = ({
   const getWallets = async () => {
     const data = await listWallets();
     setWallets(data);
+    setWalletSelected(data[0].id.toString());
     setValue("walletId", data[0].id);
     setValue("walletName", data[0].description);
   };
@@ -103,6 +111,86 @@ const UpdatePorquinhoScreen: React.FC = ({
   useEffect(() => {
     getWallets();
   }, []);
+
+  const openInputDepositar = () => {
+    setInputTransferVisibility(!isInputTransferVisible);
+    setInputSaqueVisibility(false);
+  };
+
+  const openInputSaque = () => {
+    setInputSaqueVisibility(!isInputSaqueVisible);
+    setInputTransferVisibility(false);
+  };
+
+  const openWallets = () => {
+    setWalletVisibility((previousState) => !previousState);
+  };
+
+  const updatePiggyAdd = async (data: any) => {
+    const update = {
+      piggy_id: id,
+      wallet_id: Number(walletSelected),
+      amount: Number(cleanNumber(getValues("amount"))),
+    };
+
+    const [transferPiggy, error] = await transferPiggyBank(update);
+
+    if (error) {
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      Object.keys(errorObject).forEach((field) => {
+        setError(field, errorObject[field]);
+      });
+      return;
+    }
+
+    if (transferPiggy === 201) {
+      toast.show("Transferência realizada com sucesso", {
+        type: "success",
+      });
+      navigate("PiggyBank");
+    }
+  };
+
+  const updatePiggyRemove = async () => {
+    const update = {
+      piggy_id: id,
+      wallet_id: Number(walletSelected),
+      amount: Number(cleanNumber(getValues("amountSaque"))),
+    };
+
+    const [transferPiggy, error] = await withDrawPiggyBank(update);
+
+    if (error) {
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      Object.keys(errorObject).forEach((field) => {
+        setError(field, errorObject[field]);
+      });
+      return;
+    }
+
+    if (transferPiggy === 201) {
+      toast.show("Saque realizado com sucesso", {
+        type: "success",
+      });
+      navigate("PiggyBank");
+    }
+  };
 
   const onSubmit = async (data: any) => {
     const newPiggyBank = {
@@ -135,91 +223,241 @@ const UpdatePorquinhoScreen: React.FC = ({
         type: "success",
       });
       navigate("Home");
-    } else {
-      toast.show("Erro ao criar porquinho", {
-        type: "danger",
-      });
     }
-    navigate("Home");
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps="handled"
-      style={styles.container}
-    >
-      <View>
-        <Text style={{ margin: 8 }}>Nome:</Text>
-        <TextField
-          status={TextFieldStatus.Default}
-          control={control}
-          name="name"
-          placeholder="Digite o nome do porquinho"
-          errors={errors}
-        />
-      </View>
-      <View>
-        <Text style={{ margin: 8 }}>Objetivo:</Text>
-        <MoneyInput control={control} name="goal" errors={errors} />
-      </View>
-      <View>
-        <Text style={{ margin: 8 }}>Selecione a data:</Text>
-        <TextField
-          status={TextFieldStatus.Disabled}
-          control={control}
-          name="date"
-          placeholder="Selecione a Data"
-          errors={errors}
-          onClick={openCalendar}
-        />
-        {isCalendarVisible && (
-          <Calendar
-            displayName="date"
-            style={{
-              borderWidth: 2,
-              borderRadius: 10,
-              borderColor: "#1aa035",
-              height: "auto",
-              width: 328,
-              marginLeft: 8,
-            }}
-            theme={{
-              backgroundColor: "#ffffff",
-              calendarBackground: "#ffffff",
-              textSectionTitleColor: "#b6c1cd",
-              selectedDayBackgroundColor: "#1aa035",
-              selectedDayTextColor: "#ffffff",
-              todayTextColor: "#1aa035",
-              dayTextColor: "#2d4150",
-            }}
-            current={selectedDate}
-            onDayPress={handleDateChange}
-            markedDates={{
-              [selectedDate]: {
-                selected: true,
-                disableTouchEvent: true,
-              },
-            }}
-          />
+    <ScrollView contentContainerStyle={styles.scrollView}>
+      <View style={styles.container}>
+        {!isInputTransferVisible && !isInputSaqueVisible && (
+          <View>
+            <View>
+              <Text style={{ margin: 8 }}>Nome:</Text>
+              <TextField
+                status={TextFieldStatus.Default}
+                control={control}
+                name="name"
+                placeholder="Digite o nome do porquinho"
+                errors={errors}
+              />
+            </View>
+            <View>
+              <Text style={{ margin: 8 }}>Objetivo:</Text>
+              <MoneyInput control={control} name="goal" errors={errors} />
+            </View>
+            <View>
+              <Text style={{ margin: 8 }}>Selecione a data final:</Text>
+              <TextField
+                status={TextFieldStatus.Disabled}
+                control={control}
+                name="date"
+                placeholder="Selecione a Data"
+                errors={errors}
+                onClick={openCalendar}
+              />
+              {isCalendarVisible && (
+                <Calendar
+                  displayName="date"
+                  style={{
+                    borderWidth: 2,
+                    borderRadius: 10,
+                    borderColor: "#1aa035",
+                    height: "auto",
+                    width: 328,
+                    marginLeft: 8,
+                  }}
+                  theme={{
+                    backgroundColor: "#ffffff",
+                    calendarBackground: "#ffffff",
+                    textSectionTitleColor: "#b6c1cd",
+                    selectedDayBackgroundColor: "#1aa035",
+                    selectedDayTextColor: "#ffffff",
+                    todayTextColor: "#1aa035",
+                    dayTextColor: "#2d4150",
+                  }}
+                  current={selectedDate}
+                  onDayPress={handleDateChange}
+                  markedDates={{
+                    [selectedDate]: {
+                      selected: true,
+                      disableTouchEvent: true,
+                    },
+                  }}
+                />
+              )}
+            </View>
+          </View>
+        )}
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <TouchableOpacity
+            onPress={openInputSaque}
+            style={{ display: "flex", alignItems: "center", margin: 12 }}
+          >
+            <View style={styles.buttonMinusMoney}>
+              <IconMinus />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={openInputDepositar}
+            style={{ display: "flex", alignItems: "center", margin: 12 }}
+          >
+            <View style={styles.buttonAddMoney}>
+              <Add />
+            </View>
+          </TouchableOpacity>
+        </View>
+        {isInputTransferVisible && (
+          <View>
+            <Text style={{ margin: 8 }}>
+              Digite o valor desejado para DEPOSITAR:
+            </Text>
+            <MoneyInput control={control} name="amount" errors={errors} />
+            <View>
+              <Text style={{ margin: 8 }}>Selecione a Carteira:</Text>
+              <TextField
+                status={TextFieldStatus.Disabled}
+                control={control}
+                name="walletName"
+                placeholder="Carteira"
+                errors={errors}
+                onClick={openWallets}
+              />
+            </View>
+            {isWalletVisible && (
+              <Picker
+                selectionColor="#1aa0359c"
+                selectedValue={walletSelected}
+                style={{
+                  height: 200,
+                  backgroundColor: "#fff",
+                  width: 328,
+                  borderRadius: 5,
+                  marginLeft: 8,
+                  marginBottom: 20,
+                }}
+                onValueChange={(itemId) => {
+                  const searchName = wallets.find(
+                    (icon: any) => icon.id === itemId
+                  )!.description;
+                  setValue("walletId", itemId);
+                  setValue("walletName", searchName);
+                  setWalletSelected(itemId);
+                }}
+              >
+                {wallets.map((option, index) => (
+                  <Picker.Item
+                    color="#000"
+                    key={index}
+                    label={option.description}
+                    value={option.id}
+                  />
+                ))}
+              </Picker>
+            )}
+            <TouchableOpacity
+              onPress={updatePiggyAdd}
+              style={{ display: "flex", alignItems: "center", margin: 12 }}
+            >
+              <View style={styles.buttonAddMoneyFinished}>
+                <Add />
+                <Text style={{ color: "#fff", fontWeight: "700" }}>
+                  Adicionar Dinheiro
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+        {isInputSaqueVisible && (
+          <View>
+            <Text style={{ margin: 8 }}>
+              Digite o valor desejado para SAQUE:
+            </Text>
+            <MoneyInput control={control} name="amountSaque" errors={errors} />
+            <View>
+              <Text style={{ margin: 8 }}>Selecione a Carteira:</Text>
+              <TextField
+                status={TextFieldStatus.Disabled}
+                control={control}
+                name="walletName"
+                placeholder="Carteira"
+                errors={errors}
+                onClick={openWallets}
+              />
+            </View>
+            {isWalletVisible && (
+              <Picker
+                selectionColor="#1aa0359c"
+                selectedValue={walletSelected}
+                style={{
+                  height: 200,
+                  backgroundColor: "#fff",
+                  width: 328,
+                  borderRadius: 5,
+                  marginLeft: 8,
+                  marginBottom: 20,
+                }}
+                onValueChange={(itemId) => {
+                  const searchName = wallets.find(
+                    (icon: any) => icon.id === itemId
+                  )!.description;
+                  setValue("walletId", itemId);
+                  setValue("walletName", searchName);
+                  setWalletSelected(itemId);
+                }}
+              >
+                {wallets.map((option, index) => (
+                  <Picker.Item
+                    color="#000"
+                    key={index}
+                    label={option.description}
+                    value={option.id}
+                  />
+                ))}
+              </Picker>
+            )}
+            <TouchableOpacity
+              onPress={updatePiggyRemove}
+              style={{ display: "flex", alignItems: "center", margin: 12 }}
+            >
+              <View style={styles.buttonRemoveMoneyFinished}>
+                <IconMinus />
+                <Text style={{ color: "#fff", fontWeight: "700" }}>
+                  Sacar Dinheiro
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
-
-      <TouchableOpacity
-        onPress={handleSubmit(onSubmit)}
-        style={styles.buttonAdd}
-      >
-        <Text style={{ color: "#fff", fontWeight: "700" }}>Salvar</Text>
-      </TouchableOpacity>
+      {!isInputTransferVisible && !isInputSaqueVisible && (
+        <TouchableOpacity
+          onPress={handleSubmit(onSubmit)}
+          style={styles.buttonAdd}
+        >
+          <Text style={{ color: "#fff", fontWeight: "700" }}>Salvar</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+    marginBottom: 50,
+    marginTop: 20,
+    marginHorizontal: 20,
+  },
   container: {
     flex: 1,
-    padding: 20,
-    height: "100%",
+    display: "flex",
+    alignItems: "center",
   },
   input: {
     height: 40,
@@ -234,6 +472,56 @@ const styles = StyleSheet.create({
     backgroundColor: "#5577A5",
     alignItems: "center",
     justifyContent: "flex-end",
+  },
+  buttonAddMoney: {
+    borderRadius: 100,
+    height: 60,
+    width: 60,
+    backgroundColor: "green",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+
+    borderStyle: "dashed",
+    borderWidth: 2,
+    borderColor: "#fff",
+    borderTopColor: "white",
+  },
+  buttonAddMoneyFinished: {
+    borderRadius: 100,
+    height: 60,
+    width: 200,
+    backgroundColor: "green",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    flexDirection: "row",
+  },
+  buttonRemoveMoneyFinished: {
+    borderRadius: 100,
+    height: 60,
+    width: 200,
+    backgroundColor: "red",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    flexDirection: "row",
+  },
+  buttonMinusMoney: {
+    borderRadius: 100,
+    height: 60,
+    width: 60,
+    backgroundColor: "red",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+
+    borderStyle: "dashed",
+    borderWidth: 2,
+    borderColor: "#fff",
+    borderTopColor: "white",
   },
 });
 

@@ -247,7 +247,19 @@ export const Routes = () => {
                     height: 120,
                   },
                   headerTintColor: "#fff",
-                  headerTitle: "Adicionar Porquinho",
+                  headerTitle: "",
+                  headerRight: () => (
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 18,
+                        fontWeight: "700",
+                        alignItems: "center",
+                      }}
+                    >
+                      Adicionar Porquinho
+                    </Text>
+                  ),
                 }}
               />
               <Screen
@@ -263,7 +275,19 @@ export const Routes = () => {
                     height: 120,
                   },
                   headerTintColor: "#fff",
-                  headerTitle: "Editar Porquinho",
+                  headerTitle: "",
+                  headerRight: () => (
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 18,
+                        fontWeight: "700",
+                        alignItems: "center",
+                      }}
+                    >
+                      Editar Porquinho
+                    </Text>
+                  ),
                 }}
               />
             </Group>

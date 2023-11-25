@@ -17,9 +17,10 @@ import { TransactionStatus } from "../../../enum/TransactionStatus";
 import { FilterExpenses } from "../../../components/Filter/FilterExpenses";
 import { FilterDate } from "../../../components/Filter/FilterDate";
 import ButtonClearFilters from "../../../components/Filter/ButtonClearFilters";
+import { useToast } from "react-native-toast-notifications";
 
 export const ListExpenses = ({ navigation }: any) => {
-  const [expenses, setExpenses] = useState<GetTransactionProps[]>();
+  const [expenses, setExpenses] = useState<GetTransactionProps[]>([]);
   const isFocused = useIsFocused();
 
   const [filteredExpenses, setFilteredExpenses] = useState<
@@ -29,11 +30,26 @@ export const ListExpenses = ({ navigation }: any) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const transactionsData = async () => {
-    const data = await listExpenses();
-    setExpenses(data);
+  const toast = useToast();
 
-    applyFilter(data, filterStatus, startDate, endDate);
+  const transactionsData = async () => {
+    const [data, error] = await listExpenses();
+
+    if (error) {
+      toast.show(`Erro ao retornar listagem de Despesas - (${error.statusCode})`, {
+        type: "danger",
+      });
+      navigation.navigate("Home");
+      return;
+    }
+
+    if (data && data.length > 0) {
+      setExpenses(data);
+      applyFilter(data, filterStatus, startDate, endDate);
+      return;
+    }
+    setExpenses([]);
+    setFilteredExpenses([]);
   };
 
   const applyFilter = (
@@ -176,27 +192,29 @@ export const ListExpenses = ({ navigation }: any) => {
               </Text>
             </View>
           </TouchableOpacity>
-          <View
-            style={{
-              backgroundColor: "#f2f2f2",
-              margin: 12,
-              borderRadius: 12,
-              padding: 12,
-            }}
-          >
-            <FilterExpenses
-              onFilterChange={setNewFilterStatus}
-              filterStatus={filterStatus}
-            />
-            <FilterDate
-              onFilterChange={setFilterDate}
-              startDate={startDate}
-              endDate={endDate}
-              setStartDate={setStartDate}
-              setEndDate={setEndDate}
-            />
-            <ButtonClearFilters onPress={handleClearFilters} />
-          </View>
+          {filteredExpenses && filteredExpenses.length > 0 && (
+            <View
+              style={{
+                backgroundColor: "#f2f2f2",
+                margin: 12,
+                borderRadius: 12,
+                padding: 12,
+              }}
+            >
+              <FilterExpenses
+                onFilterChange={setNewFilterStatus}
+                filterStatus={filterStatus}
+              />
+              <FilterDate
+                onFilterChange={setFilterDate}
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+              />
+              <ButtonClearFilters onPress={handleClearFilters} />
+            </View>
+          )}
         </View>
       )}
       renderItem={({ item, index }) => (
@@ -233,30 +251,32 @@ export const ListExpenses = ({ navigation }: any) => {
               }}
             >
               <Text style={styles.quadradoTextHeader}>{item.description}</Text>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: "#9a9292",
-                  padding: 6,
-                  borderRadius: 5,
-                  width: "auto",
-                  justifyContent: "space-between",
-                }}
-              >
-                <SvgXml
-                  xml={item.category.icon.data}
-                  width={20}
-                  height={20}
-                  color="white"
-                />
-                <Text
-                  style={{ color: "#fff", fontWeight: "600", marginLeft: 10 }}
+              {item.category && (
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: "#9a9292",
+                    padding: 6,
+                    borderRadius: 5,
+                    width: "auto",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  {item.category.slug}
-                </Text>
-              </View>
+                  <SvgXml
+                    xml={item.category.icon.data}
+                    width={20}
+                    height={20}
+                    color="white"
+                  />
+                  <Text
+                    style={{ color: "#fff", fontWeight: "600", marginLeft: 10 }}
+                  >
+                    {item.category.slug}
+                  </Text>
+                </View>
+              )}
             </View>
             <View
               style={{
@@ -285,6 +305,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     paddingBottom: 12,
+    maxWidth: 220,
   },
   quadradoTextBody: {
     fontSize: 16,

@@ -193,7 +193,7 @@ export const AddExpenses = ({ navigation }: any) => {
       toast.show("Transação criada com sucesso", {
         type: "success",
       });
-      navigation.navigate("Home");
+      navigation.navigate("Expenses");
     } else {
       toast.show("Erro ao criar transação", {
         type: "danger",

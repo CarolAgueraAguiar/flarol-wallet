@@ -123,113 +123,111 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps="handled"
-      style={styles.container}
-    >
-      <View>
-        <Text style={{ margin: 8 }}>Nome:</Text>
-        <TextField
-          status={TextFieldStatus.Default}
-          control={control}
-          name="name"
-          placeholder="Digite o nome do porquinho"
-          errors={errors}
-        />
-      </View>
-      <View>
-        <Text style={{ margin: 8 }}>Valor Inicial:</Text>
-        <MoneyInput control={control} name="current" errors={errors} />
-      </View>
-      <View>
-        <Text style={{ margin: 8 }}>Objetivo:</Text>
-        <MoneyInput control={control} name="goal" errors={errors} />
-      </View>
-      <View>
-        <Text style={{ margin: 8 }}>Selecione a data:</Text>
-        <TextField
-          status={TextFieldStatus.Disabled}
-          control={control}
-          name="date"
-          placeholder="Selecione a Data"
-          errors={errors}
-          onClick={openCalendar}
-        />
-        {isCalendarVisible && (
-          <Calendar
-            displayName="date"
-            style={{
-              borderWidth: 2,
-              borderRadius: 10,
-              borderColor: "#1aa035",
-              height: "auto",
-              width: 328,
-              marginLeft: 8,
-            }}
-            theme={{
-              backgroundColor: "#ffffff",
-              calendarBackground: "#ffffff",
-              textSectionTitleColor: "#b6c1cd",
-              selectedDayBackgroundColor: "#1aa035",
-              selectedDayTextColor: "#ffffff",
-              todayTextColor: "#1aa035",
-              dayTextColor: "#2d4150",
-            }}
-            current={selectedDate}
-            onDayPress={handleDateChange}
-            markedDates={{
-              [selectedDate]: {
-                selected: true,
-                disableTouchEvent: true,
-              },
-            }}
+    <ScrollView contentContainerStyle={styles.scrollView}>
+      <View style={styles.container}>
+        <View>
+          <Text style={{ margin: 8 }}>Nome:</Text>
+          <TextField
+            status={TextFieldStatus.Default}
+            control={control}
+            name="name"
+            placeholder="Digite o nome do porquinho"
+            errors={errors}
           />
+        </View>
+        <View>
+          <Text style={{ margin: 8 }}>Valor Inicial:</Text>
+          <MoneyInput control={control} name="current" errors={errors} />
+        </View>
+        <View>
+          <Text style={{ margin: 8 }}>Objetivo:</Text>
+          <MoneyInput control={control} name="goal" errors={errors} />
+        </View>
+        <View>
+          <Text style={{ margin: 8 }}>Selecione a data final:</Text>
+          <TextField
+            status={TextFieldStatus.Disabled}
+            control={control}
+            name="date"
+            placeholder="Selecione a Data"
+            errors={errors}
+            onClick={openCalendar}
+          />
+          {isCalendarVisible && (
+            <Calendar
+              displayName="date"
+              style={{
+                borderWidth: 2,
+                borderRadius: 10,
+                borderColor: "#1aa035",
+                height: "auto",
+                width: 328,
+                marginLeft: 8,
+              }}
+              theme={{
+                backgroundColor: "#ffffff",
+                calendarBackground: "#ffffff",
+                textSectionTitleColor: "#b6c1cd",
+                selectedDayBackgroundColor: "#1aa035",
+                selectedDayTextColor: "#ffffff",
+                todayTextColor: "#1aa035",
+                dayTextColor: "#2d4150",
+              }}
+              current={selectedDate}
+              onDayPress={handleDateChange}
+              markedDates={{
+                [selectedDate]: {
+                  selected: true,
+                  disableTouchEvent: true,
+                },
+              }}
+            />
+          )}
+        </View>
+
+        <View>
+          <Text style={{ margin: 8 }}>Selecione a Carteira:</Text>
+          <TextField
+            status={TextFieldStatus.Disabled}
+            control={control}
+            name="walletName"
+            placeholder="Carteira"
+            errors={errors}
+            onClick={openWallets}
+          />
+        </View>
+        {isWalletVisible && (
+          <Picker
+            selectionColor="#1aa0359c"
+            selectedValue={walletSelected}
+            style={{
+              height: 200,
+              backgroundColor: "#fff",
+              width: 328,
+              borderRadius: 5,
+              marginLeft: 8,
+              marginBottom: 20,
+            }}
+            onValueChange={(itemId) => {
+              const searchName = wallets.find(
+                (icon: any) => icon.id === itemId
+              )!.description;
+              setValue("walletId", itemId);
+              setValue("walletName", searchName);
+              setWalletSelected(itemId);
+            }}
+          >
+            {wallets.map((option, index) => (
+              <Picker.Item
+                color="#000"
+                key={index}
+                label={option.description}
+                value={option.id}
+              />
+            ))}
+          </Picker>
         )}
       </View>
-
-      <View>
-        <Text style={{ margin: 8 }}>Selecione a Carteira:</Text>
-        <TextField
-          status={TextFieldStatus.Disabled}
-          control={control}
-          name="walletName"
-          placeholder="Carteira"
-          errors={errors}
-          onClick={openWallets}
-        />
-      </View>
-      {isWalletVisible && (
-        <Picker
-          selectionColor="#1aa0359c"
-          selectedValue={walletSelected}
-          style={{
-            height: 200,
-            backgroundColor: "#fff",
-            width: 328,
-            borderRadius: 5,
-            marginLeft: 8,
-            marginBottom: 20,
-          }}
-          onValueChange={(itemId) => {
-            const searchName = wallets.find(
-              (icon: any) => icon.id === itemId
-            )!.description;
-            setValue("walletId", itemId);
-            setValue("walletName", searchName);
-            setWalletSelected(itemId);
-          }}
-        >
-          {wallets.map((option, index) => (
-            <Picker.Item
-              color="#000"
-              key={index}
-              label={option.description}
-              value={option.id}
-            />
-          ))}
-        </Picker>
-      )}
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
         style={styles.buttonAdd}
@@ -241,10 +239,17 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+    marginBottom: 50,
+    marginTop: 20,
+    marginHorizontal: 20,
+  },
   container: {
     flex: 1,
-    padding: 20,
-    height: "100%",
+    display: "flex",
+    alignItems: "center",
   },
   input: {
     height: 40,

@@ -22,6 +22,7 @@ import { ListWalletsProps } from "../../../types/wallets/wallets";
 import { listCategory } from "../../../services/categories/categories";
 import { listWallets } from "../../../services/wallets/wallets";
 import {
+  deleteTransaction,
   showTransaction,
   updateTransaction,
 } from "../../../services/transactions/transactions";
@@ -57,58 +58,36 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
     setValue("date", formatarDataTimeStamp(data.date));
   };
 
+  const deleteExpenses = async () => {
+    const dataRequest = {
+      id: id,
+      wallet_id: walletId,
+    };
+
+    const [data, error] = await deleteTransaction(dataRequest);
+
+    if (data === 200) {
+      toast.show("Despesa removida com sucesso", {
+        type: "success",
+      });
+      navigate("Expenses");
+    } else {
+      toast.show(`Erro ao remover despesa (${error?.statusCode})`, {
+        type: "danger",
+      });
+    }
+  };
+
   useEffect(() => {
     getExpenses();
   }, []);
 
-  const [selectedRepeat, setSelectedRepeat] = useState(1);
-  const [selectedRepeatName, setSelectedRepeatName] = useState("Diario");
   const [isPaid, setIsPaid] = useState(false);
-  const [isRepeatOrSplit, setIsRepeatOrSplit] = useState(false);
   const toast = useToast();
 
-  const repeatOptions = [
-    { nome: "Diário", dias: 1 },
-    { nome: "Semanal", dias: 7 },
-    { nome: "Mensal", dias: 30 },
-    { nome: "Anual", dias: 365 },
-    { nome: "Bimestral", dias: 60 },
-    { nome: "Trimestral", dias: 90 },
-    { nome: "Semestral", dias: 180 },
-    { nome: "A cada 2 semanas", dias: 14 },
-  ];
   const toggleSwitchReceived = () => {
     setIsPaid((previousState) => !previousState);
   };
-  const toggleSwitchRepeatOrSplit = () => {
-    setIsRepeatOrSplit((previousState) => !previousState);
-  };
-
-  const radioButtons: RadioButtonProps[] = useMemo(
-    () => [
-      {
-        id: "fixo",
-        label: "Valor fixo",
-        value: "fixo",
-        color: "#e07d8c",
-        borderColor: "#f4f3f4",
-        labelStyle: { fontWeight: "600", color: "#f4f3f4", fontSize: 16 },
-        selected: true,
-      },
-      {
-        id: "parcelar",
-        label: "Parcelar valor",
-        value: "parcelar",
-        color: "#e07d8c",
-        borderColor: "#f4f3f4",
-        labelStyle: { fontWeight: "600", color: "#f4f3f4", fontSize: 16 },
-        selected: false,
-      },
-    ],
-    []
-  );
-
-  const [selectedId, setSelectedId] = useState<string | undefined>("fixo");
 
   const [isCalendarVisible, setCalendarVisibility] = useState(false);
   const [isCategoryVisible, setCategoryVisibility] = useState(false);
@@ -163,8 +142,6 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
       description: data.description,
       date: formatarDataParaEnvio(data.date),
       status: isPaid ? TransactionStatus.PAIED : TransactionStatus.NOT_PAIED,
-      installment: data.repeat ? Number(data.repeat) : 1,
-      period: selectedRepeat,
       walletId: data.walletId,
       categoryId: data.categoryId,
     };
@@ -174,7 +151,8 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
       toast.show("Despesa alterada com sucesso", {
         type: "success",
       });
-      navigate("Home");
+      getExpenses();
+      navigate("Expenses");
     } else {
       toast.show("Erro ao alterar transação", {
         type: "danger",
@@ -328,7 +306,12 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
-          <Text style={{ color: "#fff", fontWeight: "600" }}>Criar</Text>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Atualizar</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={deleteExpenses}>
+        <View style={styles.buttonDelete}>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Deletar</Text>
         </View>
       </TouchableOpacity>
     </ScrollView>
@@ -369,6 +352,17 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  buttonDelete: {
+    borderRadius: 24,
+    lineHeight: 1.25,
+    margin: 12,
+    height: 40,
+    backgroundColor: "red",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#fff",
   },
   text: {
     color: "#fff",

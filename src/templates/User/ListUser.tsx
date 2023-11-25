@@ -10,6 +10,8 @@ import { deleteUser, getUser, updateUser } from "../../services/users/users";
 import Profile from "../../components/Header/Profile";
 import Avi from "../../../assets/avatar.png";
 import { colors } from "../../styles/theme";
+import { FormErrors } from "../Login/Login";
+import { useToast } from "react-native-toast-notifications";
 
 export const ListUser = ({ navigation: { navigate } }: any) => {
   const context = useContext(UserContext);
@@ -18,7 +20,10 @@ export const ListUser = ({ navigation: { navigate } }: any) => {
     setValue,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm();
+
+  const toast = useToast();
 
   const getInfosUser = async () => {
     const userData = await getUser();
@@ -41,9 +46,44 @@ export const ListUser = ({ navigation: { navigate } }: any) => {
       delete data.password;
       delete data.confirm_password;
     }
-    await updateUser(data);
-    context.logout();
-    navigate("Login");
+
+    const dataRequest = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      confirm_password: data.confirm_password,
+    };
+
+    const [response, error] = await updateUser(dataRequest);
+
+    if (error) {
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      Object.keys(errorObject).forEach((field) => {
+        setError(field, errorObject[field]);
+      });
+
+      return;
+    }
+
+    if (response === 201) {
+      toast.show("Porquinho criado com sucesso", {
+        type: "success",
+      });
+      context.logout();
+      navigate("Login");
+    } else {
+      toast.show("Erro ao criar porquinho", {
+        type: "danger",
+      });
+    }
   };
 
   const deleteUserAsync = async () => {
@@ -127,7 +167,9 @@ export const ListUser = ({ navigation: { navigate } }: any) => {
 
       <TouchableOpacity onPress={handleDeleteCategory}>
         <View style={styles.buttonDelete}>
-          <Text>Deletar meu usuário</Text>
+          <Text style={{ color: "#fff", fontWeight: "700" }}>
+            Deletar meu usuário
+          </Text>
         </View>
       </TouchableOpacity>
     </View>

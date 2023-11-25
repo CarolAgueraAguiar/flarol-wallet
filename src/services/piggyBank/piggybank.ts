@@ -2,6 +2,7 @@ import {
   ShowPiggyBank,
   StorePiggyBank,
   UpdatePiggyBankProps,
+  WithdrawPiggyBank,
 } from "../../types/piggyBank/piggybank";
 import { axiosFlarol } from "../axios";
 import { ReturnError } from "../users/users";
@@ -68,6 +69,69 @@ export const updatePiggyBank = async ({
 
     return [status, null];
   } catch (e: any) {
-    return [null, e];
+    return [null, e.response.data];
+  }
+};
+
+export const withdrawPiggyBank = async ({
+  wallet_id,
+  amount,
+  piggy_id,
+}: WithdrawPiggyBank): Promise<[number | null, ReturnError | null]> => {
+  try {
+    const { status } = await axiosFlarol.post<WithdrawPiggyBank>(
+      "piggy/withdraw",
+      {
+        wallet_id,
+        piggy_id,
+        amount,
+      }
+    );
+
+    return [status, null];
+  } catch (e: any) {
+    return [null, e.response.data];
+  }
+};
+
+export const transferPiggyBank = async ({
+  wallet_id,
+  amount,
+  piggy_id,
+}: WithdrawPiggyBank): Promise<[number | null, ReturnError | null]> => {
+  try {
+    const { status } = await axiosFlarol.post<WithdrawPiggyBank>(
+      "piggy/transfer",
+      {
+        wallet_id,
+        piggy_id,
+        amount,
+      }
+    );
+
+    return [status, null];
+  } catch (e: any) {
+    return [null, e.response.data];
+  }
+};
+
+export const withDrawPiggyBank = async ({
+  wallet_id,
+  amount,
+  piggy_id,
+}: WithdrawPiggyBank): Promise<[number | null, ReturnError | null]> => {
+  try {
+    const { status } = await axiosFlarol.post<WithdrawPiggyBank>(
+      "piggy/withdraw",
+      {
+        wallet_id,
+        piggy_id,
+        amount,
+      }
+    );
+
+    return [status, null];
+  } catch (e: any) {
+    return [null, e.response.data];
   }
 };

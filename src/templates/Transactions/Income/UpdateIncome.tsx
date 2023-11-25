@@ -22,6 +22,7 @@ import { ListWalletsProps } from "../../../types/wallets/wallets";
 import { listCategory } from "../../../services/categories/categories";
 import { listWallets } from "../../../services/wallets/wallets";
 import {
+  deleteTransaction,
   showTransaction,
   updateTransaction,
 } from "../../../services/transactions/transactions";
@@ -59,58 +60,36 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
     setValue("date", formatarDataTimeStamp(data.date));
   };
 
+  const deleteExpenses = async () => {
+    const dataRequest = {
+      id: id,
+      wallet_id: walletId,
+    };
+
+    const [data, error] = await deleteTransaction(dataRequest);
+
+    if (data === 200) {
+      toast.show("Receita removida com sucesso", {
+        type: "success",
+      });
+      navigate("Incomes");
+    } else {
+      toast.show(`Erro ao remover Receita (${error?.statusCode})`, {
+        type: "danger",
+      });
+    }
+  };
+
   useEffect(() => {
     getIncome();
   }, []);
 
-  const [selectedRepeat, setSelectedRepeat] = useState(1);
-  const [selectedRepeatName, setSelectedRepeatName] = useState("Diario");
   const [isRecived, setIsRecived] = useState(false);
-  const [isRepeatOrSplit, setIsRepeatOrSplit] = useState(false);
   const toast = useToast();
 
-  const repeatOptions = [
-    { nome: "Diário", dias: 1 },
-    { nome: "Semanal", dias: 7 },
-    { nome: "Mensal", dias: 30 },
-    { nome: "Anual", dias: 365 },
-    { nome: "Bimestral", dias: 60 },
-    { nome: "Trimestral", dias: 90 },
-    { nome: "Semestral", dias: 180 },
-    { nome: "A cada 2 semanas", dias: 14 },
-  ];
   const toggleSwitchReceived = () => {
     setIsRecived((previousState) => !previousState);
   };
-  const toggleSwitchRepeatOrSplit = () => {
-    setIsRepeatOrSplit((previousState) => !previousState);
-  };
-
-  const radioButtons: RadioButtonProps[] = useMemo(
-    () => [
-      {
-        id: "fixo",
-        label: "Valor fixo",
-        value: "fixo",
-        color: "#1aae9f",
-        borderColor: "#f4f3f4",
-        labelStyle: { fontWeight: "600", color: "#000", fontSize: 16 },
-        selected: true,
-      },
-      {
-        id: "parcelar",
-        label: "Parcelar valor",
-        value: "parcelar",
-        color: "#1aae9f",
-        borderColor: "#f4f3f4",
-        labelStyle: { fontWeight: "600", color: "#000", fontSize: 16 },
-        selected: false,
-      },
-    ],
-    []
-  );
-
-  const [selectedId, setSelectedId] = useState<string | undefined>("fixo");
 
   const [isCalendarVisible, setCalendarVisibility] = useState(false);
   const [isCategoryVisible, setCategoryVisibility] = useState(false);
@@ -167,8 +146,6 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
       status: isRecived
         ? TransactionStatus.RECEIVED
         : TransactionStatus.NOT_RECEIVED,
-      installment: data.repeat ? Number(data.repeat) : 1,
-      period: selectedRepeat,
       walletId: data.walletId,
       categoryId: data.categoryId,
     };
@@ -335,6 +312,11 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
           <Text style={{ color: "#fff", fontWeight: "600" }}>Criar</Text>
         </View>
       </TouchableOpacity>
+      <TouchableOpacity onPress={deleteExpenses}>
+        <View style={styles.buttonDelete}>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Deletar</Text>
+        </View>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -352,6 +334,17 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: "700",
+  },
+  buttonDelete: {
+    borderRadius: 24,
+    lineHeight: 1.25,
+    margin: 12,
+    height: 40,
+    backgroundColor: "red",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#fff",
   },
   container: {
     borderRadius: 24,

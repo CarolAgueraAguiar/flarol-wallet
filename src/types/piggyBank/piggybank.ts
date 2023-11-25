@@ -54,3 +54,9 @@ export interface Transaction {
   updatedAt: string;
   deletedAt: any;
 }
+
+export interface WithdrawPiggyBank {
+  amount: number;
+  piggy_id: number;
+  wallet_id: number;
+}

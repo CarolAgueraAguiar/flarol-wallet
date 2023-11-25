@@ -1,4 +1,5 @@
 import {
+  DeleteTransactionProps,
   GetTransactionProps,
   StoreTransactionProps,
   UpdateTransactionProps,
@@ -37,29 +38,34 @@ export const createTransaction = async ({
   }
 };
 
-export const listExpenses = async (): Promise<GetTransactionProps[]> => {
+export const listExpenses = async (): Promise<
+  [GetTransactionProps[] | null, ReturnError | null]
+> => {
   try {
     const { data } = await axiosFlarol.get<GetTransactionProps[]>(
       "transactions?type=despesa"
     );
 
-    return data;
+    return [data, null];
   } catch (e: any) {
-    return e;
+    return [null, e.response.data];
   }
 };
 
-export const listIncomes = async (): Promise<GetTransactionProps[]> => {
+export const listIncomes = async (): Promise<
+  [GetTransactionProps[] | null, ReturnError | null]
+> => {
   try {
     const { data } = await axiosFlarol.get<GetTransactionProps[]>(
       "transactions?type=receita"
     );
 
-    return data;
+    return [data, null];
   } catch (e: any) {
-    return e;
+    return [null, e.response.data];
   }
 };
+
 export const showTransaction = async (
   id: number,
   walletId: number
@@ -82,8 +88,6 @@ export const updateTransaction = async ({
   description,
   date,
   status,
-  installment,
-  period,
   walletId,
   categoryId,
 }: UpdateTransactionProps): Promise<number> => {
@@ -95,8 +99,6 @@ export const updateTransaction = async ({
         description,
         date,
         status,
-        installment,
-        period,
         walletId,
         categoryId,
       }
@@ -105,5 +107,20 @@ export const updateTransaction = async ({
     return response.status;
   } catch (e: any) {
     return e;
+  }
+};
+
+export const deleteTransaction = async ({
+  wallet_id,
+  id,
+}: DeleteTransactionProps): Promise<[number | null, ReturnError | null]> => {
+  try {
+    const { status } = await axiosFlarol.delete(
+      `transactions/${wallet_id}/${id}`
+    );
+
+    return [status, null];
+  } catch (e: any) {
+    return [null, e.response.data];
   }
 };

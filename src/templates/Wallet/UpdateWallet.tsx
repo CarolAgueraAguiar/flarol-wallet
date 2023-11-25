@@ -1,10 +1,21 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   TextField,
   TextFieldStatus,
 } from "../../components/TextFieldStatus/TextFieldStatus";
 import { useForm } from "react-hook-form";
-import { showWallet, updateWallets } from "../../services/wallets/wallets";
+import {
+  deleteWallet,
+  showWallet,
+  updateWallets,
+} from "../../services/wallets/wallets";
 import { useEffect } from "react";
 import MoneyInput from "../../components/MoneyInput/MoneyInput";
 import { cleanNumber } from "../../utils/mask";
@@ -29,6 +40,28 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
   useEffect(() => {
     getWallets(id);
   }, []);
+
+  const deleteWalletAsync = async (id: number) => {
+    await deleteWallet(id);
+    getWallets(id);
+    navigate("Carteira");
+  };
+
+  const handleDeleteWallet = async (id: number) => {
+    Alert.alert("Tem certeza que quer excluir ?", "Absoluta ?", [
+      {
+        text: "Cancelar",
+        onPress: () => ({}),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          deleteWalletAsync(id);
+        },
+      },
+    ]);
+  };
 
   const onSubmit = async (data: any) => {
     if (data.amount) {
@@ -71,6 +104,15 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
           <Text style={{ color: "#fff", fontWeight: "600" }}>Atualizar</Text>
         </View>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          handleDeleteWallet(id);
+        }}
+      >
+        <View style={styles.buttonDelete}>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Excluir</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -106,6 +148,16 @@ const styles = StyleSheet.create({
     margin: 12,
     height: 40,
     backgroundColor: "green",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonDelete: {
+    borderRadius: 24,
+    lineHeight: 1.25,
+    margin: 12,
+    height: 40,
+    backgroundColor: "red",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
