@@ -72,17 +72,12 @@ export const ListUser = ({ navigation: { navigate } }: any) => {
 
       return;
     }
-
-    if (response === 201) {
-      toast.show("Porquinho criado com sucesso", {
+    if (response === 204) {
+      toast.show("Usuário alterado com sucesso", {
         type: "success",
       });
       context.logout();
-      navigate("Login");
-    } else {
-      toast.show("Erro ao criar porquinho", {
-        type: "danger",
-      });
+      navigate("Welcome");
     }
   };
 

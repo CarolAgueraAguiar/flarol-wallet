@@ -58,9 +58,7 @@ export const updateUser = async (
   props: UpdateUsersProps
 ): Promise<[number | null, ReturnError | null]> => {
   try {
-    const { status } = await axiosFlarol.put("users", {
-      props,
-    });
+    const { status } = await axiosFlarol.put("users", props);
 
     return [status, null];
   } catch (e: any) {

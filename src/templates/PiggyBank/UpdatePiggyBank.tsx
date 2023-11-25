@@ -148,6 +148,20 @@ const UpdatePorquinhoScreen: React.FC = ({
       Object.keys(errorObject).forEach((field) => {
         setError(field, errorObject[field]);
       });
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      if (errorObject.wallet_id) {
+        toast.show(errorObject.wallet_id.message, {
+          type: "danger",
+        });
+      }
+
       return;
     }
 
@@ -181,6 +195,20 @@ const UpdatePorquinhoScreen: React.FC = ({
       Object.keys(errorObject).forEach((field) => {
         setError(field, errorObject[field]);
       });
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      if (errorObject.wallet_id) {
+        toast.show(errorObject.wallet_id.message, {
+          type: "danger",
+        });
+      }
+
       return;
     }
 
