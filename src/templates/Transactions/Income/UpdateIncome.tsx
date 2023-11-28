@@ -1,4 +1,6 @@
 import {
+  Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -58,6 +60,22 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
     setValue("walletId", data.wallet_id);
     setValue("walletName", data.wallet.description);
     setValue("date", formatarDataTimeStamp(data.date));
+  };
+
+  const handleDeleteIncome = async () => {
+    Alert.alert("Tem certeza que quer excluir ?", "Absoluta ?", [
+      {
+        text: "Cancelar",
+        onPress: () => ({}),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          deleteExpenses();
+        },
+      },
+    ]);
   };
 
   const deleteExpenses = async () => {
@@ -180,7 +198,7 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
           errors={errors}
         />
         <TextField
-          status={TextFieldStatus.Default}
+          status={TextFieldStatus.Disabled}
           control={control}
           name="date"
           placeholder="Selecione a Data"
@@ -217,7 +235,7 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
           />
         )}
         <TextField
-          status={TextFieldStatus.Default}
+          status={TextFieldStatus.Disabled}
           control={control}
           name="categoryName"
           placeholder="Categoria"
@@ -227,12 +245,21 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
         {isCategoryVisible && (
           <Picker
             selectedValue={categoriesSelected}
-            style={{
-              height: 200,
-              backgroundColor: "#fff",
-              width: 328,
-              borderRadius: 5,
-            }}
+            style={
+              Platform.OS === "ios"
+                ? {
+                    height: 200,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+                : {
+                    height: 110,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+            }
             onValueChange={(itemId) => {
               const searchName = categories.find(
                 (icon: any) => icon.id === itemId
@@ -252,7 +279,7 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
           </Picker>
         )}
         <TextField
-          status={TextFieldStatus.Default}
+          status={TextFieldStatus.Disabled}
           control={control}
           name="walletName"
           placeholder="Carteira"
@@ -262,12 +289,21 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
         {isWalletVisible && (
           <Picker
             selectedValue={walletSelected}
-            style={{
-              height: 200,
-              backgroundColor: "#fff",
-              width: 328,
-              borderRadius: 5,
-            }}
+            style={
+              Platform.OS === "ios"
+                ? {
+                    height: 200,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+                : {
+                    height: 110,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+            }
             onValueChange={(itemId) => {
               const searchName = wallets.find(
                 (icon: any) => icon.id === itemId
@@ -312,7 +348,7 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
           <Text style={{ color: "#fff", fontWeight: "600" }}>Criar</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={deleteExpenses}>
+      <TouchableOpacity onPress={handleDeleteIncome}>
         <View style={styles.buttonDelete}>
           <Text style={{ color: "#fff", fontWeight: "600" }}>Deletar</Text>
         </View>

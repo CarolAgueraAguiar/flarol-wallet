@@ -1,4 +1,6 @@
 import {
+  Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -26,7 +28,7 @@ import {
   showTransaction,
   updateTransaction,
 } from "../../../services/transactions/transactions";
-import { cleanNumber, cleanNumberNegative } from "../../../utils/mask";
+import { cleanNumberNegative } from "../../../utils/mask";
 import { TransactionStatus } from "../../../enum/TransactionStatus";
 import { useToast } from "react-native-toast-notifications";
 import {
@@ -42,6 +44,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
     setValue,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm();
 
   const [selectedDate, setSelectedDate] = useState("");
@@ -52,10 +55,28 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
     setValue("description", data.description);
     setValue("amount", data.amount);
     setValue("categoryId", data.category_id);
-    setValue("categoryName", data.category.description);
+    if (data.category) {
+      setValue("categoryName", data.category.description);
+    }
     setValue("walletId", data.wallet_id);
     setValue("walletName", data.wallet.description);
     setValue("date", formatarDataTimeStamp(data.date));
+  };
+
+  const handleDeleteCategory = async () => {
+    Alert.alert("Tem certeza que quer excluir ?", "Absoluta ?", [
+      {
+        text: "Cancelar",
+        onPress: () => ({}),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          deleteExpenses();
+        },
+      },
+    ]);
   };
 
   const deleteExpenses = async () => {
@@ -77,10 +98,6 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
       });
     }
   };
-
-  useEffect(() => {
-    getExpenses();
-  }, []);
 
   const [isPaid, setIsPaid] = useState(false);
   const toast = useToast();
@@ -132,6 +149,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
   useEffect(() => {
     getCategories();
     getWallets();
+    getExpenses();
   }, []);
 
   const onSubmit = async (data: any) => {
@@ -143,7 +161,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
       date: formatarDataParaEnvio(data.date),
       status: isPaid ? TransactionStatus.PAIED : TransactionStatus.NOT_PAIED,
       walletId: data.walletId,
-      categoryId: data.categoryId,
+      categoryId: data.categoryId ? data.categoryId : null,
     };
 
     const storeData = await updateTransaction(objectData);
@@ -177,7 +195,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
           errors={errors}
         />
         <TextField
-          status={TextFieldStatus.Default}
+          status={TextFieldStatus.Disabled}
           control={control}
           name="date"
           placeholder="Selecione a Data"
@@ -213,43 +231,56 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
             }}
           />
         )}
-        <TextField
-          status={TextFieldStatus.Default}
-          control={control}
-          name="categoryName"
-          placeholder="Categoria"
-          errors={errors}
-          onClick={openCategory}
-        />
-        {isCategoryVisible && (
-          <Picker
-            selectedValue={categoriesSelected}
-            style={{
-              height: 200,
-              backgroundColor: "#fff",
-              width: 328,
-              borderRadius: 5,
-            }}
-            onValueChange={(itemId) => {
-              const searchName = categories.find(
-                (icon: any) => icon.id === itemId
-              )!.description;
-              setValue("categoryId", itemId);
-              setValue("categoryName", searchName);
-              setCategoriesSelected(itemId);
-            }}
-          >
-            {categories.map((option, index) => (
-              <Picker.Item
-                key={index}
-                label={option.description}
-                value={option.id}
-              />
-            ))}
-          </Picker>
+        {getValues("categoryName") && (
+          <>
+            <TextField
+              status={TextFieldStatus.Disabled}
+              control={control}
+              name="categoryName"
+              placeholder="Categoria"
+              errors={errors}
+              onClick={openCategory}
+            />
+            {isCategoryVisible && (
+              <Picker
+                selectedValue={categoriesSelected}
+                style={
+                  Platform.OS === "ios"
+                    ? {
+                        height: 200,
+                        backgroundColor: "#fff",
+                        width: 328,
+                        borderRadius: 5,
+                      }
+                    : {
+                        height: 110,
+                        backgroundColor: "#fff",
+                        width: 328,
+                        borderRadius: 5,
+                      }
+                }
+                onValueChange={(itemId) => {
+                  const searchName = categories.find(
+                    (icon: any) => icon.id === itemId
+                  )!.description;
+                  setValue("categoryId", itemId);
+                  setValue("categoryName", searchName);
+                  setCategoriesSelected(itemId);
+                }}
+              >
+                {categories.map((option, index) => (
+                  <Picker.Item
+                    key={index}
+                    label={option.description}
+                    value={option.id}
+                  />
+                ))}
+              </Picker>
+            )}
+          </>
         )}
         <TextField
-          status={TextFieldStatus.Default}
+          status={TextFieldStatus.Disabled}
           control={control}
           name="walletName"
           placeholder="Carteira"
@@ -259,12 +290,21 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
         {isWalletVisible && (
           <Picker
             selectedValue={walletSelected}
-            style={{
-              height: 200,
-              backgroundColor: "#fff",
-              width: 328,
-              borderRadius: 5,
-            }}
+            style={
+              Platform.OS === "ios"
+                ? {
+                    height: 200,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+                : {
+                    height: 110,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+            }
             onValueChange={(itemId) => {
               const searchName = wallets.find(
                 (icon: any) => icon.id === itemId
@@ -283,7 +323,6 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
             ))}
           </Picker>
         )}
-
         <View style={styles.switch}>
           <Switch
             trackColor={{ false: "#767577", true: "#e07d8c" }}
@@ -309,7 +348,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
           <Text style={{ color: "#fff", fontWeight: "600" }}>Atualizar</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={deleteExpenses}>
+      <TouchableOpacity onPress={handleDeleteCategory}>
         <View style={styles.buttonDelete}>
           <Text style={{ color: "#fff", fontWeight: "600" }}>Deletar</Text>
         </View>

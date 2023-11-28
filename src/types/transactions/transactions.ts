@@ -26,6 +26,7 @@ export type UpdateTransactionProps = {
 export interface GetTransactionProps {
   id: number;
   description: string;
+  canUpdate: boolean;
   date: string;
   amount: number;
   status: string;

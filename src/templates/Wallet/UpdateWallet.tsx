@@ -21,6 +21,8 @@ import MoneyInput from "../../components/MoneyInput/MoneyInput";
 import { cleanNumber } from "../../utils/mask";
 import { Decoration } from "../../../assets/svg/Decoration";
 import { CircleIcon } from "../../../assets/svg/CircleIcon";
+import { DownloadButton } from "../../components/DownloadButton/DownloadButton";
+import { ExportPlanilha } from "../../../assets/svg/ExportPlanilha";
 
 export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
   const { id } = route.params;
@@ -45,6 +47,12 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
     await deleteWallet(id);
     getWallets(id);
     navigate("Carteira");
+  };
+
+  const onNavigation = (id: number) => {
+    navigate("ExportarCarteira", {
+      id,
+    });
   };
 
   const handleDeleteWallet = async (id: number) => {
@@ -104,6 +112,30 @@ export const UpdateWallet = ({ navigation: { navigate }, route }: any) => {
           <Text style={{ color: "#fff", fontWeight: "600" }}>Atualizar</Text>
         </View>
       </TouchableOpacity>
+      <View
+        style={{
+          marginHorizontal: 12,
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+            height: 50,
+            backgroundColor: "#1e668a",
+            borderRadius: 24,
+            justifyContent: "center",
+            flexDirection: "row",
+          }}
+          onPress={() => onNavigation(id)}
+        >
+          <ExportPlanilha />
+          <Text style={{ color: "#fff", fontWeight: "600", marginLeft: 10 }}>
+            Exportar Planilha
+          </Text>
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity
         onPress={() => {
           handleDeleteWallet(id);

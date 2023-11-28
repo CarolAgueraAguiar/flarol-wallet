@@ -18,6 +18,7 @@ import { Decoration } from "../../../assets/svg/Decoration";
 import { CircleIcon } from "../../../assets/svg/CircleIcon";
 import { useToast } from "react-native-toast-notifications";
 import { theme } from "../../styles/theme";
+import { DownloadButton } from "../../components/DownloadButton/DownloadButton";
 
 export const ListWallet = ({ navigation }: any) => {
   const context = useContext(UserContext);

@@ -18,6 +18,7 @@ import { FilterExpenses } from "../../../components/Filter/FilterExpenses";
 import { FilterDate } from "../../../components/Filter/FilterDate";
 import ButtonClearFilters from "../../../components/Filter/ButtonClearFilters";
 import { useToast } from "react-native-toast-notifications";
+import { FormErrors } from "../../Login/Login";
 
 export const ListExpenses = ({ navigation }: any) => {
   const [expenses, setExpenses] = useState<GetTransactionProps[]>([]);
@@ -36,10 +37,21 @@ export const ListExpenses = ({ navigation }: any) => {
     const [data, error] = await listExpenses();
 
     if (error) {
-      toast.show(`Erro ao retornar listagem de Despesas - (${error.statusCode})`, {
-        type: "danger",
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
       });
-      navigation.navigate("Home");
+
+      if (errorObject.wallet_id) {
+        toast.show(errorObject.wallet_id.message, {
+          type: "danger",
+        });
+      }
+
       return;
     }
 
@@ -48,6 +60,7 @@ export const ListExpenses = ({ navigation }: any) => {
       applyFilter(data, filterStatus, startDate, endDate);
       return;
     }
+
     setExpenses([]);
     setFilteredExpenses([]);
   };
@@ -84,16 +97,16 @@ export const ListExpenses = ({ navigation }: any) => {
   const setNewFilterStatus = (status: string | null) => {
     if (expenses) {
       applyFilter(expenses, status, startDate, endDate);
+      setFilterStatus(status);
     }
-    setFilterStatus(status);
   };
 
   const setFilterDate = (start: Date | null, end: Date | null) => {
     if (expenses) {
       applyFilter(expenses, filterStatus, start, end);
+      setStartDate(start);
+      setEndDate(end);
     }
-    setStartDate(start);
-    setEndDate(end);
   };
 
   const handleClearFilters = () => {
@@ -225,7 +238,11 @@ export const ListExpenses = ({ navigation }: any) => {
             alignItems: "center",
             margin: 12,
           }}
-          onPress={() => onNavigation(item.id, item.wallet_id)}
+          onPress={() => {
+            if (item.canUpdate) {
+              onNavigation(item.id, item.wallet_id);
+            }
+          }}
         >
           <View
             style={{

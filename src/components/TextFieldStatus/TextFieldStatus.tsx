@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   InputModeOptions,
+  Platform,
 } from "react-native";
 import { theme } from "../../styles/theme";
 import { Control, Controller, FieldErrors, FieldValues } from "react-hook-form";
@@ -46,6 +47,8 @@ export const TextField = (props: TextFieldProps) => {
     ],
   };
 
+  const isAndroid = Platform.OS === "android";
+
   return (
     <View style={classes.root}>
       <Controller
@@ -54,6 +57,7 @@ export const TextField = (props: TextFieldProps) => {
           <TextInput
             style={classes.text}
             onPressIn={props.onClick}
+            onFocus={props.onClick}
             placeholder={props.placeholder}
             placeholderTextColor={theme.colorsSecondary.gray[300]}
             autoCapitalize="none"
@@ -62,7 +66,14 @@ export const TextField = (props: TextFieldProps) => {
             }
             onBlur={onBlur}
             value={value}
-            editable={props.status !== TextFieldStatus.Disabled}
+            editable={
+              isAndroid && props.status === TextFieldStatus.Disabled
+                ? true
+                : Platform.OS === "ios" &&
+                  props.status === TextFieldStatus.Disabled
+                ? false
+                : true
+            }
             inputMode={props.inputMode}
             secureTextEntry={
               props.name === "password" || props.name === "confirm_password"

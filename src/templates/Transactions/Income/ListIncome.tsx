@@ -18,6 +18,7 @@ import { FilterIncomes } from "../../../components/Filter/FilterIncomes";
 import { FilterDate } from "../../../components/Filter/FilterDate";
 import ButtonClearFilters from "../../../components/Filter/ButtonClearFilters";
 import { useToast } from "react-native-toast-notifications";
+import { FormErrors } from "../../Login/Login";
 
 export const ListIncome = ({ navigation }: any) => {
   const [incomes, setIncomes] = useState<GetTransactionProps[]>([]);
@@ -35,13 +36,21 @@ export const ListIncome = ({ navigation }: any) => {
     const [data, error] = await listIncomes();
 
     if (error) {
-      toast.show(
-        `Erro ao retornar listagem de Receitas - (${error.statusCode})`,
-        {
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      if (errorObject.wallet_id) {
+        toast.show(errorObject.wallet_id.message, {
           type: "danger",
-        }
-      );
-      navigation.navigate("Home");
+        });
+      }
+
       return;
     }
 
@@ -195,27 +204,29 @@ export const ListIncome = ({ navigation }: any) => {
               </Text>
             </View>
           </TouchableOpacity>
-          <View
-            style={{
-              backgroundColor: "#f2f2f2",
-              margin: 12,
-              borderRadius: 12,
-              padding: 12,
-            }}
-          >
-            <FilterIncomes
-              onFilterChange={setNewFilterStatus}
-              filterStatus={filterStatus}
-            />
-            <FilterDate
-              onFilterChange={setFilterDate}
-              startDate={startDate}
-              endDate={endDate}
-              setStartDate={setStartDate}
-              setEndDate={setEndDate}
-            />
-            <ButtonClearFilters onPress={handleClearFilters} />
-          </View>
+          {filteredIncomes && filteredIncomes.length > 0 && (
+            <View
+              style={{
+                backgroundColor: "#f2f2f2",
+                margin: 12,
+                borderRadius: 12,
+                padding: 12,
+              }}
+            >
+              <FilterIncomes
+                onFilterChange={setNewFilterStatus}
+                filterStatus={filterStatus}
+              />
+              <FilterDate
+                onFilterChange={setFilterDate}
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+              />
+              <ButtonClearFilters onPress={handleClearFilters} />
+            </View>
+          )}
         </View>
       )}
       renderItem={({ item, index }) => (
@@ -226,7 +237,11 @@ export const ListIncome = ({ navigation }: any) => {
             alignItems: "center",
             margin: 12,
           }}
-          onPress={() => onNavigation(item.id, item.wallet_id)}
+          onPress={() => {
+            if (item.canUpdate) {
+              onNavigation(item.id, item.wallet_id);
+            }
+          }}
         >
           <View
             style={{

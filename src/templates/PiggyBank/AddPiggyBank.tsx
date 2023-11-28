@@ -67,6 +67,12 @@ const AdicionarPorquinhoScreen: React.FC = ({ navigation }: any) => {
   const getWallets = async () => {
     const data = await listWallets();
     setWallets(data);
+    if (data.length === 0) {
+      toast.show("Você precisa criar uma carteira", {
+        type: "danger",
+      });
+      return navigation.navigate("AdicionarCarteira");
+    }
     setValue("walletId", data[0].id);
     setValue("walletName", data[0].description);
   };

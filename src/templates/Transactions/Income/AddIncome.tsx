@@ -1,6 +1,5 @@
 import {
-  Button,
-  Keyboard,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -166,7 +165,11 @@ export const AddIncome = ({ navigation }: any) => {
       status: isRecived
         ? TransactionStatus.RECEIVED
         : TransactionStatus.NOT_RECEIVED,
-      installment: data.repeat ? Number(data.repeat) : 1,
+      installment: data.repeat
+        ? Number(data.repeat)
+        : data.split
+        ? Number(data.split)
+        : 1,
       period: selectedRepeat || 0,
       walletId: data.walletId || "",
       categoryId: data.categoryId || "",
@@ -203,10 +206,7 @@ export const AddIncome = ({ navigation }: any) => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View
         style={{
           display: "flex",
@@ -232,7 +232,7 @@ export const AddIncome = ({ navigation }: any) => {
         <View>
           <Text style={{ color: "#000" }}>Selecione a data da receita:</Text>
           <TextField
-            status={TextFieldStatus.Default}
+            status={TextFieldStatus.Disabled}
             control={control}
             name="date"
             placeholder="Selecione a Data"
@@ -274,7 +274,7 @@ export const AddIncome = ({ navigation }: any) => {
             Selecione a categoria da receita:
           </Text>
           <TextField
-            status={TextFieldStatus.Default}
+            status={TextFieldStatus.Disabled}
             control={control}
             name="categoryName"
             placeholder="Categoria"
@@ -285,12 +285,21 @@ export const AddIncome = ({ navigation }: any) => {
         {isCategoryVisible && (
           <Picker
             selectedValue={categoriesSelected}
-            style={{
-              height: 200,
-              backgroundColor: "#fff",
-              width: 328,
-              borderRadius: 5,
-            }}
+            style={
+              Platform.OS === "ios"
+                ? {
+                    height: 200,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+                : {
+                    height: 110,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+            }
             onValueChange={(itemId) => {
               const searchName = categories.find(
                 (icon: any) => icon.id === itemId
@@ -312,7 +321,7 @@ export const AddIncome = ({ navigation }: any) => {
         <View>
           <Text style={{ color: "#000" }}>Selecione a Carteira:</Text>
           <TextField
-            status={TextFieldStatus.Default}
+            status={TextFieldStatus.Disabled}
             control={control}
             name="walletName"
             placeholder="Carteira"
@@ -324,12 +333,21 @@ export const AddIncome = ({ navigation }: any) => {
           <Picker
             selectionColor={"#1aae9f9b"}
             selectedValue={walletSelected}
-            style={{
-              height: 200,
-              backgroundColor: "#fff",
-              width: 328,
-              borderRadius: 5,
-            }}
+            style={
+              Platform.OS === "ios"
+                ? {
+                    height: 200,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+                : {
+                    height: 110,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+            }
             onValueChange={(itemId) => {
               const searchName = wallets.find(
                 (icon: any) => icon.id === itemId

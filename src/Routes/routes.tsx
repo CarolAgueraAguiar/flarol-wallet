@@ -26,6 +26,7 @@ import { UpdateIncome } from "../templates/Transactions/Income/UpdateIncome";
 import PiggyBankScreen from "../templates/PiggyBank/PiggyBank";
 import AdicionarPorquinhoScreen from "../templates/PiggyBank/AddPiggyBank";
 import UpdatePorquinhoScreen from "../templates/PiggyBank/UpdatePiggyBank";
+import { ExportWallet } from "../templates/Wallet/ExportWallet";
 
 const { Navigator, Screen, Group } = createStackNavigator();
 
@@ -90,6 +91,14 @@ export const Routes = () => {
                 component={AddWallet}
               />
               <Screen name="AtualizarCarteira" component={UpdateWallet} />
+              <Screen
+                name="ExportarCarteira"
+                options={{
+                  headerTitle: "",
+                  headerRight: () => <Text>Exportar Carteira</Text>,
+                }}
+                component={ExportWallet}
+              />
             </Group>
             <Group screenOptions={{ headerShown: true }}>
               <Screen name="Categoria" component={ListCategory} />
