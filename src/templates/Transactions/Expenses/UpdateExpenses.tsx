@@ -17,7 +17,6 @@ import {
 } from "../../../components/TextFieldStatus/TextFieldStatus";
 import { Calendar } from "react-native-calendars";
 import MoneyInput from "../../../components/MoneyInput/MoneyInput";
-import { RadioButtonProps, RadioGroup } from "react-native-radio-buttons-group";
 import { Picker } from "@react-native-picker/picker";
 import { GetCategoriesProps } from "../../../types/categories/categories";
 import { ListWalletsProps } from "../../../types/wallets/wallets";
@@ -55,9 +54,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
     setValue("description", data.description);
     setValue("amount", data.amount);
     setValue("categoryId", data.category_id);
-    if (data.category) {
-      setValue("categoryName", data.category.description);
-    }
+    setValue("categoryName", data.category.description);
     setValue("walletId", data.wallet_id);
     setValue("walletName", data.wallet.description);
     setValue("date", formatarDataTimeStamp(data.date));
@@ -231,53 +228,49 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
             }}
           />
         )}
-        {getValues("categoryName") && (
-          <>
-            <TextField
-              status={TextFieldStatus.Disabled}
-              control={control}
-              name="categoryName"
-              placeholder="Categoria"
-              errors={errors}
-              onClick={openCategory}
-            />
-            {isCategoryVisible && (
-              <Picker
-                selectedValue={categoriesSelected}
-                style={
-                  Platform.OS === "ios"
-                    ? {
-                        height: 200,
-                        backgroundColor: "#fff",
-                        width: 328,
-                        borderRadius: 5,
-                      }
-                    : {
-                        height: 110,
-                        backgroundColor: "#fff",
-                        width: 328,
-                        borderRadius: 5,
-                      }
-                }
-                onValueChange={(itemId) => {
-                  const searchName = categories.find(
-                    (icon: any) => icon.id === itemId
-                  )!.description;
-                  setValue("categoryId", itemId);
-                  setValue("categoryName", searchName);
-                  setCategoriesSelected(itemId);
-                }}
-              >
-                {categories.map((option, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={option.description}
-                    value={option.id}
-                  />
-                ))}
-              </Picker>
-            )}
-          </>
+        <TextField
+          status={TextFieldStatus.Disabled}
+          control={control}
+          name="categoryName"
+          placeholder="Categoria"
+          errors={errors}
+          onClick={openCategory}
+        />
+        {isCategoryVisible && (
+          <Picker
+            selectedValue={categoriesSelected}
+            style={
+              Platform.OS === "ios"
+                ? {
+                    height: 200,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+                : {
+                    height: 110,
+                    backgroundColor: "#fff",
+                    width: 328,
+                    borderRadius: 5,
+                  }
+            }
+            onValueChange={(itemId) => {
+              const searchName = categories.find(
+                (icon: any) => icon.id === itemId
+              )!.description;
+              setValue("categoryId", itemId);
+              setValue("categoryName", searchName);
+              setCategoriesSelected(itemId);
+            }}
+          >
+            {categories.map((option, index) => (
+              <Picker.Item
+                key={index}
+                label={option.description}
+                value={option.id}
+              />
+            ))}
+          </Picker>
         )}
         <TextField
           status={TextFieldStatus.Disabled}

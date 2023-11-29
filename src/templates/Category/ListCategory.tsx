@@ -69,41 +69,37 @@ export const ListCategory = ({ navigation }: any) => {
   }, [isFocused]);
 
   return (
-    <View
-      style={{
-        margin: 6,
-      }}
-    >
-      <FlatList
-        data={categories}
-        keyExtractor={(item) => String(item.id)}
-        ListHeaderComponent={() => (
-          <>
-            <View style={styles.container}>
-              <Text style={styles.text}>Categoria</Text>
-              <View style={{ position: "absolute", top: 0, right: 0 }}>
-                <Decoration />
-              </View>
-              <View style={{ position: "absolute", bottom: 0, left: 0 }}>
-                <CircleIcon />
-              </View>
+    <FlatList
+      data={categories}
+      keyExtractor={(item) => String(item.id)}
+      ListHeaderComponent={() => (
+        <View style={{ margin: 12 }}>
+          <View style={styles.container}>
+            <Text style={styles.text}>Categoria</Text>
+            <View style={{ position: "absolute", top: 0, right: 0 }}>
+              <Decoration />
             </View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("AdicionarCategoria")}
-              style={{ display: "flex", alignItems: "center", margin: 12 }}
-            >
-              <View style={styles.buttonAdd}>
-                <Add />
-                <Text
-                  style={{ marginLeft: 10, color: "#fff", fontWeight: "600" }}
-                >
-                  Adicionar
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </>
-        )}
-        renderItem={({ item, index }) => (
+            <View style={{ position: "absolute", bottom: 0, left: 0 }}>
+              <CircleIcon />
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("AdicionarCategoria")}
+            style={{ display: "flex", alignItems: "center", margin: 12 }}
+          >
+            <View style={styles.buttonAdd}>
+              <Add />
+              <Text
+                style={{ marginLeft: 10, color: "#fff", fontWeight: "600" }}
+              >
+                Adicionar
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
+      renderItem={({ item, index }) => (
+        <View style={{ marginHorizontal: 12 }}>
           <TouchableOpacity
             onPress={() => onNavigation(item.id)}
             style={[
@@ -129,9 +125,9 @@ export const ListCategory = ({ navigation }: any) => {
               }}
             />
           </TouchableOpacity>
-        )}
-      />
-    </View>
+        </View>
+      )}
+    />
   );
 };
 

@@ -345,7 +345,7 @@ export const UpdateIncome = ({ navigation: { navigate }, route }: any) => {
       </View>
       <TouchableOpacity onPress={handleSubmit(onSubmit)}>
         <View style={styles.buttonAdd}>
-          <Text style={{ color: "#fff", fontWeight: "600" }}>Criar</Text>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Atualizar</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleDeleteIncome}>
