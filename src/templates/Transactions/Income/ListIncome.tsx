@@ -204,29 +204,27 @@ export const ListIncome = ({ navigation }: any) => {
               </Text>
             </View>
           </TouchableOpacity>
-          {filteredIncomes && filteredIncomes.length > 0 && (
-            <View
-              style={{
-                backgroundColor: "#f2f2f2",
-                margin: 12,
-                borderRadius: 12,
-                padding: 12,
-              }}
-            >
-              <FilterIncomes
-                onFilterChange={setNewFilterStatus}
-                filterStatus={filterStatus}
-              />
-              <FilterDate
-                onFilterChange={setFilterDate}
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-              />
-              <ButtonClearFilters onPress={handleClearFilters} />
-            </View>
-          )}
+          <View
+            style={{
+              backgroundColor: "#f2f2f2",
+              margin: 12,
+              borderRadius: 12,
+              padding: 12,
+            }}
+          >
+            <FilterIncomes
+              onFilterChange={setNewFilterStatus}
+              filterStatus={filterStatus}
+            />
+            <FilterDate
+              onFilterChange={setFilterDate}
+              startDate={startDate}
+              endDate={endDate}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+            />
+            <ButtonClearFilters onPress={handleClearFilters} />
+          </View>
         </View>
       )}
       renderItem={({ item, index }) => (

@@ -57,18 +57,18 @@ export const Login = ({ navigation }: any) => {
     }
   };
 
-  useEffect(() => {
-    //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
-    const userData = {
-      name: "Carolina Aguera",
-      email: "carol@gmail.com",
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzAxMjExMzQzLCJleHAiOjE3MDM4MDMzNDN9.zhHqXlNrGbyLNp0C1B2AThF7uc4mswHmQFHek_KeqKw",
-      hasWallet: true,
-    };
-    context.setUser(userData);
-    saveSessionToken(userData.token);
-  }, []);
+  // useEffect(() => {
+  //   //NOTE - SOMENTE PARA DESENVOLVIMENTO, PARA NÃO PRECISAR LOGAR TODA VEZ
+  //   const userData = {
+  //     name: "Carolina Aguera",
+  //     email: "carol@gmail.com",
+  //     token:
+  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzAxMjExMzQzLCJleHAiOjE3MDM4MDMzNDN9.zhHqXlNrGbyLNp0C1B2AThF7uc4mswHmQFHek_KeqKw",
+  //     hasWallet: true,
+  //   };
+  //   context.setUser(userData);
+  //   saveSessionToken(userData.token);
+  // }, []);
 
   return (
     <View style={styles.containerLogin}>

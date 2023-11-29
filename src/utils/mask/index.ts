@@ -23,7 +23,12 @@ export const cleanNumber = (value: number) => {
 export const cleanNumberNegative = (value: number) => {
   let amount = String(value);
 
-  let numericValue = parseFloat(amount.replace(/[^0-9]/g, ""));
+  let numericValue = parseFloat(
+    amount
+      .replace(/[^0-9\,\.]/g, "")
+      .replace(".", "")
+      .replace(",", ".")
+  );
 
   if (amount.includes("-")) {
     numericValue *= -1;

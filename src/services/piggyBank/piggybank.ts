@@ -59,7 +59,7 @@ export const updatePiggyBank = async ({
 }: UpdatePiggyBankProps): Promise<[number | null, ReturnError | null]> => {
   try {
     const { status } = await axiosFlarol.put<UpdatePiggyBankProps>(
-      `categories/${id}`,
+      `piggy/${id}`,
       {
         name,
         final_amount,
@@ -129,6 +129,18 @@ export const withDrawPiggyBank = async ({
         amount,
       }
     );
+
+    return [status, null];
+  } catch (e: any) {
+    return [null, e.response.data];
+  }
+};
+
+export const deletePiggyBank = async (
+  id: number
+): Promise<[number | null, ReturnError | null]> => {
+  try {
+    const { status } = await axiosFlarol.delete(`piggy/${id}`);
 
     return [status, null];
   } catch (e: any) {

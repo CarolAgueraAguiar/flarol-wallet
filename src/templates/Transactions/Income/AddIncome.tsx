@@ -129,6 +129,7 @@ export const AddIncome = ({ navigation }: any) => {
 
   const getCategories = async () => {
     const data = await listCategory();
+
     if (data.length === 0) {
       toast.show("Não há categoria cadastrada", {
         type: "danger",
@@ -140,6 +141,7 @@ export const AddIncome = ({ navigation }: any) => {
       }, 3000);
       return;
     }
+
     setCategories(data);
     setValue("categoryId", data[0].id);
     setValue("categoryName", data[0].description);

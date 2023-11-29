@@ -6,8 +6,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import {
+  deletePiggyBank,
   showPiggyBank,
   storePiggyBank,
   transferPiggyBank,
@@ -58,6 +60,7 @@ const UpdatePorquinhoScreen: React.FC = ({
     setError,
     setValue,
     getValues,
+    clearErrors,
   } = useForm();
 
   const toast = useToast();
@@ -220,6 +223,60 @@ const UpdatePorquinhoScreen: React.FC = ({
     }
   };
 
+  const deletePiggyBankAsync = async (id: number) => {
+    const [data, error] = await deletePiggyBank(id);
+
+    if (error) {
+      const errorObject: FormErrors = {};
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      Object.keys(errorObject).forEach((field) => {
+        setError(field, errorObject[field]);
+      });
+
+      error.message.forEach((errorItem) => {
+        return (errorObject[errorItem.field] = {
+          message: errorItem.error,
+          type: "required",
+        });
+      });
+
+      if (errorObject.id) {
+        toast.show(errorObject.id.message, {
+          type: "danger",
+        });
+        navigate("PiggyBank");
+      }
+
+      return;
+    }
+
+    toast.show("Porquinho excluído com sucesso", { type: "success" });
+    navigate("PiggyBank");
+  };
+
+  const handleDeletePiggyBank = async (id: number) => {
+    Alert.alert("Tem certeza que quer excluir ?", "Absoluta ?", [
+      {
+        text: "Cancelar",
+        onPress: () => ({}),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          deletePiggyBankAsync(id);
+        },
+      },
+    ]);
+  };
+
   const onSubmit = async (data: any) => {
     const newPiggyBank = {
       id: id,
@@ -243,10 +300,18 @@ const UpdatePorquinhoScreen: React.FC = ({
       Object.keys(errorObject).forEach((field) => {
         setError(field, errorObject[field]);
       });
+
+      if (errorObject.id) {
+        toast.show(errorObject.id.message, {
+          type: "warning",
+        });
+        clearErrors();
+      }
+
       return;
     }
 
-    if (storePiggy === 201) {
+    if (storePiggy === 200) {
       toast.show("Porquinho criado com sucesso", {
         type: "success",
       });
@@ -470,6 +535,15 @@ const UpdatePorquinhoScreen: React.FC = ({
           <Text style={{ color: "#fff", fontWeight: "700" }}>Salvar</Text>
         </TouchableOpacity>
       )}
+      <TouchableOpacity
+        onPress={() => {
+          handleDeletePiggyBank(id);
+        }}
+      >
+        <View style={styles.buttonDelete}>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Excluir</Text>
+        </View>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -515,6 +589,16 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#fff",
     borderTopColor: "white",
+  },
+  buttonDelete: {
+    borderRadius: 10,
+    lineHeight: 1.25,
+    margin: 12,
+    height: 40,
+    backgroundColor: "red",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonAddMoneyFinished: {
     borderRadius: 100,

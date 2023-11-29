@@ -156,7 +156,7 @@ export const UpdateExpenses = ({ navigation: { navigate }, route }: any) => {
     const objectData = {
       id: id,
       walletIdOld: walletId,
-      amount: -Number(cleanNumberNegative(data.amount)),
+      amount: Number(cleanNumberNegative(data.amount)),
       description: data.description,
       date: formatarDataParaEnvio(data.date),
       status: isPaid ? TransactionStatus.PAIED : TransactionStatus.NOT_PAIED,
